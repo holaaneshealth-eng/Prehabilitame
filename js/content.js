@@ -662,3 +662,16 @@ export function edmontonResult(score) {
     message_en: 'It is important to share this result with your medical team to prepare for surgery with the greatest care. Move forward in small steps and always with company.',
   };
 }
+
+
+/**
+ * Puntos de privacidad para el paciente (bilingüe).
+ */
+export const PRIVACY_POINTS = [
+  { icon: '📱', es: 'Tus respuestas, tu progreso y tus datos se guardan SOLO en este dispositivo. No se envían a internet ni a ningún servidor.', en: 'Your answers, progress and data are stored ONLY on this device. Nothing is sent to the internet or to any server.' },
+  { icon: '🙈', es: 'Nadie más puede verlos, salvo que tú compartas tu informe.', en: 'No one else can see them, unless you share your report.' },
+  { icon: '📄', es: 'Guarda o envía tu informe en PDF antes de la cirugía: es la forma de conservar tus datos y de que tu equipo médico los vea.', en: 'Save or send your PDF report before surgery: that is how you keep your data and let your medical team see it.' },
+  { icon: '🗑️', es: 'Si borras los datos del navegador, desinstalas la app o cambias de dispositivo, la información se pierde.', en: 'If you clear your browser data, uninstall the app or change device, the information is lost.' },
+  { icon: '🔓', es: 'Los datos no están cifrados. En un dispositivo compartido, otras personas que abran la app podrían verlos.', en: 'The data is not encrypted. On a shared device, other people who open the app could see it.' },
+  { icon: '🩺', es: 'Comparte tus resultados con tu equipo médico. Esta app es de apoyo y no sustituye su valoración.', en: 'Share your results with your medical team. This app is a support tool and does not replace their assessment.' },
+];

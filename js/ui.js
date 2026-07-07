@@ -4,7 +4,7 @@
 import {
   PREOP_CHECKLIST, PREOP_CHECKLIST_EN, DISCLAIMER, DISCLAIMER_EN, ERAS_NOTE, ERAS_NOTE_EN,
   ALARM_SIGNS, ALARM_SIGNS_EN, CAREGIVER_TIPS, FRAIL_QUESTIONS, frailResult, getPhase,
-  EDMONTON_QUESTIONS, edmontonResult,
+  EDMONTON_QUESTIONS, edmontonResult, PRIVACY_POINTS,
 } from './content.js';
 import { todayKey, daysBetween, listProfiles, getActiveProfileId, assessmentHistory } from './state.js';
 import { GAD7, PHQ9, DASI, MUST, FREQ_OPTIONS, MUST_WEIGHTLOSS, SCALE_LIST, scaleMeta, resultForScale } from './scales.js';
@@ -426,6 +426,7 @@ export function renderMore(state) {
     { view: 'logros', icon: '🏅', label: t('m_badges'), sub: t('m_badges_sub', { n: state.badges.length }) },
     { view: 'perfiles', icon: '👥', label: t('m_profiles'), sub: t('m_profiles_sub') },
     { view: 'preferencias', icon: '🌍', label: t('m_prefs'), sub: t('m_prefs_sub') },
+    { view: 'privacidad', icon: '🔒', label: t('m_privacy'), sub: t('m_privacy_sub') },
     { view: 'editor', icon: '🩺', label: t('m_editor'), sub: t('m_editor_sub') },
   ];
   const menu = items.map((i) => `
@@ -481,6 +482,7 @@ export function renderNav(route) {
     fragilidad: 'mas', medicacion: 'mas', cuidador: 'mas', juego: 'mas', report: 'mas', perfiles: 'mas',
     preferencias: 'mas', edmonton: 'mas',
     evaluaciones: 'mas', gad7: 'mas', phq9: 'mas', dasi: 'mas', must: 'mas',
+    privacidad: 'mas',
   };
   return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? 'active' : ''}" data-action="nav" data-view="${i.id}">
@@ -988,4 +990,20 @@ export function renderMust(state) {
       <button type="submit" class="btn primary block">${t('scale_see')}</button>
     </form>
     <section class="card disclaimer-card"><h3>${t('frail_important')}</h3><p class="small">${esc(tr(MUST, 'note'))}</p></section>`;
+}
+
+
+/* ---------- Vista: PRIVACIDAD ---------- */
+
+export function renderPrivacy(state) {
+  const items = PRIVACY_POINTS.map((p) => `
+    <div class="ctip"><span class="ctip-ico">${p.icon}</span>
+      <div><p class="small">${esc(getLang() === 'en' ? p.en : p.es)}</p></div>
+    </div>`).join('');
+  return `
+    <div class="section-label">${t('privacy_title')}</div>
+    <section class="card"><p class="muted small">${t('privacy_intro')}</p></section>
+    <section class="card"><div class="ctips">${items}</div></section>
+    <button class="btn ghost block" data-action="export">${t('privacy_export_btn')}</button>
+    <section class="card disclaimer-card"><h3>${t('med_notice')}</h3><p class="small">${esc(disc())}</p></section>`;
 }

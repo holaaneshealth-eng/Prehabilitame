@@ -1951,6 +1951,14 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       message_en: "It is important to share this result with your medical team to prepare for surgery with the greatest care. Move forward in small steps and always with company."
     };
   }
+  var PRIVACY_POINTS = [
+    { icon: "\uD83D\uDCF1", es: "Tus respuestas, tu progreso y tus datos se guardan SOLO en este dispositivo. No se envían a internet ni a ningún servidor.", en: "Your answers, progress and data are stored ONLY on this device. Nothing is sent to the internet or to any server." },
+    { icon: "\uD83D\uDE48", es: "Nadie más puede verlos, salvo que tú compartas tu informe.", en: "No one else can see them, unless you share your report." },
+    { icon: "\uD83D\uDCC4", es: "Guarda o envía tu informe en PDF antes de la cirugía: es la forma de conservar tus datos y de que tu equipo médico los vea.", en: "Save or send your PDF report before surgery: that is how you keep your data and let your medical team see it." },
+    { icon: "\uD83D\uDDD1️", es: "Si borras los datos del navegador, desinstalas la app o cambias de dispositivo, la información se pierde.", en: "If you clear your browser data, uninstall the app or change device, the information is lost." },
+    { icon: "\uD83D\uDD13", es: "Los datos no están cifrados. En un dispositivo compartido, otras personas que abran la app podrían verlos.", en: "The data is not encrypted. On a shared device, other people who open the app could see it." },
+    { icon: "\uD83E\uDE7A", es: "Comparte tus resultados con tu equipo médico. Esta app es de apoyo y no sustituye su valoración.", en: "Share your results with your medical team. This app is a support tool and does not replace their assessment." }
+  ];
 
   // js/scales.js
   var FREQ_OPTIONS = [
@@ -2561,6 +2569,11 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       assess_same: "= sin cambios",
       assess_reeval_soon: "\uD83D\uDCC5 Se acerca tu cirugía: es un buen momento para repetir tus test y comprobar tu mejora.",
       report_assess: "Evaluaciones (basal → actual)",
+      m_privacy: "Privacidad y tus datos",
+      m_privacy_sub: "Dónde se guarda tu información",
+      privacy_title: "\uD83D\uDD12 Privacidad y tus datos",
+      privacy_intro: "Tu privacidad es lo primero. Así funciona esta app:",
+      privacy_export_btn: "⬇️ Guardar copia de mis datos",
       scale_see: "Ver mi resultado",
       scale_pts: "pts",
       scale_result_note: "Resultado del {date}. Cribado orientativo; compártelo con tu equipo médico.",
@@ -2829,6 +2842,11 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       assess_same: "= no change",
       assess_reeval_soon: "\uD83D\uDCC5 Your surgery is coming up: a good time to repeat your tests and check your improvement.",
       report_assess: "Assessments (baseline → current)",
+      m_privacy: "Privacy & your data",
+      m_privacy_sub: "Where your information is stored",
+      privacy_title: "\uD83D\uDD12 Privacy & your data",
+      privacy_intro: "Your privacy comes first. Here is how this app works:",
+      privacy_export_btn: "⬇️ Save a copy of my data",
       scale_see: "See my result",
       scale_pts: "pts",
       scale_result_note: "Result from {date}. Guidance screening; share it with your medical team.",
@@ -3321,6 +3339,7 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       { view: "logros", icon: "\uD83C\uDFC5", label: t("m_badges"), sub: t("m_badges_sub", { n: state2.badges.length }) },
       { view: "perfiles", icon: "\uD83D\uDC65", label: t("m_profiles"), sub: t("m_profiles_sub") },
       { view: "preferencias", icon: "\uD83C\uDF0D", label: t("m_prefs"), sub: t("m_prefs_sub") },
+      { view: "privacidad", icon: "\uD83D\uDD12", label: t("m_privacy"), sub: t("m_privacy_sub") },
       { view: "editor", icon: "\uD83E\uDE7A", label: t("m_editor"), sub: t("m_editor_sub") }
     ];
     const menu = items.map((i) => `
@@ -3387,7 +3406,8 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       gad7: "mas",
       phq9: "mas",
       dasi: "mas",
-      must: "mas"
+      must: "mas",
+      privacidad: "mas"
     };
     return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? "active" : ""}" data-action="nav" data-view="${i.id}">
@@ -3839,6 +3859,18 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     </form>
     <section class="card disclaimer-card"><h3>${t("frail_important")}</h3><p class="small">${esc(tr(MUST, "note"))}</p></section>`;
   }
+  function renderPrivacy(state2) {
+    const items = PRIVACY_POINTS.map((p) => `
+    <div class="ctip"><span class="ctip-ico">${p.icon}</span>
+      <div><p class="small">${esc(getLang() === "en" ? p.en : p.es)}</p></div>
+    </div>`).join("");
+    return `
+    <div class="section-label">${t("privacy_title")}</div>
+    <section class="card"><p class="muted small">${t("privacy_intro")}</p></section>
+    <section class="card"><div class="ctips">${items}</div></section>
+    <button class="btn ghost block" data-action="export">${t("privacy_export_btn")}</button>
+    <section class="card disclaimer-card"><h3>${t("med_notice")}</h3><p class="small">${esc(disc())}</p></section>`;
+  }
 
   // js/editor.js
   function L(es, en) {
@@ -4236,6 +4268,9 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
         break;
       case "preferencias":
         body = renderPreferences(state2);
+        break;
+      case "privacidad":
+        body = renderPrivacy(state2);
         break;
       case "edmonton":
         body = renderEdmonton(state2);

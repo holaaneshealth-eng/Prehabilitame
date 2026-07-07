@@ -93,6 +93,7 @@ function render() {
     case 'report': body = ui.renderReport(state); break;
     case 'perfiles': body = ui.renderProfiles(state); break;
     case 'preferencias': body = ui.renderPreferences(state); break;
+    case 'privacidad': body = ui.renderPrivacy(state); break;
     case 'edmonton': body = ui.renderEdmonton(state); break;
     case 'evaluaciones': body = ui.renderAssessments(state); break;
     case 'gad7': body = ui.renderFreqScale(state, 'gad7'); break;
