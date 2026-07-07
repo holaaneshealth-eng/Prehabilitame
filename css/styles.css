@@ -447,3 +447,9 @@ body.high-contrast .btn.ghost { border: 1.5px solid #0f172a; }
 
 /* Alto contraste: refuerzos extra para banners y chips */
 body.high-contrast .phase-focus { color: #111827; }
+
+
+/* ---------- Aviso de protección del Modo médico ---------- */
+.ed-warn { background: #fffbeb; border-left: 5px solid var(--gold); }
+.ed-warn p { font-size: .88rem; color: #334155; margin-bottom: 10px; }
+.ed-protected { text-align: center; color: var(--accent); font-weight: 700; font-size: .85rem; background: var(--accent-soft); padding: 8px; border-radius: 10px; margin-bottom: 12px; }

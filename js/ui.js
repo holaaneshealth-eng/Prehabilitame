@@ -410,8 +410,8 @@ export function renderMore(state) {
     { view: 'plan', icon: '📋', label: t('m_plan'), sub: t('m_plan_sub') },
     { view: 'logros', icon: '🏅', label: t('m_badges'), sub: t('m_badges_sub', { n: state.badges.length }) },
     { view: 'perfiles', icon: '👥', label: t('m_profiles'), sub: t('m_profiles_sub') },
+    { view: 'preferencias', icon: '🌍', label: t('m_prefs'), sub: t('m_prefs_sub') },
     { view: 'editor', icon: '🩺', label: t('m_editor'), sub: t('m_editor_sub') },
-    { view: 'editor', icon: '⚙️', label: t('m_settings'), sub: t('m_settings_sub'), tab: 'ajustes' },
   ];
   const menu = items.map((i) => `
     <button class="more-item" data-action="nav" data-view="${i.view}" ${i.tab ? `data-tab="${i.tab}"` : ''}>
@@ -464,6 +464,7 @@ export function renderNav(route) {
     hoy: 'hoy', recursos: 'recursos', progreso: 'progreso', aprende: 'aprende', post: 'aprende',
     mas: 'mas', plan: 'mas', logros: 'mas', editor: 'mas',
     fragilidad: 'mas', medicacion: 'mas', cuidador: 'mas', juego: 'mas', report: 'mas', perfiles: 'mas',
+    preferencias: 'mas',
   };
   return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? 'active' : ''}" data-action="nav" data-view="${i.id}">
@@ -744,4 +745,27 @@ export function renderMemoryGame(state, game) {
       <div class="mgrid">${cards}</div>
     </section>
     ${doneCard}`;
+}
+
+
+/* ---------- Vista: PREFERENCIAS DEL PACIENTE (idioma + accesibilidad) ---------- */
+
+export function renderPreferences(state) {
+  const s = state.settings;
+  const langOptions = LANGS.map((l) => `<option value="${l.id}" ${s.lang === l.id ? 'selected' : ''}>${l.flag} ${l.label}</option>`).join('');
+  return `
+    <div class="section-label">${t('pref_title')}</div>
+    <section class="card"><p class="muted small">${t('pref_intro')}</p></section>
+    <section class="card">
+      <h3>${t('set_language')}</h3>
+      <p class="muted small">${t('set_language_note')}</p>
+      <select class="lang-select" data-action="set-lang">${langOptions}</select>
+    </section>
+    <section class="card">
+      <h3>${t('set_access')}</h3>
+      <p class="muted small">${t('set_access_note')}</p>
+      <label class="switch-row"><span>${t('set_large')}</span><input type="checkbox" data-action="toggle-large-text" ${s.largeText ? 'checked' : ''} /></label>
+      <label class="switch-row"><span>${t('set_contrast')}</span><input type="checkbox" data-action="toggle-contrast" ${s.highContrast ? 'checked' : ''} /></label>
+      <label class="switch-row"><span>${t('set_motion')}</span><input type="checkbox" data-action="toggle-motion" ${s.reducedMotion ? 'checked' : ''} /></label>
+    </section>`;
 }

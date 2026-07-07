@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0f766e" />
-  <meta name="description" content="PreHabilita: programa domiciliario y autogestionado de prehabilitacion anestesica, con gamificacion, multiidioma y perfiles." />
+  <meta name="description" content="PreHabilita: programa domiciliario y autogestionado de prehabilitacion anestesica." />
   <title>PreHabilita &middot; Prehabilitacion anestesica</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%AB%81%3C/text%3E%3C/svg%3E" />
   <style>
@@ -457,6 +457,12 @@ body.high-contrast .btn.ghost { border: 1.5px solid #0f172a; }
 
 /* Alto contraste: refuerzos extra para banners y chips */
 body.high-contrast .phase-focus { color: #111827; }
+
+
+/* ---------- Aviso de protección del Modo médico ---------- */
+.ed-warn { background: #fffbeb; border-left: 5px solid var(--gold); }
+.ed-warn p { font-size: .88rem; color: #334155; margin-bottom: 10px; }
+.ed-protected { text-align: center; color: var(--accent); font-weight: 700; font-size: .85rem; background: var(--accent-soft); padding: 8px; border-radius: 10px; margin-bottom: 12px; }
 
   </style>
 </head>
@@ -1948,9 +1954,16 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       m_profiles: "Perfiles",
       m_profiles_sub: "Gestiona varios pacientes",
       m_editor: "Modo médico",
-      m_editor_sub: "Crear tareas, vídeos y publicaciones",
+      m_editor_sub: "Solo profesional · crear tareas, vídeos, publicaciones",
       m_settings: "Ajustes y accesibilidad",
       m_settings_sub: "Idioma, recordatorios, texto grande",
+      m_prefs: "Idioma y accesibilidad",
+      m_prefs_sub: "Idioma, texto grande, contraste",
+      pref_title: "⚙️ Idioma y accesibilidad",
+      pref_intro: "Ajustes que puedes cambiar libremente. No modifican el contenido del programa.",
+      ed_no_pin: '⚠️ Este modo es solo para el profesional. Ve a la pestaña "Ajustes" y configura un PIN para que los pacientes no puedan modificar la app.',
+      ed_protected: "\uD83D\uDD12 Protegido con PIN",
+      ed_go_settings: "Ir a Ajustes para poner un PIN",
       personal_data: "\uD83D\uDC64 Tus datos personales",
       surgery_unset: "Cirugía sin especificar",
       edit_my_data: "✏️ Editar mis datos",
@@ -2175,9 +2188,16 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       m_profiles: "Profiles",
       m_profiles_sub: "Manage several patients",
       m_editor: "Clinician mode",
-      m_editor_sub: "Create tasks, videos and articles",
+      m_editor_sub: "Clinician only · create tasks, videos, articles",
       m_settings: "Settings & accessibility",
       m_settings_sub: "Language, reminders, large text",
+      m_prefs: "Language & accessibility",
+      m_prefs_sub: "Language, large text, contrast",
+      pref_title: "⚙️ Language & accessibility",
+      pref_intro: "Settings you can change freely. They do not modify the program content.",
+      ed_no_pin: '⚠️ This mode is for the clinician only. Go to the "Settings" tab and set a PIN so patients cannot modify the app.',
+      ed_protected: "\uD83D\uDD12 PIN protected",
+      ed_go_settings: "Go to Settings to set a PIN",
       personal_data: "\uD83D\uDC64 Your personal details",
       surgery_unset: "Surgery not specified",
       edit_my_data: "✏️ Edit my details",
@@ -2684,8 +2704,8 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       { view: "plan", icon: "\uD83D\uDCCB", label: t("m_plan"), sub: t("m_plan_sub") },
       { view: "logros", icon: "\uD83C\uDFC5", label: t("m_badges"), sub: t("m_badges_sub", { n: state2.badges.length }) },
       { view: "perfiles", icon: "\uD83D\uDC65", label: t("m_profiles"), sub: t("m_profiles_sub") },
-      { view: "editor", icon: "\uD83E\uDE7A", label: t("m_editor"), sub: t("m_editor_sub") },
-      { view: "editor", icon: "⚙️", label: t("m_settings"), sub: t("m_settings_sub"), tab: "ajustes" }
+      { view: "preferencias", icon: "\uD83C\uDF0D", label: t("m_prefs"), sub: t("m_prefs_sub") },
+      { view: "editor", icon: "\uD83E\uDE7A", label: t("m_editor"), sub: t("m_editor_sub") }
     ];
     const menu = items.map((i) => `
     <button class="more-item" data-action="nav" data-view="${i.view}" ${i.tab ? `data-tab="${i.tab}"` : ""}>
@@ -2744,7 +2764,8 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       cuidador: "mas",
       juego: "mas",
       report: "mas",
-      perfiles: "mas"
+      perfiles: "mas",
+      preferencias: "mas"
     };
     return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? "active" : ""}" data-action="nav" data-view="${i.id}">
@@ -2997,6 +3018,25 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     </section>
     ${doneCard}`;
   }
+  function renderPreferences(state2) {
+    const s = state2.settings;
+    const langOptions = LANGS.map((l) => `<option value="${l.id}" ${s.lang === l.id ? "selected" : ""}>${l.flag} ${l.label}</option>`).join("");
+    return `
+    <div class="section-label">${t("pref_title")}</div>
+    <section class="card"><p class="muted small">${t("pref_intro")}</p></section>
+    <section class="card">
+      <h3>${t("set_language")}</h3>
+      <p class="muted small">${t("set_language_note")}</p>
+      <select class="lang-select" data-action="set-lang">${langOptions}</select>
+    </section>
+    <section class="card">
+      <h3>${t("set_access")}</h3>
+      <p class="muted small">${t("set_access_note")}</p>
+      <label class="switch-row"><span>${t("set_large")}</span><input type="checkbox" data-action="toggle-large-text" ${s.largeText ? "checked" : ""} /></label>
+      <label class="switch-row"><span>${t("set_contrast")}</span><input type="checkbox" data-action="toggle-contrast" ${s.highContrast ? "checked" : ""} /></label>
+      <label class="switch-row"><span>${t("set_motion")}</span><input type="checkbox" data-action="toggle-motion" ${s.reducedMotion ? "checked" : ""} /></label>
+    </section>`;
+  }
 
   // js/editor.js
   function L(es, en) {
@@ -3028,8 +3068,19 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     return `
     <div class="section-label">${t("ed_title")}</div>
     <p class="muted small editor-intro">${t("ed_intro")}</p>
+    ${pinBanner(state2)}
     ${tabBar}
     <div class="editor-body">${body}</div>`;
+  }
+  function pinBanner(state2) {
+    const e = state2.settings.editor;
+    if (e.pinEnabled && e.pin) {
+      return `<p class="ed-protected">${t("ed_protected")}</p>`;
+    }
+    return `<div class="card ed-warn">
+    <p>${t("ed_no_pin")}</p>
+    <button class="btn ghost block" data-action="editor-tab" data-tab="ajustes">${t("ed_go_settings")}</button>
+  </div>`;
   }
   function renderTasksTab(state2) {
     const pillars = getPillars(state2);
@@ -3180,14 +3231,7 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     const goal = getDailyGoal(state2);
     const rem = s.reminders;
     const timesChips = (rem.times || []).map((tm, i) => `<span class="time-chip">${esc(tm)} <button data-action="remove-reminder-time" data-idx="${i}" aria-label="✕">✕</button></span>`).join("");
-    const langOptions = LANGS.map((l) => `<option value="${l.id}" ${s.lang === l.id ? "selected" : ""}>${l.flag} ${l.label}</option>`).join("");
     return `
-    <section class="card">
-      <h3>${t("set_language")}</h3>
-      <p class="muted small">${t("set_language_note")}</p>
-      <select class="lang-select" data-action="set-lang">${langOptions}</select>
-    </section>
-
     <section class="card">
       <h3>${t("set_goal")}</h3>
       <p class="muted small">${t("set_goal_note")}</p>
@@ -3219,14 +3263,6 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
         <input type="text" inputmode="numeric" maxlength="4" id="editor-pin" value="${esc(s.editor.pin || "")}" placeholder="0000" />
         <button class="btn ghost" data-action="save-pin">${t("save")} PIN</button>
       </label>` : ""}
-    </section>
-
-    <section class="card">
-      <h3>${t("set_access")}</h3>
-      <p class="muted small">${t("set_access_note")}</p>
-      <label class="switch-row"><span>${t("set_large")}</span><input type="checkbox" data-action="toggle-large-text" ${s.largeText ? "checked" : ""} /></label>
-      <label class="switch-row"><span>${t("set_contrast")}</span><input type="checkbox" data-action="toggle-contrast" ${s.highContrast ? "checked" : ""} /></label>
-      <label class="switch-row"><span>${t("set_motion")}</span><input type="checkbox" data-action="toggle-motion" ${s.reducedMotion ? "checked" : ""} /></label>
     </section>
 
     <section class="card">
@@ -3395,6 +3431,9 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
         break;
       case "perfiles":
         body = renderProfiles(state2);
+        break;
+      case "preferencias":
+        body = renderPreferences(state2);
         break;
       default:
         body = renderToday(state2);

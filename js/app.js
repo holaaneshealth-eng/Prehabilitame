@@ -90,6 +90,7 @@ function render() {
     case 'juego': body = ui.renderMemoryGame(state, memoryGame); break;
     case 'report': body = ui.renderReport(state); break;
     case 'perfiles': body = ui.renderProfiles(state); break;
+    case 'preferencias': body = ui.renderPreferences(state); break;
     default: body = ui.renderToday(state);
   }
 

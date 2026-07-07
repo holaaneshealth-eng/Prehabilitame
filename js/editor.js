@@ -38,8 +38,21 @@ export function renderEditor(state, tab = 'tareas') {
   return `
     <div class="section-label">${t('ed_title')}</div>
     <p class="muted small editor-intro">${t('ed_intro')}</p>
+    ${pinBanner(state)}
     ${tabBar}
     <div class="editor-body">${body}</div>`;
+}
+
+/** Aviso de protección: recuerda configurar un PIN si no lo hay. */
+function pinBanner(state) {
+  const e = state.settings.editor;
+  if (e.pinEnabled && e.pin) {
+    return `<p class="ed-protected">${t('ed_protected')}</p>`;
+  }
+  return `<div class="card ed-warn">
+    <p>${t('ed_no_pin')}</p>
+    <button class="btn ghost block" data-action="editor-tab" data-tab="ajustes">${t('ed_go_settings')}</button>
+  </div>`;
 }
 
 /* ---------- Pestaña: Tareas ---------- */
@@ -210,15 +223,8 @@ function renderSettingsTab(state) {
   const timesChips = (rem.times || []).map((tm, i) =>
     `<span class="time-chip">${esc(tm)} <button data-action="remove-reminder-time" data-idx="${i}" aria-label="✕">✕</button></span>`
   ).join('');
-  const langOptions = LANGS.map((l) => `<option value="${l.id}" ${s.lang === l.id ? 'selected' : ''}>${l.flag} ${l.label}</option>`).join('');
 
   return `
-    <section class="card">
-      <h3>${t('set_language')}</h3>
-      <p class="muted small">${t('set_language_note')}</p>
-      <select class="lang-select" data-action="set-lang">${langOptions}</select>
-    </section>
-
     <section class="card">
       <h3>${t('set_goal')}</h3>
       <p class="muted small">${t('set_goal_note')}</p>
@@ -250,14 +256,6 @@ function renderSettingsTab(state) {
         <input type="text" inputmode="numeric" maxlength="4" id="editor-pin" value="${esc(s.editor.pin || '')}" placeholder="0000" />
         <button class="btn ghost" data-action="save-pin">${t('save')} PIN</button>
       </label>` : ''}
-    </section>
-
-    <section class="card">
-      <h3>${t('set_access')}</h3>
-      <p class="muted small">${t('set_access_note')}</p>
-      <label class="switch-row"><span>${t('set_large')}</span><input type="checkbox" data-action="toggle-large-text" ${s.largeText ? 'checked' : ''} /></label>
-      <label class="switch-row"><span>${t('set_contrast')}</span><input type="checkbox" data-action="toggle-contrast" ${s.highContrast ? 'checked' : ''} /></label>
-      <label class="switch-row"><span>${t('set_motion')}</span><input type="checkbox" data-action="toggle-motion" ${s.reducedMotion ? 'checked' : ''} /></label>
     </section>
 
     <section class="card">
