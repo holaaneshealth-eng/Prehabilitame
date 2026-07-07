@@ -477,6 +477,25 @@ body.high-contrast .phase-focus { color: #111827; }
 .efs-opt:hover { border-color: var(--accent-2); }
 .efs-opt input { width: 20px; height: 20px; flex-shrink: 0; margin: 0; }
 
+
+/* ================= Evaluaciones (hub + comparación) ================= */
+.assess-list { padding: 4px 0; }
+.assess-row { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-top: 1px solid #f1f5f9; }
+.assess-row:first-child { border-top: 0; }
+.assess-ico { font-size: 1.5rem; flex-shrink: 0; }
+.assess-main { flex: 1; min-width: 0; }
+.assess-main > strong { display: block; }
+.mini-do { padding: 8px 12px; font-size: .82rem; white-space: nowrap; }
+.cmp-inline { font-size: .8rem; font-weight: 700; margin-top: 4px; }
+.assess-main .cmp-inline { margin-top: 2px; }
+.cmp-up { color: #16a34a; }
+.cmp-down { color: #dc2626; }
+.cmp-same { color: var(--muted); }
+.reeval-card { background: linear-gradient(180deg, #fffbeb, #fff); border-left: 5px solid var(--gold); }
+.reeval-card p { font-size: .9rem; margin-bottom: 10px; color: #334155; }
+body.high-contrast .cmp-up { color: #15803d; }
+body.high-contrast .cmp-down { color: #b91c1c; }
+
   </style>
 </head>
 <body>
@@ -544,6 +563,7 @@ body.high-contrast .phase-focus { color: #111827; }
       medList: { meds: [], allergies: "", notes: "" },
       frail: { score: null, date: null, answers: {} },
       edmonton: { score: null, date: null, answers: {} },
+      assessments: { frail: [], edmonton: [], gad7: [], phq9: [], dasi: [], must: [] },
       games: { memory: { wins: 0, bestMoves: null } },
       library: { seeded: false, tasks: [], taskOverrides: {}, resources: [], posts: [] },
       settings: {
@@ -579,7 +599,19 @@ body.high-contrast .phase-focus { color: #111827; }
   }
   function loadProfileData(id) {
     const raw = readJSON(DATA_PREFIX + id);
-    return raw ? deepMerge(defaultState(), raw) : defaultState();
+    const data = raw ? deepMerge(defaultState(), raw) : defaultState();
+    migrateAssessments(data);
+    return data;
+  }
+  function migrateAssessments(data) {
+    if (!data.assessments)
+      data.assessments = { frail: [], edmonton: [], gad7: [], phq9: [], dasi: [], must: [] };
+    for (const key of ["frail", "edmonton"]) {
+      const legacy = data[key];
+      if (legacy && legacy.score != null && (!data.assessments[key] || data.assessments[key].length === 0)) {
+        data.assessments[key] = [{ date: legacy.date || todayKey(), score: legacy.score, answers: legacy.answers || null }];
+      }
+    }
   }
   function loadState() {
     index = readJSON(INDEX_KEY) || { activeId: null, profiles: [] };
@@ -588,6 +620,7 @@ body.high-contrast .phase-focus { color: #111827; }
       const id = uidProfile();
       if (legacy) {
         state = deepMerge(defaultState(), legacy);
+        migrateAssessments(state);
         const name = state.profile && state.profile.name || "Paciente 1";
         index = { activeId: id, profiles: [{ id, name }] };
         writeJSON(DATA_PREFIX + id, state);
@@ -632,6 +665,20 @@ body.high-contrast .phase-focus { color: #111827; }
     if (!state.logs[dayKey])
       state.logs[dayKey] = { tasks: {}, done: false, xp: 0, mood: null };
     return state.logs[dayKey];
+  }
+  function recordAssessment(key, score, answers) {
+    if (!state.assessments[key])
+      state.assessments[key] = [];
+    const arr = state.assessments[key];
+    const entry = { date: todayKey(), score, answers: answers || null };
+    if (arr.length && arr[arr.length - 1].date === entry.date)
+      arr[arr.length - 1] = entry;
+    else
+      arr.push(entry);
+    saveState();
+  }
+  function assessmentHistory(key) {
+    return state.assessments && state.assessments[key] ? state.assessments[key] : [];
   }
   function listProfiles() {
     return index.profiles.slice();
@@ -1905,6 +1952,180 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     };
   }
 
+  // js/scales.js
+  var FREQ_OPTIONS = [
+    { v: 0, label: "Nunca", label_en: "Not at all" },
+    { v: 1, label: "Varios días", label_en: "Several days" },
+    { v: 2, label: "Más de la mitad de los días", label_en: "More than half the days" },
+    { v: 3, label: "Casi todos los días", label_en: "Nearly every day" }
+  ];
+  var FREQ_STEM = "En las últimas 2 semanas, ¿con qué frecuencia le han molestado los siguientes problemas?";
+  var FREQ_STEM_EN = "Over the last 2 weeks, how often have you been bothered by the following problems?";
+  var GAD7 = {
+    id: "gad7",
+    max: 21,
+    stem: FREQ_STEM,
+    stem_en: FREQ_STEM_EN,
+    title: "Ansiedad (GAD-7)",
+    title_en: "Anxiety (GAD-7)",
+    intro: "Cuestionario de ansiedad de uso libre. Piensa en las ÚLTIMAS 2 SEMANAS y responde con sinceridad.",
+    intro_en: "Free anxiety questionnaire. Think about the LAST 2 WEEKS and answer honestly.",
+    note: "GAD-7 (Spitzer et al., 2006). Cribado orientativo, no diagnóstico.",
+    note_en: "GAD-7 (Spitzer et al., 2006). Guidance screening, not diagnostic.",
+    items: [
+      { q: "Sentirse nervioso/a, ansioso/a o con los nervios de punta", q_en: "Feeling nervous, anxious or on edge" },
+      { q: "No poder dejar de preocuparse o no poder controlar la preocupación", q_en: "Not being able to stop or control worrying" },
+      { q: "Preocuparse demasiado por diferentes cosas", q_en: "Worrying too much about different things" },
+      { q: "Dificultad para relajarse", q_en: "Trouble relaxing" },
+      { q: "Estar tan inquieto/a que le cuesta quedarse quieto/a", q_en: "Being so restless that it is hard to sit still" },
+      { q: "Molestarse o irritarse con facilidad", q_en: "Becoming easily annoyed or irritable" },
+      { q: "Sentir miedo, como si algo terrible fuera a pasar", q_en: "Feeling afraid, as if something awful might happen" }
+    ]
+  };
+  var PHQ9 = {
+    id: "phq9",
+    max: 27,
+    stem: FREQ_STEM,
+    stem_en: FREQ_STEM_EN,
+    title: "Estado de ánimo (PHQ-9)",
+    title_en: "Mood (PHQ-9)",
+    intro: "Cuestionario de estado de ánimo de uso libre. Piensa en las ÚLTIMAS 2 SEMANAS y responde con sinceridad.",
+    intro_en: "Free mood questionnaire. Think about the LAST 2 WEEKS and answer honestly.",
+    note: "PHQ-9 (Kroenke et al., 2001). Cribado orientativo, no diagnóstico.",
+    note_en: "PHQ-9 (Kroenke et al., 2001). Guidance screening, not diagnostic.",
+    selfHarmIndex: 8,
+    items: [
+      { q: "Poco interés o placer en hacer las cosas", q_en: "Little interest or pleasure in doing things" },
+      { q: "Sentirse desanimado/a, deprimido/a o sin esperanza", q_en: "Feeling down, depressed or hopeless" },
+      { q: "Problemas para dormir, o dormir demasiado", q_en: "Trouble falling or staying asleep, or sleeping too much" },
+      { q: "Sentirse cansado/a o con poca energía", q_en: "Feeling tired or having little energy" },
+      { q: "Poco apetito o comer en exceso", q_en: "Poor appetite or overeating" },
+      { q: "Sentirse mal consigo mismo/a, o sentir que es un fracaso o que ha decepcionado a su familia", q_en: "Feeling bad about yourself, or that you are a failure or have let yourself or your family down" },
+      { q: "Dificultad para concentrarse (leer, ver la televisión)", q_en: "Trouble concentrating on things, such as reading or watching television" },
+      { q: "Moverse o hablar tan despacio que otros lo han notado; o lo contrario, estar tan inquieto/a que se mueve mucho más de lo habitual", q_en: "Moving or speaking so slowly that other people could have noticed; or the opposite, being so restless that you move around much more than usual" },
+      { q: "Pensamientos de que estaría mejor muerto/a o de hacerse daño de alguna manera", q_en: "Thoughts that you would be better off dead, or of hurting yourself in some way" }
+    ]
+  };
+  var DASI = {
+    id: "dasi",
+    max: 58.2,
+    stem: "¿Es usted capaz de...?",
+    stem_en: "Are you able to...?",
+    title: "Capacidad funcional (DASI)",
+    title_en: "Functional capacity (DASI)",
+    intro: "Marca las actividades que eres capaz de hacer. Estima tu forma física (METs). Cuanto más alto, mejor.",
+    intro_en: "Tick the activities you are able to do. It estimates your fitness (METs). The higher, the better.",
+    note: "DASI (Hlatky et al., 1989). Estimación orientativa de la capacidad funcional.",
+    note_en: "DASI (Hlatky et al., 1989). Guidance estimate of functional capacity.",
+    items: [
+      { w: 2.75, q: "Cuidar de sí mismo/a (comer, vestirse, bañarse o ir al baño)", q_en: "Take care of yourself (eating, dressing, bathing or using the toilet)?" },
+      { w: 1.75, q: "Caminar dentro de casa", q_en: "Walk indoors, such as around your house?" },
+      { w: 2.75, q: "Caminar una o dos manzanas en llano", q_en: "Walk a block or two on level ground?" },
+      { w: 5.5, q: "Subir un tramo de escaleras o una cuesta", q_en: "Climb a flight of stairs or walk up a hill?" },
+      { w: 8, q: "Correr una distancia corta", q_en: "Run a short distance?" },
+      { w: 2.7, q: "Hacer tareas ligeras en casa (quitar el polvo, lavar los platos)", q_en: "Do light work around the house like dusting or washing dishes?" },
+      { w: 3.5, q: "Hacer tareas moderadas en casa (pasar la aspiradora, barrer, cargar la compra)", q_en: "Do moderate work around the house like vacuuming, sweeping floors or carrying groceries?" },
+      { w: 8, q: "Hacer tareas pesadas en casa (fregar el suelo, mover muebles pesados)", q_en: "Do heavy work around the house like scrubbing floors or moving heavy furniture?" },
+      { w: 4.5, q: "Hacer trabajos de jardín (rastrillar hojas, quitar malas hierbas, cortar el césped)", q_en: "Do yardwork like raking leaves, weeding or pushing a power mower?" },
+      { w: 5.25, q: "Tener relaciones sexuales", q_en: "Have sexual relations?" },
+      { w: 6, q: "Hacer actividades recreativas moderadas (bailar, golf, bolos, tenis en dobles)", q_en: "Take part in moderate recreational activities like dancing, golf, bowling or doubles tennis?" },
+      { w: 7.5, q: "Practicar deportes intensos (natación, tenis individual, fútbol, baloncesto, esquí)", q_en: "Take part in strenuous sports like swimming, singles tennis, football, basketball or skiing?" }
+    ]
+  };
+  function dasiMets(score) {
+    const vo2 = 0.43 * score + 9.6;
+    return vo2 / 3.5;
+  }
+  var MUST_WEIGHTLOSS = [
+    { v: 0, label: "Menos del 5% (o nada)", label_en: "Less than 5% (or none)" },
+    { v: 1, label: "Entre el 5% y el 10%", label_en: "Between 5% and 10%" },
+    { v: 2, label: "Más del 10%", label_en: "More than 10%" }
+  ];
+  var MUST = {
+    id: "must",
+    max: 6,
+    title: "Riesgo nutricional (MUST)",
+    title_en: "Nutrition risk (MUST)",
+    intro: "Necesitas tu peso y tu estatura. Herramienta de BAPEN de uso libre.",
+    intro_en: "You need your weight and height. Free BAPEN tool.",
+    note: "MUST © BAPEN. Cribado orientativo; no sustituye la valoración de un nutricionista.",
+    note_en: "MUST © BAPEN. Guidance screening; does not replace assessment by a dietitian."
+  };
+  function bmiScore(bmi) {
+    if (bmi == null || isNaN(bmi))
+      return 0;
+    if (bmi < 18.5)
+      return 2;
+    if (bmi < 20)
+      return 1;
+    return 0;
+  }
+  function gad7Result(s) {
+    if (s <= 4)
+      return { color: "#22c55e", label: "Ansiedad mínima", label_en: "Minimal anxiety", message: "Tus niveles de ansiedad son bajos. Las técnicas de relajación te ayudarán a mantenerte así.", message_en: "Your anxiety levels are low. Relaxation techniques will help you stay this way." };
+    if (s <= 9)
+      return { color: "#84cc16", label: "Ansiedad leve", label_en: "Mild anxiety", message: "Ansiedad leve. Practicar la respiración y el mindfulness a diario puede ayudarte mucho.", message_en: "Mild anxiety. Practising breathing and mindfulness daily can help a lot." };
+    if (s <= 14)
+      return { color: "#f59e0b", label: "Ansiedad moderada", label_en: "Moderate anxiety", message: "Ansiedad moderada. Coméntalo con tu equipo médico; hay técnicas y apoyos que pueden ayudarte antes de la cirugía.", message_en: "Moderate anxiety. Mention it to your medical team; there are techniques and support that can help before surgery." };
+    return { color: "#ef4444", label: "Ansiedad grave", label_en: "Severe anxiety", message: "Ansiedad alta. Es importante que lo compartas con tu equipo médico para recibir apoyo adecuado.", message_en: "High anxiety. It is important to share this with your medical team so you can get proper support." };
+  }
+  function phq9Result(s) {
+    if (s <= 4)
+      return { color: "#22c55e", label: "Mínima", label_en: "Minimal", message: "Tu estado de ánimo es bueno. Cuidar el sueño, el ejercicio y las relaciones te ayuda a mantenerlo.", message_en: "Your mood is good. Looking after sleep, exercise and relationships helps keep it that way." };
+    if (s <= 9)
+      return { color: "#84cc16", label: "Leve", label_en: "Mild", message: "Ánimo algo bajo. El ejercicio, la rutina y el apoyo de tus seres queridos suelen ayudar.", message_en: "Slightly low mood. Exercise, routine and support from loved ones usually help." };
+    if (s <= 14)
+      return { color: "#f59e0b", label: "Moderado", label_en: "Moderate", message: "Ánimo moderadamente bajo. Coméntalo con tu equipo médico; conviene acompañarlo bien antes de la cirugía.", message_en: "Moderately low mood. Mention it to your medical team; it is worth supporting well before surgery." };
+    if (s <= 19)
+      return { color: "#f97316", label: "Moderadamente grave", label_en: "Moderately severe", message: "Ánimo bastante bajo. Es importante que lo hables con tu equipo médico cuanto antes.", message_en: "Quite low mood. It is important to talk to your medical team as soon as possible." };
+    return { color: "#ef4444", label: "Grave", label_en: "Severe", message: "Ánimo muy bajo. Por favor, comparte esto con tu equipo médico; no tienes que pasarlo solo/a.", message_en: "Very low mood. Please share this with your medical team; you do not have to go through it alone." };
+  }
+  function dasiResult(s) {
+    const mets = dasiMets(s);
+    const m = Math.round(mets * 10) / 10;
+    if (s < 10)
+      return { color: "#f59e0b", mets: m, label: "Capacidad funcional baja", label_en: "Low functional capacity", message: `Capacidad estimada ~${m} MET. Empieza con ejercicio suave y seguro (en silla o con apoyo) y progresa poco a poco. Coméntalo con tu equipo.`, message_en: `Estimated capacity ~${m} METs. Start with gentle, safe exercise (seated or with support) and build up slowly. Mention it to your team.` };
+    if (s < 34)
+      return { color: "#84cc16", mets: m, label: "Capacidad funcional moderada", label_en: "Moderate functional capacity", message: `Capacidad estimada ~${m} MET. Buen punto de partida: mantén el ejercicio aeróbico y de fuerza para seguir mejorando.`, message_en: `Estimated capacity ~${m} METs. A good starting point: keep up aerobic and strength exercise to keep improving.` };
+    return { color: "#22c55e", mets: m, label: "Buena capacidad funcional", label_en: "Good functional capacity", message: `Capacidad estimada ~${m} MET. ¡Muy bien! Mantén tu nivel de actividad hasta la cirugía.`, message_en: `Estimated capacity ~${m} METs. Well done! Keep up your activity level until surgery.` };
+  }
+  function mustResult(s) {
+    if (s <= 0)
+      return { color: "#22c55e", label: "Riesgo bajo", label_en: "Low risk", message: "Riesgo nutricional bajo. Mantén una dieta con suficiente proteína e hidratación.", message_en: "Low nutritional risk. Keep a diet with enough protein and hydration." };
+    if (s === 1)
+      return { color: "#f59e0b", label: "Riesgo medio", label_en: "Medium risk", message: "Riesgo nutricional medio. Cuida la proteína en cada comida y coméntalo en tu consulta; quizá convenga vigilar tu peso.", message_en: "Medium nutritional risk. Take care with protein at each meal and mention it at your appointment; your weight may need monitoring." };
+    return { color: "#ef4444", label: "Riesgo alto", label_en: "High risk", message: "Riesgo nutricional alto. Es importante que lo comentes pronto con tu equipo médico o nutricionista.", message_en: "High nutritional risk. It is important to discuss this soon with your medical team or dietitian." };
+  }
+  var SCALE_LIST = [
+    { id: "dasi", icon: "\uD83C\uDFC3", route: "dasi", name: "Capacidad funcional (DASI)", name_en: "Functional capacity (DASI)", higherBetter: true },
+    { id: "gad7", icon: "\uD83D\uDE30", route: "gad7", name: "Ansiedad (GAD-7)", name_en: "Anxiety (GAD-7)", higherBetter: false },
+    { id: "phq9", icon: "\uD83C\uDF27️", route: "phq9", name: "Estado de ánimo (PHQ-9)", name_en: "Mood (PHQ-9)", higherBetter: false },
+    { id: "must", icon: "\uD83E\uDD57", route: "must", name: "Riesgo nutricional (MUST)", name_en: "Nutrition risk (MUST)", higherBetter: false },
+    { id: "frail", icon: "\uD83E\uDDED", route: "fragilidad", name: "Fragilidad rápida (FRAIL)", name_en: "Quick frailty (FRAIL)", higherBetter: false },
+    { id: "edmonton", icon: "\uD83D\uDCCB", route: "edmonton", name: "Fragilidad (Edmonton)", name_en: "Frailty (Edmonton)", higherBetter: false }
+  ];
+  function scaleMeta(id) {
+    return SCALE_LIST.find((x) => x.id === id) || null;
+  }
+  function resultForScale(id, score) {
+    switch (id) {
+      case "gad7":
+        return gad7Result(score);
+      case "phq9":
+        return phq9Result(score);
+      case "dasi":
+        return dasiResult(score);
+      case "must":
+        return mustResult(score);
+      case "frail":
+        return frailResult(score);
+      case "edmonton":
+        return edmontonResult(score);
+      default:
+        return null;
+    }
+  }
+
   // js/data.js
   function uid(prefix = "id") {
     return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
@@ -2326,6 +2547,30 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       efs_of17: "/ 17",
       efs_result_note: "Resultado del {date} · {score}/17 puntos. Cribado orientativo autoinformado; compártelo con tu equipo médico.",
       efs_saved: "✔ Test de Edmonton guardado. Compártelo con tu equipo médico.",
+      m_assess: "Mis evaluaciones de salud",
+      m_assess_sub: "Test de forma física, ánimo, nutrición y fragilidad",
+      assess_title: "\uD83E\uDE7A Mis evaluaciones de salud",
+      assess_intro: "Cuestionarios breves y orientativos. Hazlos al empezar (medida basal) y repítelos antes de la cirugía para ver tu mejora. Comparte los resultados con tu equipo médico.",
+      assess_baseline: "Basal",
+      assess_latest: "Actual",
+      assess_none: "Sin realizar",
+      assess_do: "Hacer test",
+      assess_redo: "Repetir",
+      assess_improved: "↑ mejora",
+      assess_worse: "↓ empeora",
+      assess_same: "= sin cambios",
+      assess_reeval_soon: "\uD83D\uDCC5 Se acerca tu cirugía: es un buen momento para repetir tus test y comprobar tu mejora.",
+      report_assess: "Evaluaciones (basal → actual)",
+      scale_see: "Ver mi resultado",
+      scale_pts: "pts",
+      scale_result_note: "Resultado del {date}. Cribado orientativo; compártelo con tu equipo médico.",
+      must_weight: "Peso actual (kg)",
+      must_height: "Estatura (cm)",
+      must_bmi: "IMC",
+      must_wl: "¿Ha perdido peso sin querer en los últimos 3-6 meses?",
+      must_acute: "¿Está gravemente enfermo/a y sin comer (o sin poder comer) desde hace más de 5 días?",
+      phq9_safety_title: "\uD83D\uDC9B No estás solo/a",
+      phq9_safety: "Has indicado pensamientos de hacerte daño. Por favor, cuéntaselo a tu equipo médico o a alguien de confianza. Si necesitas ayuda urgente, en España puedes llamar al 024 (atención a la conducta suicida) o al 112 (emergencias).",
       meds_title: "\uD83D\uDC8A Mi medicación y alergias",
       meds_intro: "Prepara tu lista para la consulta de preanestesia. Incluye TODO: recetados, sin receta y productos de herbolario. Al terminar podrás guardarla en PDF.",
       meds_add: "Añadir medicamento",
@@ -2570,6 +2815,30 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       efs_of17: "/ 17",
       efs_result_note: "Result from {date} · {score}/17 points. Self-reported guidance screening; share it with your medical team.",
       efs_saved: "✔ Edmonton test saved. Share it with your medical team.",
+      m_assess: "My health assessments",
+      m_assess_sub: "Fitness, mood, nutrition and frailty tests",
+      assess_title: "\uD83E\uDE7A My health assessments",
+      assess_intro: "Short, guidance questionnaires. Do them at the start (baseline) and repeat them before surgery to see your improvement. Share the results with your medical team.",
+      assess_baseline: "Baseline",
+      assess_latest: "Current",
+      assess_none: "Not done",
+      assess_do: "Take test",
+      assess_redo: "Repeat",
+      assess_improved: "↑ improved",
+      assess_worse: "↓ worsened",
+      assess_same: "= no change",
+      assess_reeval_soon: "\uD83D\uDCC5 Your surgery is coming up: a good time to repeat your tests and check your improvement.",
+      report_assess: "Assessments (baseline → current)",
+      scale_see: "See my result",
+      scale_pts: "pts",
+      scale_result_note: "Result from {date}. Guidance screening; share it with your medical team.",
+      must_weight: "Current weight (kg)",
+      must_height: "Height (cm)",
+      must_bmi: "BMI",
+      must_wl: "Have you unintentionally lost weight in the last 3-6 months?",
+      must_acute: "Are you seriously ill and have not eaten (or been unable to eat) for more than 5 days?",
+      phq9_safety_title: "\uD83D\uDC9B You are not alone",
+      phq9_safety: "You indicated thoughts of hurting yourself. Please tell your medical team or someone you trust. If you need urgent help, call your local emergency number (112 in Europe, 911 in the US) or a suicide prevention line (988 in the US).",
       meds_title: "\uD83D\uDC8A My medication & allergies",
       meds_intro: "Prepare your list for the pre-anesthesia consultation. Include EVERYTHING: prescription, over-the-counter and herbal products. When done you can save it as PDF.",
       meds_add: "Add medication",
@@ -2757,6 +3026,18 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       <p class="phase-focus">${esc(tr(ph, "focus"))}</p>
     </section>`;
   }
+  function reevalBanner(state2) {
+    const dts = daysToSurgery(state2);
+    if (dts == null || dts < 0 || dts > 3)
+      return "";
+    const hasBaseline = SCALE_LIST.some((sc) => assessmentHistory(sc.id).length > 0);
+    if (!hasBaseline)
+      return "";
+    return `<section class="card reeval-card">
+    <p>${t("assess_reeval_soon")}</p>
+    <button class="btn primary block" data-action="nav" data-view="evaluaciones">${t("m_assess")}</button>
+  </section>`;
+  }
   function renderToday(state2) {
     const tasks = getTasks(state2);
     const goal = getDailyGoal(state2);
@@ -2806,6 +3087,7 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     }).join("");
     return `
     ${phaseBanner(state2)}
+    ${reevalBanner(state2)}
     ${dailyCard}
     ${challengeCard}
     <div class="section-label">${t("tasks_today")}</div>
@@ -3030,8 +3312,7 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
   }
   function renderMore(state2) {
     const items = [
-      { view: "fragilidad", icon: "\uD83E\uDDED", label: t("m_frail"), sub: t("m_frail_sub") },
-      { view: "edmonton", icon: "\uD83D\uDCCB", label: t("m_edmonton"), sub: t("m_edmonton_sub") },
+      { view: "evaluaciones", icon: "\uD83E\uDE7A", label: t("m_assess"), sub: t("m_assess_sub") },
       { view: "medicacion", icon: "\uD83D\uDC8A", label: t("m_meds"), sub: t("m_meds_sub") },
       { view: "cuidador", icon: "\uD83E\uDD1D", label: t("m_care"), sub: t("m_care_sub") },
       { view: "juego", icon: "\uD83E\uDDE9", label: t("m_game"), sub: t("m_game_sub") },
@@ -3101,7 +3382,12 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       report: "mas",
       perfiles: "mas",
       preferencias: "mas",
-      edmonton: "mas"
+      edmonton: "mas",
+      evaluaciones: "mas",
+      gad7: "mas",
+      phq9: "mas",
+      dasi: "mas",
+      must: "mas"
     };
     return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? "active" : ""}" data-action="nav" data-view="${i.id}">
@@ -3266,6 +3552,16 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     const earned = state2.badges || [];
     const badgeList = earned.length ? earned.map((id) => `<span class="rep-badge">\uD83C\uDFC5 ${esc(id)}</span>`).join(" ") : t("report_none");
     const dtsLine = dts == null ? "—" : dts > 0 ? dts : dts === 0 ? t("today") : "—";
+    const assessRows = SCALE_LIST.map((sc) => {
+      const h = assessmentHistory(sc.id);
+      if (!h.length)
+        return "";
+      const base = h[0], lastA = h[h.length - 1];
+      const r = resultForScale(sc.id, lastA.score);
+      const lastCell = h.length >= 2 ? lastA.score : "—";
+      return `<tr><td>${sc.icon} ${esc(tr(sc, "name"))}</td><td>${base.score}</td><td>${lastCell}</td><td>${r ? esc(tr(r, "label")) : ""}</td></tr>`;
+    }).filter(Boolean).join("");
+    const assessTable = assessRows ? `<h3>${t("report_assess")}</h3><table class="med-table"><thead><tr><th></th><th>${t("assess_baseline")}</th><th>${t("assess_latest")}</th><th></th></tr></thead><tbody>${assessRows}</tbody></table>` : `<h3>${t("report_frail")}</h3><p>${frailLine}</p>`;
     return `
     <div class="section-label">${t("report_title")}</div>
     <div class="no-print">
@@ -3286,7 +3582,7 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       </tbody></table>
       <h3>${t("report_adherence")}</h3>
       <table class="med-table"><tbody>${adhRows}</tbody></table>
-      <h3>${t("report_frail")}</h3><p>${frailLine}</p>
+      ${assessTable}
       <h3>${t("report_badges")} (${earned.length})</h3><p class="rep-badges">${badgeList}</p>
       <p class="doc-foot">${t("report_foot")}</p>
     </section>`;
@@ -3406,6 +3702,142 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       <button type="submit" class="btn primary block">${t("efs_see")}</button>
     </form>
     <section class="card disclaimer-card"><h3>${t("frail_important")}</h3><p class="small">${t("efs_self_note")}</p></section>`;
+  }
+  function comparisonNote(id) {
+    const h = assessmentHistory(id);
+    if (h.length < 2)
+      return "";
+    const base = h[0], last = h[h.length - 1];
+    const meta = scaleMeta(id);
+    const delta = last.score - base.score;
+    const improved = meta && meta.higherBetter ? delta > 0 : delta < 0;
+    const tag = delta === 0 ? t("assess_same") : improved ? t("assess_improved") : t("assess_worse");
+    const cls = delta === 0 ? "cmp-same" : improved ? "cmp-up" : "cmp-down";
+    return `<p class="cmp-inline ${cls}">${t("assess_baseline")}: ${base.score} → ${t("assess_latest")}: ${last.score} · ${tag}</p>`;
+  }
+  function renderAssessments(state2) {
+    const dts = daysToSurgery(state2);
+    const hasBaseline = SCALE_LIST.some((sc) => assessmentHistory(sc.id).length > 0);
+    const reeval = dts != null && dts >= 0 && dts <= 3 && hasBaseline ? `<section class="card reeval-card">${t("assess_reeval_soon")}</section>` : "";
+    const rows = SCALE_LIST.map((sc) => {
+      const hist = assessmentHistory(sc.id);
+      const last = hist.length ? hist[hist.length - 1] : null;
+      let body;
+      if (!last) {
+        body = `<span class="muted small">${t("assess_none")}</span>`;
+      } else {
+        const r = resultForScale(sc.id, last.score);
+        const label = r ? `<strong style="color:${r.color}">${esc(tr(r, "label"))}</strong>` : `<strong>${last.score}</strong>`;
+        const cmp = hist.length >= 2 ? comparisonNote(sc.id) : `<small class="muted">${t("assess_baseline")}: ${last.score} ${t("scale_pts")}</small>`;
+        body = `<div>${label}${cmp}</div>`;
+      }
+      return `<div class="assess-row">
+      <span class="assess-ico">${sc.icon}</span>
+      <div class="assess-main"><strong>${esc(tr(sc, "name"))}</strong>${body}</div>
+      <button class="btn ghost mini-do" data-action="nav" data-view="${sc.route}">${last ? t("assess_redo") : t("assess_do")}</button>
+    </div>`;
+    }).join("");
+    return `
+    <div class="section-label">${t("assess_title")}</div>
+    <section class="card"><p class="muted small">${t("assess_intro")}</p></section>
+    ${reeval}
+    <section class="card assess-list">${rows}</section>`;
+  }
+  function renderFreqScale(state2, scaleId) {
+    const scale = scaleId === "phq9" ? PHQ9 : GAD7;
+    const hist = assessmentHistory(scaleId);
+    const last = hist.length ? hist[hist.length - 1] : null;
+    const prev = last && last.answers ? last.answers : {};
+    let resultCard = "";
+    if (last) {
+      const r = resultForScale(scaleId, last.score);
+      resultCard = `
+      <section class="card frail-result" style="--fc:${r.color}">
+        <div class="frail-score">${last.score} <small>/ ${scale.max}</small></div>
+        <div class="frail-label">${esc(tr(r, "label"))}</div>
+        <p>${esc(tr(r, "message"))}</p>
+        ${comparisonNote(scaleId)}
+        <p class="muted small">${t("scale_result_note", { date: esc(last.date || "") })}</p>
+      </section>`;
+    }
+    const qs = scale.items.map((it, i) => {
+      const cur = prev[i];
+      const radios = FREQ_OPTIONS.map((o) => `
+      <label class="fopt efs-opt"><input type="radio" name="q${i}" value="${o.v}" ${cur === o.v ? "checked" : ""}/> <span>${esc(tr(o, "label"))}</span></label>`).join("");
+      return `<div class="frail-q efs-q"><p><strong>${i + 1}.</strong> ${esc(tr(it, "q"))}</p><div class="efs-opts">${radios}</div></div>`;
+    }).join("");
+    return `
+    <button class="btn ghost back-btn" data-action="nav" data-view="evaluaciones">${t("back")}</button>
+    <div class="section-label">\uD83E\uDE7A ${esc(tr(scale, "title"))}</div>
+    ${resultCard}
+    <section class="card"><p class="muted small">${esc(tr(scale, "intro"))}</p><p class="small"><em>${esc(tr(scale, "stem"))}</em></p></section>
+    <form id="form-${scaleId}" class="card">${qs}<button type="submit" class="btn primary block">${t("scale_see")}</button></form>
+    <section class="card disclaimer-card"><h3>${t("frail_important")}</h3><p class="small">${esc(tr(scale, "note"))}</p></section>`;
+  }
+  function renderDasi(state2) {
+    const hist = assessmentHistory("dasi");
+    const last = hist.length ? hist[hist.length - 1] : null;
+    const prev = last && last.answers ? last.answers : {};
+    let resultCard = "";
+    if (last) {
+      const r = resultForScale("dasi", last.score);
+      resultCard = `
+      <section class="card frail-result" style="--fc:${r.color}">
+        <div class="frail-score">${Math.round(last.score * 10) / 10} <small>/ 58.2</small></div>
+        <div class="frail-label">${esc(tr(r, "label"))} · ~${r.mets} MET</div>
+        <p>${esc(tr(r, "message"))}</p>
+        ${comparisonNote("dasi")}
+        <p class="muted small">${t("scale_result_note", { date: esc(last.date || "") })}</p>
+      </section>`;
+    }
+    const qs = DASI.items.map((it, i) => {
+      const cur = prev[i];
+      return `<div class="frail-q efs-q"><p><strong>${i + 1}.</strong> ${esc(tr(it, "q"))}</p>
+      <div class="frail-opts">
+        <label class="fopt"><input type="radio" name="q${i}" value="1" ${cur === 1 ? "checked" : ""}/> ${t("yes")}</label>
+        <label class="fopt"><input type="radio" name="q${i}" value="0" ${cur === 0 ? "checked" : ""}/> ${t("no")}</label>
+      </div></div>`;
+    }).join("");
+    return `
+    <button class="btn ghost back-btn" data-action="nav" data-view="evaluaciones">${t("back")}</button>
+    <div class="section-label">\uD83E\uDE7A ${esc(tr(DASI, "title"))}</div>
+    ${resultCard}
+    <section class="card"><p class="muted small">${esc(tr(DASI, "intro"))}</p><p class="small"><em>${esc(tr(DASI, "stem"))}</em></p></section>
+    <form id="form-dasi" class="card">${qs}<button type="submit" class="btn primary block">${t("scale_see")}</button></form>
+    <section class="card disclaimer-card"><h3>${t("frail_important")}</h3><p class="small">${esc(tr(DASI, "note"))}</p></section>`;
+  }
+  function renderMust(state2) {
+    const hist = assessmentHistory("must");
+    const last = hist.length ? hist[hist.length - 1] : null;
+    const prev = last && last.answers ? last.answers : {};
+    let resultCard = "";
+    if (last) {
+      const r = resultForScale("must", last.score);
+      resultCard = `
+      <section class="card frail-result" style="--fc:${r.color}">
+        <div class="frail-score">${last.score} <small>${t("scale_pts")}</small></div>
+        <div class="frail-label">${esc(tr(r, "label"))}</div>
+        <p>${esc(tr(r, "message"))}</p>
+        ${comparisonNote("must")}
+        <p class="muted small">${t("scale_result_note", { date: esc(last.date || "") })}</p>
+      </section>`;
+    }
+    const wl = MUST_WEIGHTLOSS.map((o) => `<option value="${o.v}" ${prev.wl === o.v ? "selected" : ""}>${esc(tr(o, "label"))}</option>`).join("");
+    return `
+    <button class="btn ghost back-btn" data-action="nav" data-view="evaluaciones">${t("back")}</button>
+    <div class="section-label">\uD83E\uDE7A ${esc(tr(MUST, "title"))}</div>
+    ${resultCard}
+    <section class="card"><p class="muted small">${esc(tr(MUST, "intro"))}</p></section>
+    <form id="form-must" class="card stack-form">
+      <div class="two-col">
+        <label>${t("must_weight")}<input name="weight" type="number" min="20" max="400" step="0.1" value="${prev.weight != null ? prev.weight : ""}" required /></label>
+        <label>${t("must_height")}<input name="height" type="number" min="100" max="230" value="${prev.height != null ? prev.height : ""}" required /></label>
+      </div>
+      <label>${t("must_wl")}<select name="wl">${wl}</select></label>
+      <label class="check-inline"><input name="acute" type="checkbox" ${prev.acute ? "checked" : ""} /> ${t("must_acute")}</label>
+      <button type="submit" class="btn primary block">${t("scale_see")}</button>
+    </form>
+    <section class="card disclaimer-card"><h3>${t("frail_important")}</h3><p class="small">${esc(tr(MUST, "note"))}</p></section>`;
   }
 
   // js/editor.js
@@ -3808,6 +4240,21 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       case "edmonton":
         body = renderEdmonton(state2);
         break;
+      case "evaluaciones":
+        body = renderAssessments(state2);
+        break;
+      case "gad7":
+        body = renderFreqScale(state2, "gad7");
+        break;
+      case "phq9":
+        body = renderFreqScale(state2, "phq9");
+        break;
+      case "dasi":
+        body = renderDasi(state2);
+        break;
+      case "must":
+        body = renderMust(state2);
+        break;
       default:
         body = renderToday(state2);
     }
@@ -4049,6 +4496,14 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       return submitFrail(form);
     if (form.id === "form-edmonton")
       return submitEdmonton(form);
+    if (form.id === "form-gad7")
+      return submitFreqScale(form, "gad7");
+    if (form.id === "form-phq9")
+      return submitFreqScale(form, "phq9");
+    if (form.id === "form-dasi")
+      return submitDasi(form);
+    if (form.id === "form-must")
+      return submitMust(form);
     if (form.id === "form-med")
       return submitMed(form);
     if (form.id === "form-med-extra")
@@ -4572,7 +5027,7 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       score += n;
     }
     state2.frail = { score, date: todayKey(), answers };
-    saveState();
+    recordAssessment("frail", score, answers);
     render();
     window.scrollTo(0, 0);
     toast(L2("✔ Cribado guardado. Compártelo con tu equipo médico.", "✔ Screening saved. Share it with your medical team."));
@@ -4593,10 +5048,71 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       score += n;
     }
     state2.edmonton = { score, date: todayKey(), answers };
-    saveState();
+    recordAssessment("edmonton", score, answers);
     render();
     window.scrollTo(0, 0);
     toast(L2("✔ Test de Edmonton guardado. Compártelo con tu equipo médico.", "✔ Edmonton test saved. Share it with your medical team."));
+  }
+  function submitFreqScale(form, scaleId) {
+    const scale = scaleId === "phq9" ? PHQ9 : GAD7;
+    const fd = new FormData(form);
+    let score = 0;
+    const answers = {};
+    for (let i = 0;i < scale.items.length; i++) {
+      const v = fd.get("q" + i);
+      if (v == null) {
+        toast(L2("Responde a todas las preguntas, por favor.", "Please answer all the questions."));
+        return;
+      }
+      const n = Number(v);
+      answers[i] = n;
+      score += n;
+    }
+    recordAssessment(scaleId, score, answers);
+    render();
+    window.scrollTo(0, 0);
+    toast(L2("✔ Guardado. Compártelo con tu equipo médico.", "✔ Saved. Share it with your medical team."));
+    if (scaleId === "phq9" && answers[PHQ9.selfHarmIndex] > 0) {
+      setTimeout(() => openModal(t("phq9_safety_title"), `<p>${esc(t("phq9_safety"))}</p>`), 450);
+    }
+  }
+  function submitDasi(form) {
+    const fd = new FormData(form);
+    let score = 0;
+    const answers = {};
+    for (let i = 0;i < DASI.items.length; i++) {
+      const v = fd.get("q" + i);
+      if (v == null) {
+        toast(L2("Responde a todas las preguntas, por favor.", "Please answer all the questions."));
+        return;
+      }
+      const n = Number(v);
+      answers[i] = n;
+      if (n === 1)
+        score += DASI.items[i].w;
+    }
+    score = Math.round(score * 100) / 100;
+    recordAssessment("dasi", score, answers);
+    render();
+    window.scrollTo(0, 0);
+    toast(L2("✔ Guardado.", "✔ Saved."));
+  }
+  function submitMust(form) {
+    const fd = new FormData(form);
+    const weight = Number(fd.get("weight"));
+    const height = Number(fd.get("height"));
+    const wl = Number(fd.get("wl")) || 0;
+    const acute = fd.get("acute") === "on" ? 2 : 0;
+    if (!weight || !height) {
+      toast(L2("Introduce tu peso y tu estatura.", "Enter your weight and height."));
+      return;
+    }
+    const bmi = weight / Math.pow(height / 100, 2);
+    const score = bmiScore(bmi) + wl + acute;
+    recordAssessment("must", score, { weight, height, wl, acute: acute > 0, bmi: Math.round(bmi * 10) / 10 });
+    render();
+    window.scrollTo(0, 0);
+    toast(L2("✔ Guardado.", "✔ Saved."));
   }
   function submitMed(form) {
     const fd = new FormData(form);

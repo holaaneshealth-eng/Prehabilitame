@@ -5,14 +5,16 @@ import {
   loadState, saveState, getState, resetState, getDayLog, todayKey,
   exportState, importState,
   listProfiles, getActiveProfileId, switchProfile, createProfile, renameProfile, deleteProfile,
+  recordAssessment,
 } from './state.js';
 import { BADGES, DISCLAIMER, DISCLAIMER_EN, FRAIL_QUESTIONS, EDMONTON_QUESTIONS, MEMORY_EMOJIS } from './content.js';
+import { GAD7, PHQ9, DASI, bmiScore } from './scales.js';
 import {
   seedLibrary, getTasks, getTaskById, getAllTasksForEditor, getPillarById,
   getResources, getPosts, getDailyGoal, uid,
 } from './data.js';
 import { applyEngine, recompute, dayXp, tasksDoneCount } from './gamification.js';
-import { setLang, getLang, tr } from './i18n.js';
+import { setLang, getLang, tr, t } from './i18n.js';
 import * as ui from './ui.js';
 import * as editor from './editor.js';
 import * as charts from './charts.js';
@@ -92,6 +94,11 @@ function render() {
     case 'perfiles': body = ui.renderProfiles(state); break;
     case 'preferencias': body = ui.renderPreferences(state); break;
     case 'edmonton': body = ui.renderEdmonton(state); break;
+    case 'evaluaciones': body = ui.renderAssessments(state); break;
+    case 'gad7': body = ui.renderFreqScale(state, 'gad7'); break;
+    case 'phq9': body = ui.renderFreqScale(state, 'phq9'); break;
+    case 'dasi': body = ui.renderDasi(state); break;
+    case 'must': body = ui.renderMust(state); break;
     default: body = ui.renderToday(state);
   }
 
@@ -279,6 +286,10 @@ function onSubmit(e) {
   if (form.id === 'form-post') return submitPost(form);
   if (form.id === 'form-frail') return submitFrail(form);
   if (form.id === 'form-edmonton') return submitEdmonton(form);
+  if (form.id === 'form-gad7') return submitFreqScale(form, 'gad7');
+  if (form.id === 'form-phq9') return submitFreqScale(form, 'phq9');
+  if (form.id === 'form-dasi') return submitDasi(form);
+  if (form.id === 'form-must') return submitMust(form);
   if (form.id === 'form-med') return submitMed(form);
   if (form.id === 'form-med-extra') return submitMedExtra(form);
   if (form.id === 'form-profile-new') return submitProfileNew(form);
@@ -809,7 +820,7 @@ function submitFrail(form) {
     score += n;
   }
   state.frail = { score, date: todayKey(), answers };
-  saveState();
+  recordAssessment('frail', score, answers);
   render();
   window.scrollTo(0, 0);
   toast(L('✔ Cribado guardado. Compártelo con tu equipo médico.', '✔ Screening saved. Share it with your medical team.'));
@@ -828,10 +839,67 @@ function submitEdmonton(form) {
     score += n;
   }
   state.edmonton = { score, date: todayKey(), answers };
-  saveState();
+  recordAssessment('edmonton', score, answers);
   render();
   window.scrollTo(0, 0);
   toast(L('✔ Test de Edmonton guardado. Compártelo con tu equipo médico.', '✔ Edmonton test saved. Share it with your medical team.'));
+}
+
+/* ---------- Escalas de frecuencia (GAD-7 / PHQ-9), DASI y MUST ---------- */
+
+function submitFreqScale(form, scaleId) {
+  const scale = scaleId === 'phq9' ? PHQ9 : GAD7;
+  const fd = new FormData(form);
+  let score = 0;
+  const answers = {};
+  for (let i = 0; i < scale.items.length; i++) {
+    const v = fd.get('q' + i);
+    if (v == null) { toast(L('Responde a todas las preguntas, por favor.', 'Please answer all the questions.')); return; }
+    const n = Number(v);
+    answers[i] = n;
+    score += n;
+  }
+  recordAssessment(scaleId, score, answers);
+  render();
+  window.scrollTo(0, 0);
+  toast(L('✔ Guardado. Compártelo con tu equipo médico.', '✔ Saved. Share it with your medical team.'));
+  // Salvaguarda de seguridad: ítem 9 del PHQ-9 (ideas de autolesión).
+  if (scaleId === 'phq9' && answers[PHQ9.selfHarmIndex] > 0) {
+    setTimeout(() => openModal(t('phq9_safety_title'), `<p>${ui.esc(t('phq9_safety'))}</p>`), 450);
+  }
+}
+
+function submitDasi(form) {
+  const fd = new FormData(form);
+  let score = 0;
+  const answers = {};
+  for (let i = 0; i < DASI.items.length; i++) {
+    const v = fd.get('q' + i);
+    if (v == null) { toast(L('Responde a todas las preguntas, por favor.', 'Please answer all the questions.')); return; }
+    const n = Number(v);
+    answers[i] = n;
+    if (n === 1) score += DASI.items[i].w;
+  }
+  score = Math.round(score * 100) / 100;
+  recordAssessment('dasi', score, answers);
+  render();
+  window.scrollTo(0, 0);
+  toast(L('✔ Guardado.', '✔ Saved.'));
+}
+
+function submitMust(form) {
+  const fd = new FormData(form);
+  const weight = Number(fd.get('weight'));
+  const height = Number(fd.get('height'));
+  const wl = Number(fd.get('wl')) || 0;
+  const acute = fd.get('acute') === 'on' ? 2 : 0;
+  if (!weight || !height) { toast(L('Introduce tu peso y tu estatura.', 'Enter your weight and height.')); return; }
+  const bmi = weight / Math.pow(height / 100, 2);
+  const score = bmiScore(bmi) + wl + acute;
+  recordAssessment('must', score, { weight, height, wl, acute: acute > 0, bmi: Math.round(bmi * 10) / 10 });
+  render();
+  window.scrollTo(0, 0);
+  toast(L('✔ Guardado.', '✔ Saved.'));
 }
 
 /* ---------- Medicación y alergias ---------- */

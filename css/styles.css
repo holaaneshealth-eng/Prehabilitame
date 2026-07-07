@@ -466,3 +466,22 @@ body.high-contrast .phase-focus { color: #111827; }
 .efs-opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; }
 .efs-opt:hover { border-color: var(--accent-2); }
 .efs-opt input { width: 20px; height: 20px; flex-shrink: 0; margin: 0; }
+
+
+/* ================= Evaluaciones (hub + comparación) ================= */
+.assess-list { padding: 4px 0; }
+.assess-row { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-top: 1px solid #f1f5f9; }
+.assess-row:first-child { border-top: 0; }
+.assess-ico { font-size: 1.5rem; flex-shrink: 0; }
+.assess-main { flex: 1; min-width: 0; }
+.assess-main > strong { display: block; }
+.mini-do { padding: 8px 12px; font-size: .82rem; white-space: nowrap; }
+.cmp-inline { font-size: .8rem; font-weight: 700; margin-top: 4px; }
+.assess-main .cmp-inline { margin-top: 2px; }
+.cmp-up { color: #16a34a; }
+.cmp-down { color: #dc2626; }
+.cmp-same { color: var(--muted); }
+.reeval-card { background: linear-gradient(180deg, #fffbeb, #fff); border-left: 5px solid var(--gold); }
+.reeval-card p { font-size: .9rem; margin-bottom: 10px; color: #334155; }
+body.high-contrast .cmp-up { color: #15803d; }
+body.high-contrast .cmp-down { color: #b91c1c; }

@@ -6,7 +6,8 @@ import {
   ALARM_SIGNS, ALARM_SIGNS_EN, CAREGIVER_TIPS, FRAIL_QUESTIONS, frailResult, getPhase,
   EDMONTON_QUESTIONS, edmontonResult,
 } from './content.js';
-import { todayKey, daysBetween, listProfiles, getActiveProfileId } from './state.js';
+import { todayKey, daysBetween, listProfiles, getActiveProfileId, assessmentHistory } from './state.js';
+import { GAD7, PHQ9, DASI, MUST, FREQ_OPTIONS, MUST_WEIGHTLOSS, SCALE_LIST, scaleMeta, resultForScale } from './scales.js';
 import {
   levelInfo, dayXp, isDayComplete, tasksDoneCount, taskIsDone, getWeeklyChallenge,
 } from './gamification.js';
@@ -99,6 +100,18 @@ function phaseBanner(state) {
     </section>`;
 }
 
+/** Sugerencia de reevaluación cuando se acerca la cirugía y ya hay medida basal. */
+function reevalBanner(state) {
+  const dts = daysToSurgery(state);
+  if (dts == null || dts < 0 || dts > 3) return '';
+  const hasBaseline = SCALE_LIST.some((sc) => assessmentHistory(sc.id).length > 0);
+  if (!hasBaseline) return '';
+  return `<section class="card reeval-card">
+    <p>${t('assess_reeval_soon')}</p>
+    <button class="btn primary block" data-action="nav" data-view="evaluaciones">${t('m_assess')}</button>
+  </section>`;
+}
+
 /* ---------- Vista: HOY ---------- */
 
 export function renderToday(state) {
@@ -153,6 +166,7 @@ export function renderToday(state) {
 
   return `
     ${phaseBanner(state)}
+    ${reevalBanner(state)}
     ${dailyCard}
     ${challengeCard}
     <div class="section-label">${t('tasks_today')}</div>
@@ -403,8 +417,7 @@ export function renderPost(state, id) {
 
 export function renderMore(state) {
   const items = [
-    { view: 'fragilidad', icon: '🧭', label: t('m_frail'), sub: t('m_frail_sub') },
-    { view: 'edmonton', icon: '📋', label: t('m_edmonton'), sub: t('m_edmonton_sub') },
+    { view: 'evaluaciones', icon: '🩺', label: t('m_assess'), sub: t('m_assess_sub') },
     { view: 'medicacion', icon: '💊', label: t('m_meds'), sub: t('m_meds_sub') },
     { view: 'cuidador', icon: '🤝', label: t('m_care'), sub: t('m_care_sub') },
     { view: 'juego', icon: '🧩', label: t('m_game'), sub: t('m_game_sub') },
@@ -467,6 +480,7 @@ export function renderNav(route) {
     mas: 'mas', plan: 'mas', logros: 'mas', editor: 'mas',
     fragilidad: 'mas', medicacion: 'mas', cuidador: 'mas', juego: 'mas', report: 'mas', perfiles: 'mas',
     preferencias: 'mas', edmonton: 'mas',
+    evaluaciones: 'mas', gad7: 'mas', phq9: 'mas', dasi: 'mas', must: 'mas',
   };
   return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? 'active' : ''}" data-action="nav" data-view="${i.id}">
@@ -653,6 +667,18 @@ export function renderReport(state) {
 
   const dtsLine = dts == null ? '—' : (dts > 0 ? dts : (dts === 0 ? t('today') : '—'));
 
+  const assessRows = SCALE_LIST.map((sc) => {
+    const h = assessmentHistory(sc.id);
+    if (!h.length) return '';
+    const base = h[0], lastA = h[h.length - 1];
+    const r = resultForScale(sc.id, lastA.score);
+    const lastCell = h.length >= 2 ? lastA.score : '—';
+    return `<tr><td>${sc.icon} ${esc(tr(sc, 'name'))}</td><td>${base.score}</td><td>${lastCell}</td><td>${r ? esc(tr(r, 'label')) : ''}</td></tr>`;
+  }).filter(Boolean).join('');
+  const assessTable = assessRows
+    ? `<h3>${t('report_assess')}</h3><table class="med-table"><thead><tr><th></th><th>${t('assess_baseline')}</th><th>${t('assess_latest')}</th><th></th></tr></thead><tbody>${assessRows}</tbody></table>`
+    : `<h3>${t('report_frail')}</h3><p>${frailLine}</p>`;
+
   return `
     <div class="section-label">${t('report_title')}</div>
     <div class="no-print">
@@ -673,7 +699,7 @@ export function renderReport(state) {
       </tbody></table>
       <h3>${t('report_adherence')}</h3>
       <table class="med-table"><tbody>${adhRows}</tbody></table>
-      <h3>${t('report_frail')}</h3><p>${frailLine}</p>
+      ${assessTable}
       <h3>${t('report_badges')} (${earned.length})</h3><p class="rep-badges">${badgeList}</p>
       <p class="doc-foot">${t('report_foot')}</p>
     </section>`;
@@ -808,4 +834,158 @@ export function renderEdmonton(state) {
       <button type="submit" class="btn primary block">${t('efs_see')}</button>
     </form>
     <section class="card disclaimer-card"><h3>${t('frail_important')}</h3><p class="small">${t('efs_self_note')}</p></section>`;
+}
+
+
+/* ---------- Comparación basal → actual ---------- */
+
+function comparisonNote(id) {
+  const h = assessmentHistory(id);
+  if (h.length < 2) return '';
+  const base = h[0], last = h[h.length - 1];
+  const meta = scaleMeta(id);
+  const delta = last.score - base.score;
+  const improved = meta && meta.higherBetter ? delta > 0 : delta < 0;
+  const tag = delta === 0 ? t('assess_same') : (improved ? t('assess_improved') : t('assess_worse'));
+  const cls = delta === 0 ? 'cmp-same' : (improved ? 'cmp-up' : 'cmp-down');
+  return `<p class="cmp-inline ${cls}">${t('assess_baseline')}: ${base.score} → ${t('assess_latest')}: ${last.score} · ${tag}</p>`;
+}
+
+/* ---------- Vista: HUB DE EVALUACIONES ---------- */
+
+export function renderAssessments(state) {
+  const dts = daysToSurgery(state);
+  const hasBaseline = SCALE_LIST.some((sc) => assessmentHistory(sc.id).length > 0);
+  const reeval = (dts != null && dts >= 0 && dts <= 3 && hasBaseline)
+    ? `<section class="card reeval-card">${t('assess_reeval_soon')}</section>` : '';
+
+  const rows = SCALE_LIST.map((sc) => {
+    const hist = assessmentHistory(sc.id);
+    const last = hist.length ? hist[hist.length - 1] : null;
+    let body;
+    if (!last) {
+      body = `<span class="muted small">${t('assess_none')}</span>`;
+    } else {
+      const r = resultForScale(sc.id, last.score);
+      const label = r ? `<strong style="color:${r.color}">${esc(tr(r, 'label'))}</strong>` : `<strong>${last.score}</strong>`;
+      const cmp = hist.length >= 2 ? comparisonNote(sc.id) : `<small class="muted">${t('assess_baseline')}: ${last.score} ${t('scale_pts')}</small>`;
+      body = `<div>${label}${cmp}</div>`;
+    }
+    return `<div class="assess-row">
+      <span class="assess-ico">${sc.icon}</span>
+      <div class="assess-main"><strong>${esc(tr(sc, 'name'))}</strong>${body}</div>
+      <button class="btn ghost mini-do" data-action="nav" data-view="${sc.route}">${last ? t('assess_redo') : t('assess_do')}</button>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="section-label">${t('assess_title')}</div>
+    <section class="card"><p class="muted small">${t('assess_intro')}</p></section>
+    ${reeval}
+    <section class="card assess-list">${rows}</section>`;
+}
+
+/* ---------- Vista: escalas de frecuencia (GAD-7 / PHQ-9) ---------- */
+
+export function renderFreqScale(state, scaleId) {
+  const scale = scaleId === 'phq9' ? PHQ9 : GAD7;
+  const hist = assessmentHistory(scaleId);
+  const last = hist.length ? hist[hist.length - 1] : null;
+  const prev = last && last.answers ? last.answers : {};
+  let resultCard = '';
+  if (last) {
+    const r = resultForScale(scaleId, last.score);
+    resultCard = `
+      <section class="card frail-result" style="--fc:${r.color}">
+        <div class="frail-score">${last.score} <small>/ ${scale.max}</small></div>
+        <div class="frail-label">${esc(tr(r, 'label'))}</div>
+        <p>${esc(tr(r, 'message'))}</p>
+        ${comparisonNote(scaleId)}
+        <p class="muted small">${t('scale_result_note', { date: esc(last.date || '') })}</p>
+      </section>`;
+  }
+  const qs = scale.items.map((it, i) => {
+    const cur = prev[i];
+    const radios = FREQ_OPTIONS.map((o) => `
+      <label class="fopt efs-opt"><input type="radio" name="q${i}" value="${o.v}" ${cur === o.v ? 'checked' : ''}/> <span>${esc(tr(o, 'label'))}</span></label>`).join('');
+    return `<div class="frail-q efs-q"><p><strong>${i + 1}.</strong> ${esc(tr(it, 'q'))}</p><div class="efs-opts">${radios}</div></div>`;
+  }).join('');
+  return `
+    <button class="btn ghost back-btn" data-action="nav" data-view="evaluaciones">${t('back')}</button>
+    <div class="section-label">🩺 ${esc(tr(scale, 'title'))}</div>
+    ${resultCard}
+    <section class="card"><p class="muted small">${esc(tr(scale, 'intro'))}</p><p class="small"><em>${esc(tr(scale, 'stem'))}</em></p></section>
+    <form id="form-${scaleId}" class="card">${qs}<button type="submit" class="btn primary block">${t('scale_see')}</button></form>
+    <section class="card disclaimer-card"><h3>${t('frail_important')}</h3><p class="small">${esc(tr(scale, 'note'))}</p></section>`;
+}
+
+/* ---------- Vista: DASI (capacidad funcional) ---------- */
+
+export function renderDasi(state) {
+  const hist = assessmentHistory('dasi');
+  const last = hist.length ? hist[hist.length - 1] : null;
+  const prev = last && last.answers ? last.answers : {};
+  let resultCard = '';
+  if (last) {
+    const r = resultForScale('dasi', last.score);
+    resultCard = `
+      <section class="card frail-result" style="--fc:${r.color}">
+        <div class="frail-score">${Math.round(last.score * 10) / 10} <small>/ 58.2</small></div>
+        <div class="frail-label">${esc(tr(r, 'label'))} · ~${r.mets} MET</div>
+        <p>${esc(tr(r, 'message'))}</p>
+        ${comparisonNote('dasi')}
+        <p class="muted small">${t('scale_result_note', { date: esc(last.date || '') })}</p>
+      </section>`;
+  }
+  const qs = DASI.items.map((it, i) => {
+    const cur = prev[i];
+    return `<div class="frail-q efs-q"><p><strong>${i + 1}.</strong> ${esc(tr(it, 'q'))}</p>
+      <div class="frail-opts">
+        <label class="fopt"><input type="radio" name="q${i}" value="1" ${cur === 1 ? 'checked' : ''}/> ${t('yes')}</label>
+        <label class="fopt"><input type="radio" name="q${i}" value="0" ${cur === 0 ? 'checked' : ''}/> ${t('no')}</label>
+      </div></div>`;
+  }).join('');
+  return `
+    <button class="btn ghost back-btn" data-action="nav" data-view="evaluaciones">${t('back')}</button>
+    <div class="section-label">🩺 ${esc(tr(DASI, 'title'))}</div>
+    ${resultCard}
+    <section class="card"><p class="muted small">${esc(tr(DASI, 'intro'))}</p><p class="small"><em>${esc(tr(DASI, 'stem'))}</em></p></section>
+    <form id="form-dasi" class="card">${qs}<button type="submit" class="btn primary block">${t('scale_see')}</button></form>
+    <section class="card disclaimer-card"><h3>${t('frail_important')}</h3><p class="small">${esc(tr(DASI, 'note'))}</p></section>`;
+}
+
+/* ---------- Vista: MUST (riesgo nutricional) ---------- */
+
+export function renderMust(state) {
+  const hist = assessmentHistory('must');
+  const last = hist.length ? hist[hist.length - 1] : null;
+  const prev = last && last.answers ? last.answers : {};
+  let resultCard = '';
+  if (last) {
+    const r = resultForScale('must', last.score);
+    resultCard = `
+      <section class="card frail-result" style="--fc:${r.color}">
+        <div class="frail-score">${last.score} <small>${t('scale_pts')}</small></div>
+        <div class="frail-label">${esc(tr(r, 'label'))}</div>
+        <p>${esc(tr(r, 'message'))}</p>
+        ${comparisonNote('must')}
+        <p class="muted small">${t('scale_result_note', { date: esc(last.date || '') })}</p>
+      </section>`;
+  }
+  const wl = MUST_WEIGHTLOSS.map((o) => `<option value="${o.v}" ${prev.wl === o.v ? 'selected' : ''}>${esc(tr(o, 'label'))}</option>`).join('');
+  return `
+    <button class="btn ghost back-btn" data-action="nav" data-view="evaluaciones">${t('back')}</button>
+    <div class="section-label">🩺 ${esc(tr(MUST, 'title'))}</div>
+    ${resultCard}
+    <section class="card"><p class="muted small">${esc(tr(MUST, 'intro'))}</p></section>
+    <form id="form-must" class="card stack-form">
+      <div class="two-col">
+        <label>${t('must_weight')}<input name="weight" type="number" min="20" max="400" step="0.1" value="${prev.weight != null ? prev.weight : ''}" required /></label>
+        <label>${t('must_height')}<input name="height" type="number" min="100" max="230" value="${prev.height != null ? prev.height : ''}" required /></label>
+      </div>
+      <label>${t('must_wl')}<select name="wl">${wl}</select></label>
+      <label class="check-inline"><input name="acute" type="checkbox" ${prev.acute ? 'checked' : ''} /> ${t('must_acute')}</label>
+      <button type="submit" class="btn primary block">${t('scale_see')}</button>
+    </form>
+    <section class="card disclaimer-card"><h3>${t('frail_important')}</h3><p class="small">${esc(tr(MUST, 'note'))}</p></section>`;
 }

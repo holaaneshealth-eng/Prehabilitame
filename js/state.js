@@ -40,6 +40,9 @@ function defaultState() {
     medList: { meds: [], allergies: '', notes: '' },
     frail: { score: null, date: null, answers: {} },
     edmonton: { score: null, date: null, answers: {} },
+    // Historial de evaluaciones por escala: cada entrada { date, score, answers }.
+    // El primer elemento es la medida basal; el último, la más reciente.
+    assessments: { frail: [], edmonton: [], gad7: [], phq9: [], dasi: [], must: [] },
     games: { memory: { wins: 0, bestMoves: null } },
     library: { seeded: false, tasks: [], taskOverrides: {}, resources: [], posts: [] },
     settings: {
@@ -68,7 +71,20 @@ function writeJSON(key, val) {
 
 function loadProfileData(id) {
   const raw = readJSON(DATA_PREFIX + id);
-  return raw ? deepMerge(defaultState(), raw) : defaultState();
+  const data = raw ? deepMerge(defaultState(), raw) : defaultState();
+  migrateAssessments(data);
+  return data;
+}
+
+/** Migra resultados antiguos de FRAIL/Edmonton al historial de evaluaciones. */
+function migrateAssessments(data) {
+  if (!data.assessments) data.assessments = { frail: [], edmonton: [], gad7: [], phq9: [], dasi: [], must: [] };
+  for (const key of ['frail', 'edmonton']) {
+    const legacy = data[key];
+    if (legacy && legacy.score != null && (!data.assessments[key] || data.assessments[key].length === 0)) {
+      data.assessments[key] = [{ date: legacy.date || todayKey(), score: legacy.score, answers: legacy.answers || null }];
+    }
+  }
 }
 
 export function loadState() {
@@ -80,6 +96,7 @@ export function loadState() {
     const id = uidProfile();
     if (legacy) {
       state = deepMerge(defaultState(), legacy);
+      migrateAssessments(state);
       const name = (state.profile && state.profile.name) || 'Paciente 1';
       index = { activeId: id, profiles: [{ id, name }] };
       writeJSON(DATA_PREFIX + id, state);
@@ -124,6 +141,29 @@ export function resetState() {
 export function getDayLog(dayKey = todayKey()) {
   if (!state.logs[dayKey]) state.logs[dayKey] = { tasks: {}, done: false, xp: 0, mood: null };
   return state.logs[dayKey];
+}
+
+/** Registra el resultado de una escala en su historial (basal = primero). */
+export function recordAssessment(key, score, answers) {
+  if (!state.assessments[key]) state.assessments[key] = [];
+  const arr = state.assessments[key];
+  const entry = { date: todayKey(), score, answers: answers || null };
+  // Si ya hay una medida de hoy, se actualiza (no se duplica); así se conserva la basal.
+  if (arr.length && arr[arr.length - 1].date === entry.date) arr[arr.length - 1] = entry;
+  else arr.push(entry);
+  saveState();
+}
+
+export function assessmentHistory(key) {
+  return (state.assessments && state.assessments[key]) ? state.assessments[key] : [];
+}
+export function latestAssessment(key) {
+  const h = assessmentHistory(key);
+  return h.length ? h[h.length - 1] : null;
+}
+export function baselineAssessment(key) {
+  const h = assessmentHistory(key);
+  return h.length ? h[0] : null;
 }
 
 /* ---------- Gestión de perfiles ---------- */
