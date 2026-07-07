@@ -6,7 +6,7 @@ import {
   exportState, importState,
   listProfiles, getActiveProfileId, switchProfile, createProfile, renameProfile, deleteProfile,
 } from './state.js';
-import { BADGES, DISCLAIMER, DISCLAIMER_EN, FRAIL_QUESTIONS, MEMORY_EMOJIS } from './content.js';
+import { BADGES, DISCLAIMER, DISCLAIMER_EN, FRAIL_QUESTIONS, EDMONTON_QUESTIONS, MEMORY_EMOJIS } from './content.js';
 import {
   seedLibrary, getTasks, getTaskById, getAllTasksForEditor, getPillarById,
   getResources, getPosts, getDailyGoal, uid,
@@ -91,6 +91,7 @@ function render() {
     case 'report': body = ui.renderReport(state); break;
     case 'perfiles': body = ui.renderProfiles(state); break;
     case 'preferencias': body = ui.renderPreferences(state); break;
+    case 'edmonton': body = ui.renderEdmonton(state); break;
     default: body = ui.renderToday(state);
   }
 
@@ -277,6 +278,7 @@ function onSubmit(e) {
   if (form.id === 'form-resource') return submitResource(form);
   if (form.id === 'form-post') return submitPost(form);
   if (form.id === 'form-frail') return submitFrail(form);
+  if (form.id === 'form-edmonton') return submitEdmonton(form);
   if (form.id === 'form-med') return submitMed(form);
   if (form.id === 'form-med-extra') return submitMedExtra(form);
   if (form.id === 'form-profile-new') return submitProfileNew(form);
@@ -811,6 +813,25 @@ function submitFrail(form) {
   render();
   window.scrollTo(0, 0);
   toast(L('✔ Cribado guardado. Compártelo con tu equipo médico.', '✔ Screening saved. Share it with your medical team.'));
+}
+
+function submitEdmonton(form) {
+  const fd = new FormData(form);
+  const state = getState();
+  let score = 0;
+  const answers = {};
+  for (const q of EDMONTON_QUESTIONS) {
+    const v = fd.get(q.id);
+    if (v == null) { toast(L('Responde a todas las preguntas, por favor.', 'Please answer all the questions.')); return; }
+    const n = Number(v);
+    answers[q.id] = n;
+    score += n;
+  }
+  state.edmonton = { score, date: todayKey(), answers };
+  saveState();
+  render();
+  window.scrollTo(0, 0);
+  toast(L('✔ Test de Edmonton guardado. Compártelo con tu equipo médico.', '✔ Edmonton test saved. Share it with your medical team.'));
 }
 
 /* ---------- Medicación y alergias ---------- */

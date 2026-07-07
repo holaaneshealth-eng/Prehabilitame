@@ -531,3 +531,134 @@ export function frailResult(score) {
 }
 
 export const MEMORY_EMOJIS = ['🫁', '💪', '🥗', '🧘', '🚶', '💧', '😴', '🧠', '🍎', '🏆', '⭐', '🌿'];
+
+
+/**
+ * Escala de Fragilidad de Edmonton — versión AUTOCUMPLIMENTADA (Reported EFS).
+ * 9 dominios, máx. 17 puntos. Adaptación autoinformada: el test del reloj y el
+ * "Timed Up and Go" de la EFS clínica se sustituyen por preguntas de autopercepción,
+ * por lo que puede completarla el paciente (o su cuidador) sin supervisión.
+ * Herramienta ORIENTATIVA de cribado, NO diagnóstica.
+ */
+export const EDMONTON_QUESTIONS = [
+  { id: 'cognicion', domain: 'Cognición', domain_en: 'Cognition',
+    q: '¿Nota problemas de memoria en su día a día (olvidar citas, nombres o dónde deja las cosas)?',
+    q_en: 'Do you notice memory problems in your daily life (forgetting appointments, names or where you leave things)?',
+    options: [
+      { v: 0, label: 'No, ninguno', label_en: 'No, none' },
+      { v: 1, label: 'Algunos, leves', label_en: 'Some, mild' },
+      { v: 2, label: 'Sí, importantes', label_en: 'Yes, significant' },
+    ] },
+  { id: 'ingresos', domain: 'Salud general', domain_en: 'General health',
+    q: 'En el último año, ¿cuántas veces ha ingresado en el hospital?',
+    q_en: 'In the past year, how many times have you been admitted to hospital?',
+    options: [
+      { v: 0, label: 'Ninguna vez', label_en: 'None' },
+      { v: 1, label: '1 o 2 veces', label_en: '1 or 2 times' },
+      { v: 2, label: 'Más de 2 veces', label_en: 'More than 2 times' },
+    ] },
+  { id: 'salud', domain: 'Salud general', domain_en: 'General health',
+    q: '¿Cómo describiría su estado de salud en general?',
+    q_en: 'How would you describe your general health?',
+    options: [
+      { v: 0, label: 'Excelente, muy buena o buena', label_en: 'Excellent, very good or good' },
+      { v: 1, label: 'Regular', label_en: 'Fair' },
+      { v: 2, label: 'Mala', label_en: 'Poor' },
+    ] },
+  { id: 'independencia', domain: 'Independencia funcional', domain_en: 'Functional independence',
+    q: '¿En cuántas de estas actividades necesita ayuda? (preparar comidas, compras, transporte, teléfono, tareas del hogar, colada, manejar el dinero, tomar la medicación)',
+    q_en: 'With how many of these activities do you need help? (preparing meals, shopping, transport, telephone, housework, laundry, managing money, taking medication)',
+    options: [
+      { v: 0, label: 'En ninguna o en 1', label_en: 'In none or 1' },
+      { v: 1, label: 'En 2 a 4', label_en: 'In 2 to 4' },
+      { v: 2, label: 'En 5 a 8', label_en: 'In 5 to 8' },
+    ] },
+  { id: 'apoyo', domain: 'Apoyo social', domain_en: 'Social support',
+    q: 'Cuando necesita ayuda, ¿puede contar con alguien que esté dispuesto y disponible?',
+    q_en: 'When you need help, can you count on someone who is willing and able?',
+    options: [
+      { v: 0, label: 'Siempre', label_en: 'Always' },
+      { v: 1, label: 'A veces', label_en: 'Sometimes' },
+      { v: 2, label: 'Nunca', label_en: 'Never' },
+    ] },
+  { id: 'polifarmacia', domain: 'Uso de medicación', domain_en: 'Medication use',
+    q: '¿Toma habitualmente 5 o más medicamentos con receta?',
+    q_en: 'Do you regularly take 5 or more prescription medications?',
+    options: [
+      { v: 0, label: 'No', label_en: 'No' },
+      { v: 1, label: 'Sí', label_en: 'Yes' },
+    ] },
+  { id: 'olvido-med', domain: 'Uso de medicación', domain_en: 'Medication use',
+    q: '¿A veces se olvida de tomar su medicación?',
+    q_en: 'Do you sometimes forget to take your medication?',
+    options: [
+      { v: 0, label: 'No', label_en: 'No' },
+      { v: 1, label: 'Sí', label_en: 'Yes' },
+    ] },
+  { id: 'nutricion', domain: 'Nutrición', domain_en: 'Nutrition',
+    q: '¿Ha perdido peso recientemente, de forma que la ropa le queda más holgada?',
+    q_en: 'Have you recently lost weight so that your clothes have become looser?',
+    options: [
+      { v: 0, label: 'No', label_en: 'No' },
+      { v: 1, label: 'Sí', label_en: 'Yes' },
+    ] },
+  { id: 'animo', domain: 'Estado de ánimo', domain_en: 'Mood',
+    q: '¿Se siente a menudo triste o decaído/a?',
+    q_en: 'Do you often feel sad or down?',
+    options: [
+      { v: 0, label: 'No', label_en: 'No' },
+      { v: 1, label: 'Sí', label_en: 'Yes' },
+    ] },
+  { id: 'continencia', domain: 'Continencia', domain_en: 'Continence',
+    q: '¿Tiene problemas para controlar la orina (escapes que no desea)?',
+    q_en: 'Do you have problems controlling your urine (leaks you do not want)?',
+    options: [
+      { v: 0, label: 'No', label_en: 'No' },
+      { v: 1, label: 'Sí', label_en: 'Yes' },
+    ] },
+  { id: 'movilidad', domain: 'Movilidad', domain_en: 'Mobility',
+    q: '¿Cómo describiría su capacidad para levantarse de una silla y caminar unos pasos?',
+    q_en: 'How would you describe your ability to get up from a chair and walk a few steps?',
+    options: [
+      { v: 0, label: 'Sin dificultad', label_en: 'Without difficulty' },
+      { v: 1, label: 'Con algo de dificultad o despacio', label_en: 'With some difficulty or slowly' },
+      { v: 2, label: 'Necesito ayuda o no puedo', label_en: 'I need help or I cannot' },
+    ] },
+];
+
+/** Puntuación máxima posible de la escala de Edmonton autocumplimentada. */
+export const EDMONTON_MAX = EDMONTON_QUESTIONS.reduce((s, q) => s + Math.max(...q.options.map((o) => o.v)), 0);
+
+/** Interpreta la puntuación de Edmonton (0-17). */
+export function edmontonResult(score) {
+  if (score <= 5) return {
+    level: 'no-fragil', emoji: '💪', color: '#22c55e',
+    label: 'No frágil', label_en: 'Not frail',
+    message: 'Tu reserva es buena. La prehabilitación te ayudará a mantenerte fuerte y llegar en tu mejor forma a la cirugía.',
+    message_en: 'Your reserve is good. Prehabilitation will help you stay strong and arrive at surgery in your best shape.',
+  };
+  if (score <= 7) return {
+    level: 'vulnerable', emoji: '🌱', color: '#84cc16',
+    label: 'Aparentemente vulnerable', label_en: 'Apparently vulnerable',
+    message: 'Hay pequeñas señales a vigilar. Es un momento ideal para reforzar el ejercicio, la nutrición y el descanso: la prehabilitación tiene aquí mucho que aportar.',
+    message_en: 'There are small signs to watch. It is an ideal time to reinforce exercise, nutrition and rest: prehabilitation has a lot to offer here.',
+  };
+  if (score <= 9) return {
+    level: 'leve', emoji: '🤝', color: '#f59e0b',
+    label: 'Fragilidad leve', label_en: 'Mild frailty',
+    message: 'Empezar hoy puede marcar una gran diferencia. Trabaja con calma y constancia, y comparte este resultado con tu equipo médico para adaptar tu plan.',
+    message_en: 'Starting today can make a big difference. Work calmly and consistently, and share this result with your medical team to tailor your plan.',
+  };
+  if (score <= 11) return {
+    level: 'moderada', emoji: '🧡', color: '#f97316',
+    label: 'Fragilidad moderada', label_en: 'Moderate frailty',
+    message: 'Tu reserva es valiosa y hay mucho que ganar. Prioriza la seguridad y el acompañamiento, y comenta este resultado con tu equipo médico cuanto antes.',
+    message_en: 'Your reserve is valuable and there is a lot to gain. Prioritise safety and support, and discuss this result with your medical team as soon as possible.',
+  };
+  return {
+    level: 'grave', emoji: '🫶', color: '#ef4444',
+    label: 'Fragilidad grave', label_en: 'Severe frailty',
+    message: 'Es importante que compartas este resultado con tu equipo médico para preparar la cirugía con el mayor cuidado. Avanza con pasos pequeños y siempre acompañado/a.',
+    message_en: 'It is important to share this result with your medical team to prepare for surgery with the greatest care. Move forward in small steps and always with company.',
+  };
+}

@@ -4,6 +4,7 @@
 import {
   PREOP_CHECKLIST, PREOP_CHECKLIST_EN, DISCLAIMER, DISCLAIMER_EN, ERAS_NOTE, ERAS_NOTE_EN,
   ALARM_SIGNS, ALARM_SIGNS_EN, CAREGIVER_TIPS, FRAIL_QUESTIONS, frailResult, getPhase,
+  EDMONTON_QUESTIONS, edmontonResult,
 } from './content.js';
 import { todayKey, daysBetween, listProfiles, getActiveProfileId } from './state.js';
 import {
@@ -403,6 +404,7 @@ export function renderPost(state, id) {
 export function renderMore(state) {
   const items = [
     { view: 'fragilidad', icon: '🧭', label: t('m_frail'), sub: t('m_frail_sub') },
+    { view: 'edmonton', icon: '📋', label: t('m_edmonton'), sub: t('m_edmonton_sub') },
     { view: 'medicacion', icon: '💊', label: t('m_meds'), sub: t('m_meds_sub') },
     { view: 'cuidador', icon: '🤝', label: t('m_care'), sub: t('m_care_sub') },
     { view: 'juego', icon: '🧩', label: t('m_game'), sub: t('m_game_sub') },
@@ -464,7 +466,7 @@ export function renderNav(route) {
     hoy: 'hoy', recursos: 'recursos', progreso: 'progreso', aprende: 'aprende', post: 'aprende',
     mas: 'mas', plan: 'mas', logros: 'mas', editor: 'mas',
     fragilidad: 'mas', medicacion: 'mas', cuidador: 'mas', juego: 'mas', report: 'mas', perfiles: 'mas',
-    preferencias: 'mas',
+    preferencias: 'mas', edmonton: 'mas',
   };
   return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? 'active' : ''}" data-action="nav" data-view="${i.id}">
@@ -560,6 +562,7 @@ export function renderFrailty(state) {
       ${qs}
       <button type="submit" class="btn primary block">${t('frail_see')}</button>
     </form>
+    <button class="btn ghost block" data-action="nav" data-view="edmonton">${t('frail_more')}</button>
     <section class="card disclaimer-card"><h3>${t('frail_important')}</h3><p class="small">${t('frail_disc')}</p></section>`;
 }
 
@@ -768,4 +771,41 @@ export function renderPreferences(state) {
       <label class="switch-row"><span>${t('set_contrast')}</span><input type="checkbox" data-action="toggle-contrast" ${s.highContrast ? 'checked' : ''} /></label>
       <label class="switch-row"><span>${t('set_motion')}</span><input type="checkbox" data-action="toggle-motion" ${s.reducedMotion ? 'checked' : ''} /></label>
     </section>`;
+}
+
+
+/* ---------- Vista: ESCALA DE EDMONTON (autocumplimentada) ---------- */
+
+export function renderEdmonton(state) {
+  const ed = state.edmonton || { score: null, answers: {} };
+  let resultCard = '';
+  if (ed.score != null) {
+    const r = edmontonResult(ed.score);
+    resultCard = `
+      <section class="card frail-result" style="--fc:${r.color}">
+        <div class="frail-emoji">${r.emoji}</div>
+        <div class="frail-score">${ed.score} <small>${t('efs_of17')}</small></div>
+        <div class="frail-label">${esc(tr(r, 'label'))}</div>
+        <p>${esc(tr(r, 'message'))}</p>
+        <p class="muted small">${t('efs_result_note', { date: esc(ed.date || ''), score: ed.score })}</p>
+      </section>`;
+  }
+  const qs = EDMONTON_QUESTIONS.map((q, i) => {
+    const cur = ed.answers ? ed.answers[q.id] : undefined;
+    const opts = q.options.map((o) => `
+      <label class="fopt efs-opt"><input type="radio" name="${q.id}" value="${o.v}" ${cur === o.v ? 'checked' : ''}/> <span>${esc(tr(o, 'label'))}</span></label>`).join('');
+    return `<div class="frail-q efs-q">
+      <p><strong>${i + 1}.</strong> ${esc(tr(q, 'q'))}</p>
+      <div class="efs-opts">${opts}</div>
+    </div>`;
+  }).join('');
+  return `
+    <div class="section-label">${t('efs_title')}</div>
+    ${resultCard}
+    <section class="card"><p class="muted small">${t('efs_intro')}</p></section>
+    <form id="form-edmonton" class="card">
+      ${qs}
+      <button type="submit" class="btn primary block">${t('efs_see')}</button>
+    </form>
+    <section class="card disclaimer-card"><h3>${t('frail_important')}</h3><p class="small">${t('efs_self_note')}</p></section>`;
 }

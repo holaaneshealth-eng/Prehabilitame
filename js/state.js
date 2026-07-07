@@ -39,6 +39,7 @@ function defaultState() {
     challengeAwards: {},
     medList: { meds: [], allergies: '', notes: '' },
     frail: { score: null, date: null, answers: {} },
+    edmonton: { score: null, date: null, answers: {} },
     games: { memory: { wins: 0, bestMoves: null } },
     library: { seeded: false, tasks: [], taskOverrides: {}, resources: [], posts: [] },
     settings: {

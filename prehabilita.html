@@ -469,6 +469,14 @@ body.high-contrast .phase-focus { color: #111827; }
 .lesson-body { font-size: .9rem; color: #334155; line-height: 1.6; }
 .lesson[open] .lesson-body { margin-top: 6px; }
 
+
+/* ---------- Escala de Edmonton (opciones apiladas) ---------- */
+.efs-q { padding: 14px 0; }
+.efs-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.efs-opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; }
+.efs-opt:hover { border-color: var(--accent-2); }
+.efs-opt input { width: 20px; height: 20px; flex-shrink: 0; margin: 0; }
+
   </style>
 </head>
 <body>
@@ -535,6 +543,7 @@ body.high-contrast .phase-focus { color: #111827; }
       challengeAwards: {},
       medList: { meds: [], allergies: "", notes: "" },
       frail: { score: null, date: null, answers: {} },
+      edmonton: { score: null, date: null, answers: {} },
       games: { memory: { wins: 0, bestMoves: null } },
       library: { seeded: false, tasks: [], taskOverrides: {}, resources: [], posts: [] },
       settings: {
@@ -1714,6 +1723,187 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     };
   }
   var MEMORY_EMOJIS = ["\uD83E\uDEC1", "\uD83D\uDCAA", "\uD83E\uDD57", "\uD83E\uDDD8", "\uD83D\uDEB6", "\uD83D\uDCA7", "\uD83D\uDE34", "\uD83E\uDDE0", "\uD83C\uDF4E", "\uD83C\uDFC6", "⭐", "\uD83C\uDF3F"];
+  var EDMONTON_QUESTIONS = [
+    {
+      id: "cognicion",
+      domain: "Cognición",
+      domain_en: "Cognition",
+      q: "¿Nota problemas de memoria en su día a día (olvidar citas, nombres o dónde deja las cosas)?",
+      q_en: "Do you notice memory problems in your daily life (forgetting appointments, names or where you leave things)?",
+      options: [
+        { v: 0, label: "No, ninguno", label_en: "No, none" },
+        { v: 1, label: "Algunos, leves", label_en: "Some, mild" },
+        { v: 2, label: "Sí, importantes", label_en: "Yes, significant" }
+      ]
+    },
+    {
+      id: "ingresos",
+      domain: "Salud general",
+      domain_en: "General health",
+      q: "En el último año, ¿cuántas veces ha ingresado en el hospital?",
+      q_en: "In the past year, how many times have you been admitted to hospital?",
+      options: [
+        { v: 0, label: "Ninguna vez", label_en: "None" },
+        { v: 1, label: "1 o 2 veces", label_en: "1 or 2 times" },
+        { v: 2, label: "Más de 2 veces", label_en: "More than 2 times" }
+      ]
+    },
+    {
+      id: "salud",
+      domain: "Salud general",
+      domain_en: "General health",
+      q: "¿Cómo describiría su estado de salud en general?",
+      q_en: "How would you describe your general health?",
+      options: [
+        { v: 0, label: "Excelente, muy buena o buena", label_en: "Excellent, very good or good" },
+        { v: 1, label: "Regular", label_en: "Fair" },
+        { v: 2, label: "Mala", label_en: "Poor" }
+      ]
+    },
+    {
+      id: "independencia",
+      domain: "Independencia funcional",
+      domain_en: "Functional independence",
+      q: "¿En cuántas de estas actividades necesita ayuda? (preparar comidas, compras, transporte, teléfono, tareas del hogar, colada, manejar el dinero, tomar la medicación)",
+      q_en: "With how many of these activities do you need help? (preparing meals, shopping, transport, telephone, housework, laundry, managing money, taking medication)",
+      options: [
+        { v: 0, label: "En ninguna o en 1", label_en: "In none or 1" },
+        { v: 1, label: "En 2 a 4", label_en: "In 2 to 4" },
+        { v: 2, label: "En 5 a 8", label_en: "In 5 to 8" }
+      ]
+    },
+    {
+      id: "apoyo",
+      domain: "Apoyo social",
+      domain_en: "Social support",
+      q: "Cuando necesita ayuda, ¿puede contar con alguien que esté dispuesto y disponible?",
+      q_en: "When you need help, can you count on someone who is willing and able?",
+      options: [
+        { v: 0, label: "Siempre", label_en: "Always" },
+        { v: 1, label: "A veces", label_en: "Sometimes" },
+        { v: 2, label: "Nunca", label_en: "Never" }
+      ]
+    },
+    {
+      id: "polifarmacia",
+      domain: "Uso de medicación",
+      domain_en: "Medication use",
+      q: "¿Toma habitualmente 5 o más medicamentos con receta?",
+      q_en: "Do you regularly take 5 or more prescription medications?",
+      options: [
+        { v: 0, label: "No", label_en: "No" },
+        { v: 1, label: "Sí", label_en: "Yes" }
+      ]
+    },
+    {
+      id: "olvido-med",
+      domain: "Uso de medicación",
+      domain_en: "Medication use",
+      q: "¿A veces se olvida de tomar su medicación?",
+      q_en: "Do you sometimes forget to take your medication?",
+      options: [
+        { v: 0, label: "No", label_en: "No" },
+        { v: 1, label: "Sí", label_en: "Yes" }
+      ]
+    },
+    {
+      id: "nutricion",
+      domain: "Nutrición",
+      domain_en: "Nutrition",
+      q: "¿Ha perdido peso recientemente, de forma que la ropa le queda más holgada?",
+      q_en: "Have you recently lost weight so that your clothes have become looser?",
+      options: [
+        { v: 0, label: "No", label_en: "No" },
+        { v: 1, label: "Sí", label_en: "Yes" }
+      ]
+    },
+    {
+      id: "animo",
+      domain: "Estado de ánimo",
+      domain_en: "Mood",
+      q: "¿Se siente a menudo triste o decaído/a?",
+      q_en: "Do you often feel sad or down?",
+      options: [
+        { v: 0, label: "No", label_en: "No" },
+        { v: 1, label: "Sí", label_en: "Yes" }
+      ]
+    },
+    {
+      id: "continencia",
+      domain: "Continencia",
+      domain_en: "Continence",
+      q: "¿Tiene problemas para controlar la orina (escapes que no desea)?",
+      q_en: "Do you have problems controlling your urine (leaks you do not want)?",
+      options: [
+        { v: 0, label: "No", label_en: "No" },
+        { v: 1, label: "Sí", label_en: "Yes" }
+      ]
+    },
+    {
+      id: "movilidad",
+      domain: "Movilidad",
+      domain_en: "Mobility",
+      q: "¿Cómo describiría su capacidad para levantarse de una silla y caminar unos pasos?",
+      q_en: "How would you describe your ability to get up from a chair and walk a few steps?",
+      options: [
+        { v: 0, label: "Sin dificultad", label_en: "Without difficulty" },
+        { v: 1, label: "Con algo de dificultad o despacio", label_en: "With some difficulty or slowly" },
+        { v: 2, label: "Necesito ayuda o no puedo", label_en: "I need help or I cannot" }
+      ]
+    }
+  ];
+  var EDMONTON_MAX = EDMONTON_QUESTIONS.reduce((s, q) => s + Math.max(...q.options.map((o) => o.v)), 0);
+  function edmontonResult(score) {
+    if (score <= 5)
+      return {
+        level: "no-fragil",
+        emoji: "\uD83D\uDCAA",
+        color: "#22c55e",
+        label: "No frágil",
+        label_en: "Not frail",
+        message: "Tu reserva es buena. La prehabilitación te ayudará a mantenerte fuerte y llegar en tu mejor forma a la cirugía.",
+        message_en: "Your reserve is good. Prehabilitation will help you stay strong and arrive at surgery in your best shape."
+      };
+    if (score <= 7)
+      return {
+        level: "vulnerable",
+        emoji: "\uD83C\uDF31",
+        color: "#84cc16",
+        label: "Aparentemente vulnerable",
+        label_en: "Apparently vulnerable",
+        message: "Hay pequeñas señales a vigilar. Es un momento ideal para reforzar el ejercicio, la nutrición y el descanso: la prehabilitación tiene aquí mucho que aportar.",
+        message_en: "There are small signs to watch. It is an ideal time to reinforce exercise, nutrition and rest: prehabilitation has a lot to offer here."
+      };
+    if (score <= 9)
+      return {
+        level: "leve",
+        emoji: "\uD83E\uDD1D",
+        color: "#f59e0b",
+        label: "Fragilidad leve",
+        label_en: "Mild frailty",
+        message: "Empezar hoy puede marcar una gran diferencia. Trabaja con calma y constancia, y comparte este resultado con tu equipo médico para adaptar tu plan.",
+        message_en: "Starting today can make a big difference. Work calmly and consistently, and share this result with your medical team to tailor your plan."
+      };
+    if (score <= 11)
+      return {
+        level: "moderada",
+        emoji: "\uD83E\uDDE1",
+        color: "#f97316",
+        label: "Fragilidad moderada",
+        label_en: "Moderate frailty",
+        message: "Tu reserva es valiosa y hay mucho que ganar. Prioriza la seguridad y el acompañamiento, y comenta este resultado con tu equipo médico cuanto antes.",
+        message_en: "Your reserve is valuable and there is a lot to gain. Prioritise safety and support, and discuss this result with your medical team as soon as possible."
+      };
+    return {
+      level: "grave",
+      emoji: "\uD83E\uDEF6",
+      color: "#ef4444",
+      label: "Fragilidad grave",
+      label_en: "Severe frailty",
+      message: "Es importante que compartas este resultado con tu equipo médico para preparar la cirugía con el mayor cuidado. Avanza con pasos pequeños y siempre acompañado/a.",
+      message_en: "It is important to share this result with your medical team to prepare for surgery with the greatest care. Move forward in small steps and always with company."
+    };
+  }
 
   // js/data.js
   function uid(prefix = "id") {
@@ -2126,6 +2316,16 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       frail_disc: "La escala FRAIL es una herramienta de cribado orientativa; no sustituye la valoración de tu equipo médico. Sea cual sea tu resultado, la prehabilitación te beneficia.",
       frail_saved: "✔ Cribado guardado. Compártelo con tu equipo médico.",
       frail_answer_all: "Responde a todas las preguntas, por favor.",
+      frail_more: "¿Quieres un cribado más completo? Haz el test de Edmonton →",
+      m_edmonton: "Test de Edmonton (completo)",
+      m_edmonton_sub: "Cribado de fragilidad autocumplimentado",
+      efs_title: "\uD83E\uDDED Escala de fragilidad de Edmonton",
+      efs_intro: "Cribado más completo (9 aspectos de tu salud). Es una versión autocumplimentada: respóndela con sinceridad, sola/o o con tu cuidador. Tarda 2-3 minutos.",
+      efs_self_note: "Versión autoinformada de la escala de Edmonton, orientativa y no diagnóstica. La versión clínica completa incluye una prueba de memoria y de marcha que realiza un profesional.",
+      efs_see: "Ver mi resultado",
+      efs_of17: "/ 17",
+      efs_result_note: "Resultado del {date} · {score}/17 puntos. Cribado orientativo autoinformado; compártelo con tu equipo médico.",
+      efs_saved: "✔ Test de Edmonton guardado. Compártelo con tu equipo médico.",
       meds_title: "\uD83D\uDC8A Mi medicación y alergias",
       meds_intro: "Prepara tu lista para la consulta de preanestesia. Incluye TODO: recetados, sin receta y productos de herbolario. Al terminar podrás guardarla en PDF.",
       meds_add: "Añadir medicamento",
@@ -2360,6 +2560,16 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       frail_disc: "The FRAIL scale is a guidance screening tool; it does not replace your medical team's assessment. Whatever your result, prehabilitation benefits you.",
       frail_saved: "✔ Screening saved. Share it with your medical team.",
       frail_answer_all: "Please answer all the questions.",
+      frail_more: "Want a more complete screening? Take the Edmonton test →",
+      m_edmonton: "Edmonton test (complete)",
+      m_edmonton_sub: "Self-reported frailty screening",
+      efs_title: "\uD83E\uDDED Edmonton Frail Scale",
+      efs_intro: "A more complete screening (9 aspects of your health). This is a self-reported version: answer honestly, on your own or with your caregiver. It takes 2-3 minutes.",
+      efs_self_note: "Self-reported version of the Edmonton Frail Scale, for guidance and not diagnostic. The full clinical version includes a memory and a walking test performed by a professional.",
+      efs_see: "See my result",
+      efs_of17: "/ 17",
+      efs_result_note: "Result from {date} · {score}/17 points. Self-reported guidance screening; share it with your medical team.",
+      efs_saved: "✔ Edmonton test saved. Share it with your medical team.",
       meds_title: "\uD83D\uDC8A My medication & allergies",
       meds_intro: "Prepare your list for the pre-anesthesia consultation. Include EVERYTHING: prescription, over-the-counter and herbal products. When done you can save it as PDF.",
       meds_add: "Add medication",
@@ -2821,6 +3031,7 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
   function renderMore(state2) {
     const items = [
       { view: "fragilidad", icon: "\uD83E\uDDED", label: t("m_frail"), sub: t("m_frail_sub") },
+      { view: "edmonton", icon: "\uD83D\uDCCB", label: t("m_edmonton"), sub: t("m_edmonton_sub") },
       { view: "medicacion", icon: "\uD83D\uDC8A", label: t("m_meds"), sub: t("m_meds_sub") },
       { view: "cuidador", icon: "\uD83E\uDD1D", label: t("m_care"), sub: t("m_care_sub") },
       { view: "juego", icon: "\uD83E\uDDE9", label: t("m_game"), sub: t("m_game_sub") },
@@ -2889,7 +3100,8 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       juego: "mas",
       report: "mas",
       perfiles: "mas",
-      preferencias: "mas"
+      preferencias: "mas",
+      edmonton: "mas"
     };
     return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? "active" : ""}" data-action="nav" data-view="${i.id}">
@@ -2976,6 +3188,7 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       ${qs}
       <button type="submit" class="btn primary block">${t("frail_see")}</button>
     </form>
+    <button class="btn ghost block" data-action="nav" data-view="edmonton">${t("frail_more")}</button>
     <section class="card disclaimer-card"><h3>${t("frail_important")}</h3><p class="small">${t("frail_disc")}</p></section>`;
   }
   function renderMeds(state2) {
@@ -3160,6 +3373,39 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       <label class="switch-row"><span>${t("set_contrast")}</span><input type="checkbox" data-action="toggle-contrast" ${s.highContrast ? "checked" : ""} /></label>
       <label class="switch-row"><span>${t("set_motion")}</span><input type="checkbox" data-action="toggle-motion" ${s.reducedMotion ? "checked" : ""} /></label>
     </section>`;
+  }
+  function renderEdmonton(state2) {
+    const ed = state2.edmonton || { score: null, answers: {} };
+    let resultCard = "";
+    if (ed.score != null) {
+      const r = edmontonResult(ed.score);
+      resultCard = `
+      <section class="card frail-result" style="--fc:${r.color}">
+        <div class="frail-emoji">${r.emoji}</div>
+        <div class="frail-score">${ed.score} <small>${t("efs_of17")}</small></div>
+        <div class="frail-label">${esc(tr(r, "label"))}</div>
+        <p>${esc(tr(r, "message"))}</p>
+        <p class="muted small">${t("efs_result_note", { date: esc(ed.date || ""), score: ed.score })}</p>
+      </section>`;
+    }
+    const qs = EDMONTON_QUESTIONS.map((q, i) => {
+      const cur = ed.answers ? ed.answers[q.id] : undefined;
+      const opts = q.options.map((o) => `
+      <label class="fopt efs-opt"><input type="radio" name="${q.id}" value="${o.v}" ${cur === o.v ? "checked" : ""}/> <span>${esc(tr(o, "label"))}</span></label>`).join("");
+      return `<div class="frail-q efs-q">
+      <p><strong>${i + 1}.</strong> ${esc(tr(q, "q"))}</p>
+      <div class="efs-opts">${opts}</div>
+    </div>`;
+    }).join("");
+    return `
+    <div class="section-label">${t("efs_title")}</div>
+    ${resultCard}
+    <section class="card"><p class="muted small">${t("efs_intro")}</p></section>
+    <form id="form-edmonton" class="card">
+      ${qs}
+      <button type="submit" class="btn primary block">${t("efs_see")}</button>
+    </form>
+    <section class="card disclaimer-card"><h3>${t("frail_important")}</h3><p class="small">${t("efs_self_note")}</p></section>`;
   }
 
   // js/editor.js
@@ -3559,6 +3805,9 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       case "preferencias":
         body = renderPreferences(state2);
         break;
+      case "edmonton":
+        body = renderEdmonton(state2);
+        break;
       default:
         body = renderToday(state2);
     }
@@ -3798,6 +4047,8 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
       return submitPost(form);
     if (form.id === "form-frail")
       return submitFrail(form);
+    if (form.id === "form-edmonton")
+      return submitEdmonton(form);
     if (form.id === "form-med")
       return submitMed(form);
     if (form.id === "form-med-extra")
@@ -4325,6 +4576,27 @@ LO MÁS ÚTIL QUE PUEDES HACER: llevar a la consulta de preanestesia una lista c
     render();
     window.scrollTo(0, 0);
     toast(L2("✔ Cribado guardado. Compártelo con tu equipo médico.", "✔ Screening saved. Share it with your medical team."));
+  }
+  function submitEdmonton(form) {
+    const fd = new FormData(form);
+    const state2 = getState();
+    let score = 0;
+    const answers = {};
+    for (const q of EDMONTON_QUESTIONS) {
+      const v = fd.get(q.id);
+      if (v == null) {
+        toast(L2("Responde a todas las preguntas, por favor.", "Please answer all the questions."));
+        return;
+      }
+      const n = Number(v);
+      answers[q.id] = n;
+      score += n;
+    }
+    state2.edmonton = { score, date: todayKey(), answers };
+    saveState();
+    render();
+    window.scrollTo(0, 0);
+    toast(L2("✔ Test de Edmonton guardado. Compártelo con tu equipo médico.", "✔ Edmonton test saved. Share it with your medical team."));
   }
   function submitMed(form) {
     const fd = new FormData(form);
