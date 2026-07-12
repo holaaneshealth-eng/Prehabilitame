@@ -971,8 +971,8 @@ export const FASTING_GUIDE = {
 
 // Guía interactiva de ejercicio (prehabilitación física). Contenido educativo;
 // no sustituye la valoración de tu equipo médico. Reutiliza el estilo de acordeón
-// de las guías (.fasting-block/.fasting-body). Vídeos por ejercicio: se rellenan
-// cuando el centro aporte los enlaces (marcados como "Vídeo próximamente").
+// de las guías (.fasting-block/.fasting-body). Cada ejercicio incluye vídeo de
+// técnica (Vimeo) + explicación paso a paso, en ES/EN/CA.
 export const EXERCISE_GUIDE = {
   intro: {
     title: 'Ejercicio antes de la cirugía: tu plan de prehabilitación física',
@@ -1084,7 +1084,7 @@ export const EXERCISE_GUIDE = {
 <ul><li><strong>Calentamiento (5 min):</strong> caminar suave por casa y mover hombros, tobillos y cuello.</li>
 <li><strong>Aeróbico (15-20 min):</strong> caminar a ritmo ligero-moderado. Si partes de sedentarismo, empieza con bloques de 6 min y descansa entre ellos; progresa poco a poco hasta llegar a unos 30 min al día.</li>
 <li><strong>Fuerza (10-15 min):</strong> sentadilla a la silla, elevación de talones, flexiones en pared y remo con banda o botellas (2-3 series de 8-12 repeticiones). Tienes el vídeo de cada ejercicio en el apartado "Ejercicios paso a paso".</li>
-<li><strong>Flexibilidad (5 min):</strong> estiramientos suaves de gemelos, pecho e isquiotibiales; mantén cada uno 20-30 s, sin rebotes ni dolor. Tienes la técnica en "Ejercicios paso a paso".</li>
+<li><strong>Flexibilidad (5 min):</strong> estiramientos suaves de gemelos, isquiotibiales, pecho, hombros, cuello y tronco; mantén cada uno 20-30 s, sin rebotes ni dolor. Tienes la técnica en "Ejercicios paso a paso".</li>
 <li><strong>Respiración (3-5 min):</strong> inspira profundo por la nariz y espira lento por la boca, 5-10 ciclos.</li></ul>
 <h4>Progresión</h4>
 <ul><li><strong>Semana 1:</strong> prioriza constancia y técnica.</li>
@@ -1099,7 +1099,7 @@ export const EXERCISE_GUIDE = {
 <ul><li><strong>Warm-up (5 min):</strong> walk gently around the house and move shoulders, ankles and neck.</li>
 <li><strong>Aerobic (15-20 min):</strong> walk at a light-to-moderate pace. If very deconditioned, start with 6 min blocks and rest in between; build up gradually to about 30 min a day.</li>
 <li><strong>Strength (10-15 min):</strong> sit-to-stand, calf raises, wall push-ups and rows with a band or bottles (2-3 sets of 8-12 reps). You'll find a video for each in the "Step-by-step exercises" section.</li>
-<li><strong>Flexibility (5 min):</strong> gentle stretches for calves, chest and hamstrings; hold each for 20-30 s, no bouncing, no pain. You'll find the technique in "Step-by-step exercises".</li>
+<li><strong>Flexibility (5 min):</strong> gentle stretches for calves, hamstrings, chest, shoulders, neck and trunk; hold each for 20-30 s, no bouncing, no pain. You'll find the technique in "Step-by-step exercises".</li>
 <li><strong>Breathing (3-5 min):</strong> breathe in deeply through the nose and out slowly through the mouth, 5-10 cycles.</li></ul>
 <h4>Progression</h4>
 <ul><li><strong>Week 1:</strong> prioritise consistency and technique.</li>
@@ -1114,7 +1114,7 @@ export const EXERCISE_GUIDE = {
 <ul><li><strong>Escalfament (5 min):</strong> camina suau per casa i mou espatlles, turmells i coll.</li>
 <li><strong>Aeròbic (15-20 min):</strong> camina a ritme lleuger-moderat. Si parteixes del sedentarisme, comença amb blocs de 6 min i descansa entremig; progressa a poc a poc fins a arribar a uns 30 min al dia.</li>
 <li><strong>Força (10-15 min):</strong> aixecar-se de la cadira, elevació de talons, flexions a la paret i rem amb banda o ampolles (2-3 sèries de 8-12 repeticions). Tens el vídeo de cada exercici a l'apartat "Exercicis pas a pas".</li>
-<li><strong>Flexibilitat (5 min):</strong> estiraments suaus de bessons, pit i isquiotibials; mantén cadascun 20-30 s, sense rebots ni dolor. Tens la tècnica a "Exercicis pas a pas".</li>
+<li><strong>Flexibilitat (5 min):</strong> estiraments suaus de bessons, isquiotibials, pit, espatlles, coll i tronc; mantén cadascun 20-30 s, sense rebots ni dolor. Tens la tècnica a "Exercicis pas a pas".</li>
 <li><strong>Respiració (3-5 min):</strong> inspira profund pel nas i expira lent per la boca, 5-10 cicles.</li></ul>
 <h4>Progressió</h4>
 <ul><li><strong>Setmana 1:</strong> prioritza constància i tècnica.</li>
@@ -1249,37 +1249,66 @@ export const EXERCISE_GUIDE = {
 <p><strong>Series:</strong> 5-10 ciclos, 1-2 veces al día.</p>
 <div class="video"><iframe src="https://player.vimeo.com/video/1209254664" title="Respiración diafragmática" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
 <h4>Flexibilidad</h4>
-<p>Al final de la sesión, cuando el músculo está caliente. Mantén cada estiramiento 20-30 s, respirando tranquilo, sin rebotes y sin llegar al dolor.</p>
-<h4>9. Estiramiento de gemelos en la pared</h4>
+<p>Haz los estiramientos al final de la sesión, con el músculo caliente. Mantén cada uno 20-30 s con un movimiento lento y controlado, respirando tranquilo, sin rebotes y sin llegar al dolor.</p>
+<h4>9. Estiramiento de gemelos con apoyo en la pared</h4>
 <p><strong>Para qué sirve:</strong> mantiene la flexibilidad del tobillo y la pantorrilla; complementa las elevaciones de talones y el caminar.</p>
 <p><strong>Cómo hacerlo:</strong></p>
-<ol><li>De cara a la pared, apoya las manos a la altura del pecho.</li>
-<li>Adelanta una pierna flexionada y estira la otra hacia atrás, con el talón bien apoyado en el suelo.</li>
-<li>Acerca suavemente la cadera a la pared hasta notar un estiramiento cómodo en la pantorrilla de atrás.</li>
+<ol><li>De pie frente a la pared, apoya las manos a la altura del pecho.</li>
+<li>Coloca una pierna delante y la otra estirada detrás, con el talón de atrás bien apoyado en el suelo.</li>
+<li>Lleva el cuerpo suavemente hacia la pared hasta notar el estiramiento en la pantorrilla de la pierna de atrás.</li>
 <li>Mantén 20-30 s y cambia de pierna.</li></ol>
-<p><strong>Cuida la técnica:</strong> talón de atrás siempre apoyado, sin rebotes y sin dolor.</p>
+<p><strong>Cuida la técnica:</strong> el talón de atrás siempre apoyado; sin rebotes ni dolor.</p>
 <p><strong>Series:</strong> 2-3 por pierna.</p>
-<p class="muted small">(Vídeo próximamente.)</p>
-<h4>10. Estiramiento de pecho en el marco de la puerta</h4>
-<p><strong>Para qué sirve:</strong> abre el pecho y compensa la postura encorvada; complementa el remo y la apertura con banda.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282431" title="Estiramiento de gemelos en la pared" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>10. Estiramiento de isquiotibiales de pie</h4>
+<p><strong>Para qué sirve:</strong> mantiene la flexibilidad de la parte posterior del muslo, útil para caminar y agacharte.</p>
 <p><strong>Cómo hacerlo:</strong></p>
-<ol><li>De pie en el marco de una puerta, apoya los antebrazos en el marco con los codos a la altura de los hombros.</li>
-<li>Da un pequeño paso adelante hasta notar un estiramiento suave en el pecho y la parte delantera de los hombros.</li>
-<li>Mantén el cuello relajado y respira tranquilo.</li>
-<li>Mantén 20-30 s.</li></ol>
-<p><strong>Cuida la técnica:</strong> estiramiento cómodo, nunca doloroso; no arquees la espalda.</p>
-<p><strong>Series:</strong> 2-3.</p>
-<p class="muted small">(Vídeo próximamente.)</p>
-<h4>11. Estiramiento de isquiotibiales sentado</h4>
-<p><strong>Para qué sirve:</strong> mantiene la flexibilidad de la parte posterior del muslo y la zona lumbar.</p>
-<p><strong>Cómo hacerlo:</strong></p>
-<ol><li>Siéntate en el borde de una silla estable.</li>
-<li>Estira una pierna hacia delante con el talón en el suelo y la punta del pie hacia arriba.</li>
-<li>Con la espalda recta, inclina el tronco desde la cadera hasta notar un estiramiento suave detrás del muslo.</li>
+<ol><li>De pie, adelanta una pierna y deja la otra ligeramente flexionada detrás para darte estabilidad.</li>
+<li>La pierna de delante queda estirada, con el talón en el suelo y la punta del pie hacia arriba.</li>
+<li>Con la espalda recta y los hombros relajados, inclínate hacia delante desde las caderas (no doblando la espalda).</li>
+<li>Desliza las manos por el muslo o apóyalas justo por encima de la rodilla hasta notar una tensión moderada detrás del muslo.</li>
 <li>Mantén 20-30 s y cambia de pierna.</li></ol>
-<p><strong>Cuida la técnica:</strong> dobla desde la cadera (no encorves la espalda) y no rebotes.</p>
+<p><strong>Cuida la técnica:</strong> dobla desde la cadera con la columna neutra; nunca redondees la espalda.</p>
 <p><strong>Series:</strong> 2-3 por pierna.</p>
-<p class="muted small">(Vídeo próximamente.)</p>`,
+<div class="video"><iframe src="https://player.vimeo.com/video/1209285838" title="Estiramiento de isquiotibiales de pie" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>11. Estiramiento de pectoral en la puerta</h4>
+<p><strong>Para qué sirve:</strong> abre el pecho y la parte delantera del hombro; compensa la postura encorvada y complementa el remo y la apertura con banda.</p>
+<p><strong>Cómo hacerlo:</strong></p>
+<ol><li>Dobla el codo a 90° y apoya el antebrazo en el marco de una puerta o en la pared, con los dedos apuntando hacia arriba.</li>
+<li>Inclínate suavemente hacia delante hasta notar el estiramiento en la parte delantera del hombro, el brazo y el pecho.</li>
+<li>Mantén 20-30 s y cambia de brazo.</li></ol>
+<p><strong>Cuida la técnica:</strong> estiramiento cómodo, nunca doloroso; hombros bajos y cuello relajado.</p>
+<p><strong>Series:</strong> 2-3 por brazo.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209286520" title="Estiramiento de pectoral" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>12. Estiramiento cruzado de hombro</h4>
+<p><strong>Para qué sirve:</strong> da movilidad a la parte posterior del hombro.</p>
+<p><strong>Cómo hacerlo:</strong></p>
+<ol><li>Sentado o de pie, lleva un brazo estirado por delante del pecho.</li>
+<li>Sujétalo suavemente con el otro brazo y acércalo al pecho, sin forzar.</li>
+<li>Mantén el tronco erguido y los hombros bajos (sin encogerlos).</li>
+<li>Mantén 20-30 s y cambia de brazo.</li></ol>
+<p><strong>Cuida la técnica:</strong> no eleves los hombros; acerca el brazo solo hasta notar una tensión cómoda.</p>
+<p><strong>Series:</strong> 2-3 por brazo.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209284734" title="Estiramiento cruzado de hombro" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>13. Flexión lateral de cuello</h4>
+<p><strong>Para qué sirve:</strong> alivia la tensión del cuello y los hombros.</p>
+<p><strong>Cómo hacerlo:</strong></p>
+<ol><li>Sentado o de pie, con la postura relajada.</li>
+<li>Lleva suavemente una oreja hacia el hombro del mismo lado, sin levantar el hombro contrario.</li>
+<li>Mantén unos segundos y vuelve despacio al centro.</li>
+<li>Repite hacia el otro lado.</li></ol>
+<p><strong>Cuida la técnica:</strong> movimiento suave y controlado, respiración tranquila; no fuerces.</p>
+<p><strong>Series:</strong> 2-3 por lado.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282429" title="Flexión lateral de cuello" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>14. Rotación de tronco sentado</h4>
+<p><strong>Para qué sirve:</strong> mejora la movilidad de la columna y la espalda.</p>
+<p><strong>Cómo hacerlo:</strong></p>
+<ol><li>Siéntate en una silla con los pies apoyados en el suelo y la pelvis quieta.</li>
+<li>Gira suavemente el tronco hacia un lado y luego hacia el otro.</li>
+<li>Mantén la espalda erguida y los hombros relajados.</li></ol>
+<p><strong>Cuida la técnica:</strong> movimiento lento, pequeño y controlado; la pelvis no gira, solo el tronco.</p>
+<p><strong>Series:</strong> 5-10 giros suaves a cada lado.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282427" title="Rotación de tronco sentado" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`,
       body_en: `<p>Short videos with the technique for each exercise. Go at your own pace, mind your posture and stop if anything hurts.</p>
 <h4>1. Chair squat</h4>
 <p><strong>What it's for:</strong> strengthens thighs and glutes; it's the movement of getting up from the sofa, the toilet or the bed, key for your independence after surgery.</p>
@@ -1367,37 +1396,66 @@ export const EXERCISE_GUIDE = {
 <p><strong>Sets:</strong> 5-10 cycles, 1-2 times a day.</p>
 <div class="video"><iframe src="https://player.vimeo.com/video/1209254664" title="Diaphragmatic breathing" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
 <h4>Flexibility</h4>
-<p>At the end of the session, when the muscle is warm. Hold each stretch for 20-30 s, breathing calmly, without bouncing and without reaching pain.</p>
+<p>Do the stretches at the end of the session, when the muscle is warm. Hold each for 20-30 s with a slow, controlled movement, breathing calmly, without bouncing and without reaching pain.</p>
 <h4>9. Calf stretch against the wall</h4>
 <p><strong>What it's for:</strong> keeps ankle and calf flexibility; complements calf raises and walking.</p>
 <p><strong>How to do it:</strong></p>
-<ol><li>Facing the wall, place your hands at chest height.</li>
-<li>Step one leg forward with the knee bent and extend the other leg back, heel firmly on the floor.</li>
-<li>Gently bring your hip towards the wall until you feel a comfortable stretch in the back calf.</li>
+<ol><li>Standing facing the wall, place your hands at chest height.</li>
+<li>Put one leg in front and the other extended behind, with the back heel firmly on the floor.</li>
+<li>Gently bring your body towards the wall until you feel the stretch in the calf of the back leg.</li>
 <li>Hold 20-30 s and switch legs.</li></ol>
-<p><strong>Mind your technique:</strong> keep the back heel down, no bouncing, no pain.</p>
+<p><strong>Mind your technique:</strong> keep the back heel down; no bouncing, no pain.</p>
 <p><strong>Sets:</strong> 2-3 per leg.</p>
-<p class="muted small">(Video coming soon.)</p>
-<h4>10. Chest stretch in a doorway</h4>
-<p><strong>What it's for:</strong> opens the chest and offsets a hunched posture; complements the row and band pull-apart.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282431" title="Calf stretch against the wall" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>10. Standing hamstring stretch</h4>
+<p><strong>What it's for:</strong> keeps the back of the thigh flexible, useful for walking and bending down.</p>
 <p><strong>How to do it:</strong></p>
-<ol><li>Standing in a doorway, rest your forearms on the frame with elbows at shoulder height.</li>
-<li>Take a small step forward until you feel a gentle stretch across the chest and front of the shoulders.</li>
-<li>Keep your neck relaxed and breathe calmly.</li>
-<li>Hold 20-30 s.</li></ol>
-<p><strong>Mind your technique:</strong> a comfortable stretch, never painful; don't arch your back.</p>
-<p><strong>Sets:</strong> 2-3.</p>
-<p class="muted small">(Video coming soon.)</p>
-<h4>11. Seated hamstring stretch</h4>
-<p><strong>What it's for:</strong> keeps the back of the thigh and lower back flexible.</p>
-<p><strong>How to do it:</strong></p>
-<ol><li>Sit on the edge of a stable chair.</li>
-<li>Extend one leg forward with the heel on the floor and toes pointing up.</li>
-<li>With a straight back, hinge your trunk from the hip until you feel a gentle stretch behind the thigh.</li>
+<ol><li>Standing, put one leg forward and keep the other slightly bent behind for stability.</li>
+<li>The front leg stays straight, with the heel on the floor and toes pointing up.</li>
+<li>With a straight back and relaxed shoulders, lean forward from the hips (not by bending your back).</li>
+<li>Slide your hands down the thigh or rest them just above the knee until you feel a moderate tension behind the thigh.</li>
 <li>Hold 20-30 s and switch legs.</li></ol>
-<p><strong>Mind your technique:</strong> bend from the hip (don't round your back) and don't bounce.</p>
+<p><strong>Mind your technique:</strong> hinge from the hip with a neutral spine; never round your back.</p>
 <p><strong>Sets:</strong> 2-3 per leg.</p>
-<p class="muted small">(Video coming soon.)</p>`,
+<div class="video"><iframe src="https://player.vimeo.com/video/1209285838" title="Standing hamstring stretch" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>11. Doorway chest stretch</h4>
+<p><strong>What it's for:</strong> opens the chest and front of the shoulder; offsets a hunched posture and complements the row and band pull-apart.</p>
+<p><strong>How to do it:</strong></p>
+<ol><li>Bend your elbow to 90° and rest your forearm on a doorframe or wall, fingers pointing up.</li>
+<li>Lean gently forward until you feel the stretch in the front of the shoulder, the arm and the chest.</li>
+<li>Hold 20-30 s and switch arms.</li></ol>
+<p><strong>Mind your technique:</strong> a comfortable stretch, never painful; shoulders down and neck relaxed.</p>
+<p><strong>Sets:</strong> 2-3 per arm.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209286520" title="Doorway chest stretch" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>12. Cross-body shoulder stretch</h4>
+<p><strong>What it's for:</strong> gives mobility to the back of the shoulder.</p>
+<p><strong>How to do it:</strong></p>
+<ol><li>Sitting or standing, bring one arm straight across your chest.</li>
+<li>Hold it gently with the other arm and draw it towards your chest, without forcing.</li>
+<li>Keep your trunk upright and shoulders down (don't shrug).</li>
+<li>Hold 20-30 s and switch arms.</li></ol>
+<p><strong>Mind your technique:</strong> don't raise your shoulders; pull the arm in only until you feel a comfortable tension.</p>
+<p><strong>Sets:</strong> 2-3 per arm.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209284734" title="Cross-body shoulder stretch" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>13. Lateral neck stretch</h4>
+<p><strong>What it's for:</strong> relieves tension in the neck and shoulders.</p>
+<p><strong>How to do it:</strong></p>
+<ol><li>Sitting or standing, with a relaxed posture.</li>
+<li>Gently bring one ear towards the shoulder on the same side, without raising the opposite shoulder.</li>
+<li>Hold a few seconds and return slowly to the centre.</li>
+<li>Repeat to the other side.</li></ol>
+<p><strong>Mind your technique:</strong> a gentle, controlled movement with calm breathing; don't force it.</p>
+<p><strong>Sets:</strong> 2-3 per side.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282429" title="Lateral neck stretch" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>14. Seated trunk rotation</h4>
+<p><strong>What it's for:</strong> improves mobility of the spine and back.</p>
+<p><strong>How to do it:</strong></p>
+<ol><li>Sit on a chair with your feet on the floor and your pelvis still.</li>
+<li>Gently rotate your trunk to one side and then to the other.</li>
+<li>Keep your back upright and shoulders relaxed.</li></ol>
+<p><strong>Mind your technique:</strong> a slow, small, controlled movement; the pelvis stays still, only the trunk turns.</p>
+<p><strong>Sets:</strong> 5-10 gentle turns to each side.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282427" title="Seated trunk rotation" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`,
       body_ca: `<p>Vídeos breus amb la tècnica de cada exercici. Ves al teu ritme, cuida la postura i atura't si alguna cosa fa mal.</p>
 <h4>1. Sentadilla a la cadira</h4>
 <p><strong>Per a què serveix:</strong> enforteix cuixes i glutis; és el gest d'aixecar-te del sofà, del vàter o del llit, clau per a la teva autonomia després de la cirurgia.</p>
@@ -1485,37 +1543,66 @@ export const EXERCISE_GUIDE = {
 <p><strong>Sèries:</strong> 5-10 cicles, 1-2 vegades al dia.</p>
 <div class="video"><iframe src="https://player.vimeo.com/video/1209254664" title="Respiració diafragmàtica" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
 <h4>Flexibilitat</h4>
-<p>Al final de la sessió, quan el múscul està calent. Mantén cada estirament 20-30 s, respirant tranquil, sense rebots i sense arribar al dolor.</p>
-<h4>9. Estirament de bessons a la paret</h4>
+<p>Fes els estiraments al final de la sessió, amb el múscul calent. Mantén cadascun 20-30 s amb un moviment lent i controlat, respirant tranquil, sense rebots i sense arribar al dolor.</p>
+<h4>9. Estirament de bessons amb suport a la paret</h4>
 <p><strong>Per a què serveix:</strong> manté la flexibilitat del turmell i el bessó; complementa les elevacions de talons i el caminar.</p>
 <p><strong>Com fer-ho:</strong></p>
-<ol><li>De cara a la paret, recolza les mans a l'altura del pit.</li>
-<li>Avança una cama flexionada i estira l'altra cap enrere, amb el taló ben recolzat a terra.</li>
-<li>Acosta suaument el maluc a la paret fins a notar un estirament còmode al bessó del darrere.</li>
+<ol><li>Dret davant de la paret, recolza les mans a l'altura del pit.</li>
+<li>Col·loca una cama davant i l'altra estirada darrere, amb el taló del darrere ben recolzat a terra.</li>
+<li>Porta el cos suaument cap a la paret fins a notar l'estirament al bessó de la cama del darrere.</li>
 <li>Mantén 20-30 s i canvia de cama.</li></ol>
-<p><strong>Cuida la tècnica:</strong> taló del darrere sempre recolzat, sense rebots i sense dolor.</p>
+<p><strong>Cuida la tècnica:</strong> el taló del darrere sempre recolzat; sense rebots ni dolor.</p>
 <p><strong>Sèries:</strong> 2-3 per cama.</p>
-<p class="muted small">(Vídeo pròximament.)</p>
-<h4>10. Estirament de pit al marc de la porta</h4>
-<p><strong>Per a què serveix:</strong> obre el pit i compensa la postura encorbada; complementa el rem i l'apertura amb banda.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282431" title="Estirament de bessons a la paret" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>10. Estirament d'isquiotibials dret</h4>
+<p><strong>Per a què serveix:</strong> manté la flexibilitat de la part posterior de la cuixa, útil per caminar i ajupir-te.</p>
 <p><strong>Com fer-ho:</strong></p>
-<ol><li>Dret al marc d'una porta, recolza els avantbraços al marc amb els colzes a l'altura de les espatlles.</li>
-<li>Fes un petit pas endavant fins a notar un estirament suau al pit i la part davantera de les espatlles.</li>
-<li>Mantén el coll relaxat i respira tranquil.</li>
-<li>Mantén 20-30 s.</li></ol>
-<p><strong>Cuida la tècnica:</strong> estirament còmode, mai dolorós; no arquegis l'esquena.</p>
-<p><strong>Sèries:</strong> 2-3.</p>
-<p class="muted small">(Vídeo pròximament.)</p>
-<h4>11. Estirament d'isquiotibials assegut</h4>
-<p><strong>Per a què serveix:</strong> manté la flexibilitat de la part posterior de la cuixa i la zona lumbar.</p>
-<p><strong>Com fer-ho:</strong></p>
-<ol><li>Seu a la vora d'una cadira estable.</li>
-<li>Estira una cama cap endavant amb el taló a terra i la punta del peu cap amunt.</li>
-<li>Amb l'esquena recta, inclina el tronc des del maluc fins a notar un estirament suau darrere de la cuixa.</li>
+<ol><li>Dret, avança una cama i deixa l'altra lleugerament flexionada darrere per donar-te estabilitat.</li>
+<li>La cama de davant queda estirada, amb el taló a terra i la punta del peu cap amunt.</li>
+<li>Amb l'esquena recta i les espatlles relaxades, inclina't cap endavant des dels malucs (no doblegant l'esquena).</li>
+<li>Llisca les mans per la cuixa o recolza-les just per sobre del genoll fins a notar una tensió moderada darrere de la cuixa.</li>
 <li>Mantén 20-30 s i canvia de cama.</li></ol>
-<p><strong>Cuida la tècnica:</strong> doblega des del maluc (no encorbis l'esquena) i no rebotis.</p>
+<p><strong>Cuida la tècnica:</strong> doblega des del maluc amb la columna neutra; no arrodoneixis mai l'esquena.</p>
 <p><strong>Sèries:</strong> 2-3 per cama.</p>
-<p class="muted small">(Vídeo pròximament.)</p>`,
+<div class="video"><iframe src="https://player.vimeo.com/video/1209285838" title="Estirament d'isquiotibials dret" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>11. Estirament de pectoral a la porta</h4>
+<p><strong>Per a què serveix:</strong> obre el pit i la part davantera de l'espatlla; compensa la postura encorbada i complementa el rem i l'apertura amb banda.</p>
+<p><strong>Com fer-ho:</strong></p>
+<ol><li>Doblega el colze a 90° i recolza l'avantbraç al marc d'una porta o a la paret, amb els dits apuntant cap amunt.</li>
+<li>Inclina't suaument cap endavant fins a notar l'estirament a la part davantera de l'espatlla, el braç i el pit.</li>
+<li>Mantén 20-30 s i canvia de braç.</li></ol>
+<p><strong>Cuida la tècnica:</strong> estirament còmode, mai dolorós; espatlles baixes i coll relaxat.</p>
+<p><strong>Sèries:</strong> 2-3 per braç.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209286520" title="Estirament de pectoral" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>12. Estirament creuat d'espatlla</h4>
+<p><strong>Per a què serveix:</strong> dona mobilitat a la part posterior de l'espatlla.</p>
+<p><strong>Com fer-ho:</strong></p>
+<ol><li>Assegut o dret, porta un braç estirat per davant del pit.</li>
+<li>Subjecta'l suaument amb l'altre braç i acosta'l al pit, sense forçar.</li>
+<li>Mantén el tronc dret i les espatlles baixes (sense arronsar-les).</li>
+<li>Mantén 20-30 s i canvia de braç.</li></ol>
+<p><strong>Cuida la tècnica:</strong> no elevis les espatlles; acosta el braç només fins a notar una tensió còmode.</p>
+<p><strong>Sèries:</strong> 2-3 per braç.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209284734" title="Estirament creuat d'espatlla" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>13. Flexió lateral de coll</h4>
+<p><strong>Per a què serveix:</strong> alleuja la tensió del coll i les espatlles.</p>
+<p><strong>Com fer-ho:</strong></p>
+<ol><li>Assegut o dret, amb la postura relaxada.</li>
+<li>Porta suaument una orella cap a l'espatlla del mateix costat, sense aixecar l'espatlla contrària.</li>
+<li>Mantén uns segons i torna a poc a poc al centre.</li>
+<li>Repeteix cap a l'altre costat.</li></ol>
+<p><strong>Cuida la tècnica:</strong> moviment suau i controlat, respiració tranquil·la; no forcis.</p>
+<p><strong>Sèries:</strong> 2-3 per costat.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282429" title="Flexió lateral de coll" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<h4>14. Rotació de tronc assegut</h4>
+<p><strong>Per a què serveix:</strong> millora la mobilitat de la columna i l'esquena.</p>
+<p><strong>Com fer-ho:</strong></p>
+<ol><li>Seu en una cadira amb els peus recolzats a terra i la pelvis quieta.</li>
+<li>Gira suaument el tronc cap a un costat i després cap a l'altre.</li>
+<li>Mantén l'esquena dreta i les espatlles relaxades.</li></ol>
+<p><strong>Cuida la tècnica:</strong> moviment lent, petit i controlat; la pelvis no gira, només el tronc.</p>
+<p><strong>Sèries:</strong> 5-10 girs suaus a cada costat.</p>
+<div class="video"><iframe src="https://player.vimeo.com/video/1209282427" title="Rotació de tronc assegut" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`,
     },
     {
       id: 'seguridad', open: false,
