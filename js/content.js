@@ -835,9 +835,9 @@ export const FASTING_GUIDE = {
     },
     {
       id: 'diabetes', match: 'diabetes',
-      title: 'Si tienes diabetes y NO tomas medicación tipo GLP‑1 (Ozempic®, Trulicity®…)',
-      title_en: "If you have diabetes and do NOT take GLP‑1 medication (Ozempic®, Trulicity®…)",
-      title_ca: 'Si tens diabetis i NO prens medicació tipus GLP‑1 (Ozempic®, Trulicity®…)',
+      title: 'Si tienes diabetes',
+      title_en: 'If you have diabetes',
+      title_ca: 'Si tens diabetis',
       body: `<p>Si tienes diabetes, el ayuno se adapta para <strong>evitar hipoglucemias</strong> (bajadas de azúcar), <strong>evitar descompensaciones</strong> del azúcar en sangre y mantener un aporte de carbohidratos controlado, según las indicaciones de tu equipo.</p>
 <p><strong>Tiempos de ayuno:</strong> para los sólidos son similares a los de una persona sin diabetes (comida ligera y, con más antelación, comida copiosa), y los líquidos claros suelen permitirse hasta unas 2 horas antes, siempre según lo que te indique tu equipo médico.</p>
 <h4>Tu medicación para la diabetes</h4>
@@ -847,6 +847,8 @@ export const FASTING_GUIDE = {
 <h4>Si controlas tu glucosa en casa</h4>
 <ul><li>Si tu glucosa está <strong>baja</strong>, el equipo puede recomendarte tomar una pequeña cantidad de zumo claro y repetir la medición a los pocos minutos.</li>
 <li>Si tu glucosa está <strong>muy alta</strong>, es posible que debas corregirla con la dosis de insulina rápida que te haya indicado tu médico.</li></ul>
+<h4>Bebida de carbohidratos (opcional)</h4>
+<p>Si tu equipo lo autoriza, puedes tomar una <strong>bebida rica en carbohidratos</strong> (tipo Nutricia PreOp® o una mezcla de maltodextrina en agua) hasta 2 horas antes, para reducir el hambre y la ansiedad y evitar la pérdida de músculo (catabolismo). Como contiene carbohidratos, tenlo en cuenta en el control de tu glucemia y sigue las pautas de tu equipo.</p>
 <p><strong>Importante:</strong> ante cualquier duda, consulta siempre con tu equipo médico antes de cambiar dosis por tu cuenta.</p>`,
       body_en: `<p>If you have diabetes, fasting is adapted to <strong>avoid hypoglycaemia</strong> (low blood sugar), <strong>avoid decompensation</strong> of blood sugar, and keep carbohydrate intake controlled, according to your team's instructions.</p>
 <p><strong>Fasting times:</strong> for solids they are similar to someone without diabetes (light meal, and heavy meal earlier still), and clear liquids are usually allowed up to about 2 hours before, always as your medical team advises.</p>
@@ -857,6 +859,8 @@ export const FASTING_GUIDE = {
 <h4>If you check your glucose at home</h4>
 <ul><li>If your glucose is <strong>low</strong>, the team may advise you to have a small amount of clear juice and repeat the reading a few minutes later.</li>
 <li>If your glucose is <strong>very high</strong>, you may need to correct it with the dose of rapid-acting insulin your doctor has indicated.</li></ul>
+<h4>Carbohydrate drink (optional)</h4>
+<p>If your team authorises it, you may have a <strong>carbohydrate-rich drink</strong> (such as Nutricia PreOp® or a maltodextrin-in-water mix) up to 2 hours before, to reduce hunger and anxiety and prevent muscle loss (catabolism). As it contains carbohydrates, factor it into your blood-sugar control and follow your team's guidance.</p>
 <p><strong>Important:</strong> if in doubt, always check with your medical team before changing any dose on your own.</p>`,
       body_ca: `<p>Si tens diabetis, el dejuni s'adapta per <strong>evitar hipoglucèmies</strong> (baixades de sucre), <strong>evitar descompensacions</strong> del sucre a la sang i mantenir un aport de carbohidrats controlat, segons les indicacions del teu equip.</p>
 <p><strong>Temps de dejuni:</strong> per als sòlids són similars als d'una persona sense diabetis (menjar lleuger i, amb més antelació, menjar copiós), i els líquids clars solen permetre's fins a unes 2 hores abans, sempre segons el que t'indiqui el teu equip mèdic.</p>
@@ -867,6 +871,8 @@ export const FASTING_GUIDE = {
 <h4>Si controles la teva glucosa a casa</h4>
 <ul><li>Si la teva glucosa està <strong>baixa</strong>, l'equip pot recomanar-te prendre una petita quantitat de suc clar i repetir la mesura al cap de pocs minuts.</li>
 <li>Si la teva glucosa està <strong>molt alta</strong>, és possible que l'hagis de corregir amb la dosi d'insulina ràpida que t'hagi indicat el teu metge.</li></ul>
+<h4>Beguda de carbohidrats (opcional)</h4>
+<p>Si el teu equip ho autoritza, pots prendre una <strong>beguda rica en carbohidrats</strong> (tipus Nutricia PreOp® o una barreja de maltodextrina en aigua) fins a 2 hores abans, per reduir la gana i l'ansietat i evitar la pèrdua de múscul (catabolisme). Com que conté carbohidrats, tingues-ho en compte en el control de la teva glucèmia i segueix les pautes del teu equip.</p>
 <p><strong>Important:</strong> davant de qualsevol dubte, consulta sempre amb el teu equip mèdic abans de canviar dosis pel teu compte.</p>`,
     },
     {
@@ -875,21 +881,27 @@ export const FASTING_GUIDE = {
       title_en: 'If you take GLP‑1 medication for diabetes or weight loss (Ozempic®, Trulicity®…)',
       title_ca: 'Si prens medicació tipus GLP‑1 per a la diabetis o per perdre pes (Ozempic®, Trulicity®…)',
       body: `<p>Los medicamentos tipo <strong>GLP‑1 semanal</strong> (como Ozempic®, Trulicity®, Bydureon BCise®, Mounjaro®, Wegovy®, Rybelsus®, Zepbound®) <strong>ralentizan el vaciamiento del estómago</strong>, por lo que puede tardar más en quedar vacío.</p>
-<ul><li><strong>Alimentos sólidos:</strong> el ayuno debe ser más largo que en una persona estándar. En muchos centros se recomienda estar <strong>24 horas sin sólidos</strong> antes de la cirugía, si así te lo ha indicado el hospital.</li>
+<ul><li><strong>Alimentos sólidos:</strong> el ayuno debe ser más largo que en una persona estándar. En nuestro centro se recomienda estar <strong>24 horas sin sólidos</strong> antes de la cirugía.</li>
 <li><strong>Líquidos claros:</strong> siguen permitidos hasta aproximadamente 2 horas antes, con un límite de volumen razonable entre las 4 y las 2 horas previas.</li></ul>
 <p>Necesitar un ayuno más largo <strong>no significa que estés peor</strong>: simplemente, esta medicación obliga a extremar las precauciones para que el estómago esté realmente vacío y la anestesia sea más segura.</p>
+<h4>Bebida de carbohidratos (opcional)</h4>
+<p>Si tu equipo lo autoriza, puedes tomar una <strong>bebida rica en carbohidratos que sea un líquido claro</strong> (tipo Nutricia PreOp® o una mezcla de maltodextrina bien disuelta en agua) hasta 2 horas antes, para reducir el hambre y la ansiedad y evitar la pérdida de músculo (catabolismo) durante el ayuno prolongado de sólidos.</p>
 <p>Si además tienes <strong>diabetes</strong>, sigue también las recomendaciones del apartado de diabetes (ajuste de insulina y medicación), sumando el ayuno prolongado de sólidos por el GLP‑1.</p>
 <p>La decisión de suspender o no el GLP‑1 y los tiempos exactos de ayuno deben tomarse <strong>junto a tu equipo médico</strong>.</p>`,
       body_en: `<p><strong>Weekly GLP‑1</strong> medications (such as Ozempic®, Trulicity®, Bydureon BCise®, Mounjaro®, Wegovy®, Rybelsus®, Zepbound®) <strong>slow down stomach emptying</strong>, so your stomach may take longer to empty.</p>
-<ul><li><strong>Solid food:</strong> the fast must be longer than for a standard patient. Many centres recommend <strong>24 hours with no solids</strong> before surgery, if your hospital has told you so.</li>
+<ul><li><strong>Solid food:</strong> the fast must be longer than for a standard patient. In our centre we recommend <strong>24 hours with no solids</strong> before surgery.</li>
 <li><strong>Clear liquids:</strong> still allowed up to about 2 hours before, with a reasonable volume limit between 4 and 2 hours beforehand.</li></ul>
 <p>Needing a longer fast <strong>does not mean you are worse off</strong>: this medication simply means taking extra precautions so the stomach is truly empty and anaesthesia is safer.</p>
+<h4>Carbohydrate drink (optional)</h4>
+<p>If your team authorises it, you may have a <strong>carbohydrate-rich drink that is a clear liquid</strong> (such as Nutricia PreOp® or a well-dissolved maltodextrin-in-water mix) up to 2 hours before, to reduce hunger and anxiety and prevent muscle loss (catabolism) during the prolonged solid fast.</p>
 <p>If you also have <strong>diabetes</strong>, follow the diabetes section too (insulin and medication adjustments), on top of the prolonged solid fast for GLP‑1.</p>
 <p>The decision on whether to pause GLP‑1 and the exact fasting times must be made <strong>together with your medical team</strong>.</p>`,
       body_ca: `<p>Els medicaments tipus <strong>GLP‑1 setmanal</strong> (com Ozempic®, Trulicity®, Bydureon BCise®, Mounjaro®, Wegovy®, Rybelsus®, Zepbound®) <strong>alenteixen el buidatge de l'estómac</strong>, de manera que pot trigar més a quedar buit.</p>
-<ul><li><strong>Aliments sòlids:</strong> el dejuni ha de ser més llarg que en una persona estàndard. En molts centres es recomana estar <strong>24 hores sense sòlids</strong> abans de la cirurgia, si així t'ho ha indicat l'hospital.</li>
+<ul><li><strong>Aliments sòlids:</strong> el dejuni ha de ser més llarg que en una persona estàndard. Al nostre centre es recomana estar <strong>24 hores sense sòlids</strong> abans de la cirurgia.</li>
 <li><strong>Líquids clars:</strong> continuen permesos fins a aproximadament 2 hores abans, amb un límit de volum raonable entre les 4 i les 2 hores prèvies.</li></ul>
 <p>Necessitar un dejuni més llarg <strong>no vol dir que estiguis pitjor</strong>: simplement, aquesta medicació obliga a extremar les precaucions perquè l'estómac estigui realment buit i l'anestèsia sigui més segura.</p>
+<h4>Beguda de carbohidrats (opcional)</h4>
+<p>Si el teu equip ho autoritza, pots prendre una <strong>beguda rica en carbohidrats que sigui un líquid clar</strong> (tipus Nutricia PreOp® o una barreja de maltodextrina ben dissolta en aigua) fins a 2 hores abans, per reduir la gana i l'ansietat i evitar la pèrdua de múscul (catabolisme) durant el dejuni prolongat de sòlids.</p>
 <p>Si a més tens <strong>diabetis</strong>, segueix també les recomanacions de l'apartat de diabetis (ajust d'insulina i medicació), sumant el dejuni prolongat de sòlids pel GLP‑1.</p>
 <p>La decisió de suspendre o no el GLP‑1 i els temps exactes de dejuni s'han de prendre <strong>juntament amb el teu equip mèdic</strong>.</p>`,
     },
