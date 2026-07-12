@@ -2097,14 +2097,14 @@ EL MÉS ÚTIL QUE POTS FER: portar a la consulta de preanestèsia una llista com
     {
       id: "res-ejercicio",
       pillar: "fisico",
-      type: "link",
-      url: "https://www.youtube.com/results?search_query=ejercicios+en+casa+para+mayores+fuerza+suave",
-      title: "Ejercicios de fuerza suaves en casa",
-      title_en: "Gentle strength exercises at home",
-      title_ca: "Exercicis de força suaus a casa",
-      desc: "Rutinas sencillas de fuerza sin material.",
-      desc_en: "Simple strength routines with no equipment.",
-      desc_ca: "Rutines senzilles de força sense material."
+      type: "guide",
+      guideId: "ejercicio",
+      title: "Ejercicio antes de la cirugía: tu plan de prehabilitación física",
+      title_en: "Exercise before surgery: your physical prehabilitation plan",
+      title_ca: "Exercici abans de la cirurgia: el teu pla de prehabilitació física",
+      desc: "Guía práctica de ejercicio prequirúrgico: opción en casa y en gimnasio, con vídeos.",
+      desc_en: "Practical pre-surgery exercise guide: at-home and gym options, with videos.",
+      desc_ca: "Guia pràctica d’exercici prequirúrgic: opció a casa i al gimnàs, amb vídeos."
     },
     {
       id: "res-ayuno",
@@ -2331,6 +2331,260 @@ EL MÉS ÚTIL QUE POTS FER: portar a la consulta de preanestèsia una llista com
 <p>I si t'equivoques o tens dubtes sobre si has dejunat correctament, tranquil·litat: l'equip d'anestèsia revisarà la teva situació el dia de la intervenció i decidirà si és segur continuar, t'explicarà els riscos o reprogramarà la cirurgia si fos necessari.</p>
 <p><strong>Recorda:</strong> davant de qualsevol dubte, no intentis compensar pel teu compte menjant o deixant de menjar més. Truca a l'hospital o consulta amb el teu anestesista per rebre instruccions personalitzades.</p>`
     }
+  };
+  var EXERCISE_GUIDE = {
+    intro: {
+      title: "Ejercicio antes de la cirugía: tu plan de prehabilitación física",
+      title_en: "Exercise before surgery: your physical prehabilitation plan",
+      title_ca: "Exercici abans de la cirurgia: el teu pla de prehabilitació física",
+      body: `<p>La <strong>prehabilitación física</strong> consiste en preparar activamente tu cuerpo en las semanas previas a la cirugía para llegar con más fuerza, mejor capacidad cardiorrespiratoria y más reserva funcional. En pocas palabras: cuanto mejor llegues, mejor sueles recuperarte.</p>
+<p>La evidencia disponible sugiere que el ejercicio antes de la cirugía <strong>puede reducir complicaciones y acelerar la recuperación</strong>, sobre todo cuando se combina con una buena nutrición y apoyo psicológico. La calidad de los estudios es variable, por lo que el plan debe <strong>individualizarse</strong> a tu situación.</p>
+<h4>Principios</h4>
+<ul><li><strong>Empieza pronto</strong> y sé constante: la regularidad importa más que la intensidad.</li>
+<li><strong>Progresivo y seguro</strong>: sube poco a poco, cuidando la técnica.</li>
+<li>El objetivo no es "ponerte en forma" en semanas, sino llegar con <strong>mejor tolerancia al esfuerzo</strong>.</li>
+<li>La constancia gana a la perfección: hacer algo casi cada día ya es útil.</li></ul>
+<h4>Antes de empezar</h4>
+<p>Consulta con tu equipo médico si tienes enfermedad del corazón o del pulmón, mareos, dolor en el pecho, tensión mal controlada u otras dudas. Pueden ajustar el plan a tu caso.</p>
+<h4>Para y consulta si aparece…</h4>
+<ul><li>Dolor u opresión en el pecho.</li>
+<li>Mareo, sensación de desmayo o palpitaciones.</li>
+<li>Falta de aire desproporcionada para el esfuerzo.</li>
+<li>Dolor musculoesquelético relevante.</li></ul>`,
+      body_en: `<p><strong>Physical prehabilitation</strong> means actively preparing your body in the weeks before surgery so you arrive stronger, with better cardiorespiratory fitness and more functional reserve. In short: the better you arrive, the better you tend to recover.</p>
+<p>Available evidence suggests that exercise before surgery <strong>can reduce complications and speed up recovery</strong>, especially when combined with good nutrition and psychological support. Study quality varies, so the plan should be <strong>individualised</strong> to your situation.</p>
+<h4>Principles</h4>
+<ul><li><strong>Start early</strong> and be consistent: regularity matters more than intensity.</li>
+<li><strong>Progressive and safe</strong>: build up gradually, with good technique.</li>
+<li>The goal is not to "get fit" in a few weeks, but to arrive with <strong>better exercise tolerance</strong>.</li>
+<li>Consistency beats perfection: doing something almost every day is already useful.</li></ul>
+<h4>Before you start</h4>
+<p>Check with your medical team if you have heart or lung disease, dizziness, chest pain, poorly controlled blood pressure or other concerns. They can tailor the plan to you.</p>
+<h4>Stop and seek advice if you have…</h4>
+<ul><li>Chest pain or tightness.</li>
+<li>Dizziness, faintness or palpitations.</li>
+<li>Breathlessness out of proportion to the effort.</li>
+<li>Significant musculoskeletal pain.</li></ul>`,
+      body_ca: `<p>La <strong>prehabilitació física</strong> consisteix a preparar activament el teu cos en les setmanes prèvies a la cirurgia per arribar amb més força, millor capacitat cardiorespiratòria i més reserva funcional. En poques paraules: com millor hi arribis, millor sols recuperar-te.</p>
+<p>L'evidència disponible suggereix que l'exercici abans de la cirurgia <strong>pot reduir complicacions i accelerar la recuperació</strong>, sobretot quan es combina amb una bona nutrició i suport psicològic. La qualitat dels estudis és variable, per la qual cosa el pla s'ha d'<strong>individualitzar</strong> a la teva situació.</p>
+<h4>Principis</h4>
+<ul><li><strong>Comença aviat</strong> i sigues constant: la regularitat importa més que la intensitat.</li>
+<li><strong>Progressiu i segur</strong>: puja a poc a poc, cuidant la tècnica.</li>
+<li>L'objectiu no és "posar-te en forma" en setmanes, sinó arribar amb <strong>millor tolerància a l'esforç</strong>.</li>
+<li>La constància guanya a la perfecció: fer alguna cosa gairebé cada dia ja és útil.</li></ul>
+<h4>Abans de començar</h4>
+<p>Consulta amb el teu equip mèdic si tens malaltia del cor o del pulmó, marejos, dolor al pit, tensió mal controlada o altres dubtes. Poden ajustar el pla al teu cas.</p>
+<h4>Atura't i consulta si apareix…</h4>
+<ul><li>Dolor o opressió al pit.</li>
+<li>Mareig, sensació de desmai o palpitacions.</li>
+<li>Falta d'aire desproporcionada per a l'esforç.</li>
+<li>Dolor musculoesquelètic rellevant.</li></ul>`
+    },
+    blocks: [
+      {
+        id: "elegir",
+        open: true,
+        title: "¿En casa o en el gimnasio? Cómo elegir",
+        title_en: "At home or at the gym? How to choose",
+        title_ca: "A casa o al gimnàs? Com triar",
+        body: `<p>Las dos opciones son válidas y puedes combinarlas. Lo importante es que sea <strong>sostenible</strong>: la mejor rutina es la que vas a cumplir.</p>
+<table class="med-table"><thead><tr><th>Tu situación</th><th>Mejor opción</th></tr></thead><tbody>
+<tr><td>Poco tiempo o movilidad limitada</td><td>En casa</td></tr>
+<tr><td>Fragilidad o baja tolerancia al esfuerzo</td><td>En casa (plan mínimo viable)</td></tr>
+<tr><td>Buena capacidad y acceso a un centro</td><td>Gimnasio</td></tr>
+<tr><td>Prefieres supervisión y variedad</td><td>Gimnasio</td></tr>
+</tbody></table>`,
+        body_en: `<p>Both options are valid and you can combine them. What matters is that it is <strong>sustainable</strong>: the best routine is the one you will actually keep.</p>
+<table class="med-table"><thead><tr><th>Your situation</th><th>Best option</th></tr></thead><tbody>
+<tr><td>Little time or limited mobility</td><td>At home</td></tr>
+<tr><td>Frailty or low exercise tolerance</td><td>At home (minimum viable plan)</td></tr>
+<tr><td>Good capacity and access to a gym</td><td>Gym</td></tr>
+<tr><td>You prefer supervision and variety</td><td>Gym</td></tr>
+</tbody></table>`,
+        body_ca: `<p>Les dues opcions són vàlides i les pots combinar. L'important és que sigui <strong>sostenible</strong>: la millor rutina és la que compliràs.</p>
+<table class="med-table"><thead><tr><th>La teva situació</th><th>Millor opció</th></tr></thead><tbody>
+<tr><td>Poc temps o mobilitat limitada</td><td>A casa</td></tr>
+<tr><td>Fragilitat o baixa tolerància a l'esforç</td><td>A casa (pla mínim viable)</td></tr>
+<tr><td>Bona capacitat i accés a un centre</td><td>Gimnàs</td></tr>
+<tr><td>Prefereixes supervisió i varietat</td><td>Gimnàs</td></tr>
+</tbody></table>`
+      },
+      {
+        id: "casa",
+        open: true,
+        title: "\uD83C\uDFE0 Opción en casa",
+        title_en: "\uD83C\uDFE0 At-home option",
+        title_ca: "\uD83C\uDFE0 Opció a casa",
+        body: `<p>Pensada para hacer en casa, con poco material: una <strong>silla estable</strong>, una <strong>botella de agua</strong>, una <strong>pared</strong> y, si puedes, una <strong>banda elástica</strong>.</p>
+<h4>Tu semana</h4>
+<ul><li><strong>Frecuencia:</strong> 5-7 días.</li>
+<li><strong>Duración:</strong> 30-45 min al día.</li>
+<li><strong>Intensidad:</strong> moderada ("me cuesta, pero puedo mantenerlo").</li></ul>
+<h4>Ejemplo de sesión</h4>
+<ul><li><strong>Calentamiento (5 min):</strong> caminar suave por casa y mover hombros, tobillos y cuello.</li>
+<li><strong>Aeróbico (15-20 min):</strong> caminar a ritmo ligero-moderado. Si estás muy desentrenado, empieza con bloques de 5-6 min y descansa entre ellos.</li>
+<li><strong>Fuerza (10-15 min):</strong> sentadilla a la silla, elevación de talones, flexiones en pared y remo con banda o botellas (2-3 series de 8-12 repeticiones). Tienes el vídeo de cada ejercicio en el apartado "Ejercicios paso a paso".</li>
+<li><strong>Respiración (3-5 min):</strong> inspira profundo por la nariz y espira lento por la boca, 5-10 ciclos.</li></ul>
+<h4>Progresión</h4>
+<ul><li><strong>Semana 1:</strong> prioriza constancia y técnica.</li>
+<li><strong>Semana 2:</strong> añade 5 min de caminata o 1 serie más en dos ejercicios.</li>
+<li><strong>Semana 3 en adelante:</strong> sube un poco el ritmo o la resistencia, sin perder calidad del movimiento.</li></ul>`,
+        body_en: `<p>Designed for home, with little equipment: a <strong>stable chair</strong>, a <strong>water bottle</strong>, a <strong>wall</strong> and, if possible, a <strong>resistance band</strong>.</p>
+<h4>Your week</h4>
+<ul><li><strong>Frequency:</strong> 5-7 days.</li>
+<li><strong>Duration:</strong> 30-45 min a day.</li>
+<li><strong>Intensity:</strong> moderate ("it's hard, but I can keep going").</li></ul>
+<h4>Sample session</h4>
+<ul><li><strong>Warm-up (5 min):</strong> walk gently around the house and move shoulders, ankles and neck.</li>
+<li><strong>Aerobic (15-20 min):</strong> walk at a light-to-moderate pace. If very deconditioned, start with 5-6 min blocks and rest in between.</li>
+<li><strong>Strength (10-15 min):</strong> sit-to-stand, calf raises, wall push-ups and rows with a band or bottles (2-3 sets of 8-12 reps). You'll find a video for each in the "Step-by-step exercises" section.</li>
+<li><strong>Breathing (3-5 min):</strong> breathe in deeply through the nose and out slowly through the mouth, 5-10 cycles.</li></ul>
+<h4>Progression</h4>
+<ul><li><strong>Week 1:</strong> prioritise consistency and technique.</li>
+<li><strong>Week 2:</strong> add 5 min of walking or 1 extra set on two exercises.</li>
+<li><strong>Week 3 onwards:</strong> raise the pace or resistance a little, without losing movement quality.</li></ul>`,
+        body_ca: `<p>Pensada per fer a casa, amb poc material: una <strong>cadira estable</strong>, una <strong>ampolla d'aigua</strong>, una <strong>paret</strong> i, si pots, una <strong>banda elàstica</strong>.</p>
+<h4>La teva setmana</h4>
+<ul><li><strong>Freqüència:</strong> 5-7 dies.</li>
+<li><strong>Durada:</strong> 30-45 min al dia.</li>
+<li><strong>Intensitat:</strong> moderada ("em costa, però ho puc mantenir").</li></ul>
+<h4>Exemple de sessió</h4>
+<ul><li><strong>Escalfament (5 min):</strong> camina suau per casa i mou espatlles, turmells i coll.</li>
+<li><strong>Aeròbic (15-20 min):</strong> camina a ritme lleuger-moderat. Si estàs molt desentrenat, comença amb blocs de 5-6 min i descansa entremig.</li>
+<li><strong>Força (10-15 min):</strong> aixecar-se de la cadira, elevació de talons, flexions a la paret i rem amb banda o ampolles (2-3 sèries de 8-12 repeticions). Tens el vídeo de cada exercici a l'apartat "Exercicis pas a pas".</li>
+<li><strong>Respiració (3-5 min):</strong> inspira profund pel nas i expira lent per la boca, 5-10 cicles.</li></ul>
+<h4>Progressió</h4>
+<ul><li><strong>Setmana 1:</strong> prioritza constància i tècnica.</li>
+<li><strong>Setmana 2:</strong> afegeix 5 min de caminada o 1 sèrie més en dos exercicis.</li>
+<li><strong>Setmana 3 en endavant:</strong> puja una mica el ritme o la resistència, sense perdre qualitat del moviment.</li></ul>`
+      },
+      {
+        id: "gimnasio",
+        open: false,
+        title: "\uD83C\uDFCB️ Opción en gimnasio",
+        title_en: "\uD83C\uDFCB️ Gym option",
+        title_ca: "\uD83C\uDFCB️ Opció al gimnàs",
+        body: `<p>Para quien tiene mejor condición o prefiere supervisión y más material. Permite ajustar mejor la carga y la progresión.</p>
+<h4>Tu semana</h4>
+<ul><li><strong>Frecuencia:</strong> 3-5 días.</li>
+<li><strong>Duración:</strong> 45-60 min.</li>
+<li><strong>Intensidad:</strong> moderada, con progresión según tolerancia.</li></ul>
+<h4>Ejemplo de sesión</h4>
+<ul><li><strong>Calentamiento (8-10 min):</strong> cinta a baja velocidad o bicicleta, y movilidad articular.</li>
+<li><strong>Aeróbico (15-20 min):</strong> cinta, bicicleta o elíptica a un ritmo que te permita hablar frases cortas sin jadear ("test del habla").</li>
+<li><strong>Fuerza (20-25 min):</strong> prensa o sentadilla asistida, remo sentado y press de pecho (2-3 series de 8-12). Si tienes experiencia y no hay contraindicaciones, bisagra de cadera o peso muerto muy ligero. Añade trabajo de core suave y control postural.</li>
+<li><strong>Vuelta a la calma (5 min):</strong> caminar suave, respiración diafragmática y estiramientos.</li></ul>`,
+        body_en: `<p>For those with better fitness or who prefer supervision and more equipment. It allows better load adjustment and progression.</p>
+<h4>Your week</h4>
+<ul><li><strong>Frequency:</strong> 3-5 days.</li>
+<li><strong>Duration:</strong> 45-60 min.</li>
+<li><strong>Intensity:</strong> moderate, progressing as tolerated.</li></ul>
+<h4>Sample session</h4>
+<ul><li><strong>Warm-up (8-10 min):</strong> treadmill at low speed or bike, plus joint mobility.</li>
+<li><strong>Aerobic (15-20 min):</strong> treadmill, bike or elliptical at a pace that lets you speak short sentences without gasping (the "talk test").</li>
+<li><strong>Strength (20-25 min):</strong> leg press or assisted squat, seated row and chest press (2-3 sets of 8-12). If experienced and with no contraindications, hip hinge or very light deadlift. Add gentle core work and postural control.</li>
+<li><strong>Cool-down (5 min):</strong> gentle walking, diaphragmatic breathing and light stretching.</li></ul>`,
+        body_ca: `<p>Per a qui té millor condició o prefereix supervisió i més material. Permet ajustar millor la càrrega i la progressió.</p>
+<h4>La teva setmana</h4>
+<ul><li><strong>Freqüència:</strong> 3-5 dies.</li>
+<li><strong>Durada:</strong> 45-60 min.</li>
+<li><strong>Intensitat:</strong> moderada, amb progressió segons tolerància.</li></ul>
+<h4>Exemple de sessió</h4>
+<ul><li><strong>Escalfament (8-10 min):</strong> cinta a baixa velocitat o bicicleta, i mobilitat articular.</li>
+<li><strong>Aeròbic (15-20 min):</strong> cinta, bicicleta o el·líptica a un ritme que et permeti dir frases curtes sense esbufegar (el "test de la parla").</li>
+<li><strong>Força (20-25 min):</strong> premsa o sentadilla assistida, rem assegut i press de pit (2-3 sèries de 8-12). Si tens experiència i no hi ha contraindicacions, frontissa de maluc o pes mort molt lleuger. Afegeix treball de core suau i control postural.</li>
+<li><strong>Tornada a la calma (5 min):</strong> caminar suau, respiració diafragmàtica i estiraments.</li></ul>`
+      },
+      {
+        id: "ejercicios",
+        open: false,
+        title: "▶️ Ejercicios paso a paso (con vídeo)",
+        title_en: "▶️ Step-by-step exercises (with video)",
+        title_ca: "▶️ Exercicis pas a pas (amb vídeo)",
+        body: `<p>Vídeos breves con la técnica de cada ejercicio. Ve a tu ritmo y detente si algo duele.</p>
+<h4>1. Sentarse y levantarse de la silla</h4>
+<p>Fortalece las piernas para subir escaleras y levantarte con más facilidad. Siéntate y levántate de una silla estable con poca o ninguna ayuda de las manos. 2-3 series de 8-10.</p>
+<p class="muted small">(Vídeo próximamente.)</p>
+<h4>2. Elevación de talones</h4>
+<p>Fortalece las pantorrillas y mejora el equilibrio. De pie, con apoyo en una silla o pared, sube y baja los talones. 2-3 series de 10-15.</p>
+<p class="muted small">(Vídeo próximamente.)</p>
+<h4>3. Flexiones en pared</h4>
+<p>Trabaja pecho y brazos de forma suave. Apoya las manos en la pared y flexiona los codos acercando el pecho. 2-3 series de 8-12.</p>
+<p class="muted small">(Vídeo próximamente.)</p>
+<h4>4. Remo con banda o botellas</h4>
+<p>Fortalece la espalda y mejora la postura. Tira de una banda elástica (o de botellas de agua) llevando los codos hacia atrás. 2-3 series de 8-12.</p>
+<p class="muted small">(Vídeo próximamente.)</p>
+<h4>5. Equilibrio sobre una pierna</h4>
+<p>Reduce el riesgo de caídas, algo clave antes y después de la cirugía. Con un apoyo firme al alcance, mantente sobre una pierna 10-20 segundos por lado.</p>
+<p class="muted small">(Vídeo próximamente.)</p>
+<h4>6. Respiración diafragmática</h4>
+<p>Entrena la respiración que te ayudará tras la anestesia y a relajarte. Con una mano en el abdomen, inspira 4 s por la nariz (sube la barriga) y espira 6 s por la boca.</p>
+<p class="muted small">(Vídeo próximamente.)</p>`,
+        body_en: `<p>Short videos with the technique for each exercise. Go at your own pace and stop if anything hurts.</p>
+<h4>1. Sit-to-stand</h4>
+<p>Strengthens your legs for stairs and getting up more easily. Sit down and stand up from a stable chair with little or no help from your hands. 2-3 sets of 8-10.</p>
+<p class="muted small">(Video coming soon.)</p>
+<h4>2. Calf raises</h4>
+<p>Strengthens calves and improves balance. Standing, holding a chair or wall, raise and lower your heels. 2-3 sets of 10-15.</p>
+<p class="muted small">(Video coming soon.)</p>
+<h4>3. Wall push-ups</h4>
+<p>Works chest and arms gently. Place your hands on the wall and bend your elbows, bringing your chest closer. 2-3 sets of 8-12.</p>
+<p class="muted small">(Video coming soon.)</p>
+<h4>4. Row with a band or bottles</h4>
+<p>Strengthens your back and improves posture. Pull a resistance band (or water bottles) driving your elbows back. 2-3 sets of 8-12.</p>
+<p class="muted small">(Video coming soon.)</p>
+<h4>5. Single-leg balance</h4>
+<p>Reduces the risk of falls, which is key before and after surgery. With a firm support within reach, balance on one leg for 10-20 seconds per side.</p>
+<p class="muted small">(Video coming soon.)</p>
+<h4>6. Diaphragmatic breathing</h4>
+<p>Trains the breathing that will help you after anaesthesia and to relax. With one hand on your abdomen, breathe in for 4 s through the nose (belly rises) and out for 6 s through the mouth.</p>
+<p class="muted small">(Video coming soon.)</p>`,
+        body_ca: `<p>Vídeos breus amb la tècnica de cada exercici. Ves al teu ritme i atura't si alguna cosa fa mal.</p>
+<h4>1. Aixecar-se de la cadira</h4>
+<p>Enforteix les cames per pujar escales i aixecar-te amb més facilitat. Seu i aixeca't d'una cadira estable amb poca o cap ajuda de les mans. 2-3 sèries de 8-10.</p>
+<p class="muted small">(Vídeo pròximament.)</p>
+<h4>2. Elevació de talons</h4>
+<p>Enforteix els bessons i millora l'equilibri. Dret, amb suport en una cadira o paret, puja i baixa els talons. 2-3 sèries de 10-15.</p>
+<p class="muted small">(Vídeo pròximament.)</p>
+<h4>3. Flexions a la paret</h4>
+<p>Treballa pit i braços de manera suau. Recolza les mans a la paret i flexiona els colzes acostant el pit. 2-3 sèries de 8-12.</p>
+<p class="muted small">(Vídeo pròximament.)</p>
+<h4>4. Rem amb banda o ampolles</h4>
+<p>Enforteix l'esquena i millora la postura. Estira una banda elàstica (o ampolles d'aigua) portant els colzes enrere. 2-3 sèries de 8-12.</p>
+<p class="muted small">(Vídeo pròximament.)</p>
+<h4>5. Equilibri sobre una cama</h4>
+<p>Redueix el risc de caigudes, clau abans i després de la cirurgia. Amb un suport ferm a l'abast, mantén-te sobre una cama 10-20 segons per costat.</p>
+<p class="muted small">(Vídeo pròximament.)</p>
+<h4>6. Respiració diafragmàtica</h4>
+<p>Entrena la respiració que t'ajudarà després de l'anestèsia i a relaxar-te. Amb una mà a l'abdomen, inspira 4 s pel nas (puja la panxa) i expira 6 s per la boca.</p>
+<p class="muted small">(Vídeo pròximament.)</p>`
+      },
+      {
+        id: "seguridad",
+        open: false,
+        title: "Seguridad, constancia y motivación",
+        title_en: "Safety, consistency and motivation",
+        title_ca: "Seguretat, constància i motivació",
+        body: `<p>Consejos para que el plan funcione:</p>
+<ul><li><strong>Únelo a un hábito</strong> (por ejemplo, después de desayunar) para no olvidarlo.</li>
+<li><strong>Hidrátate</strong> y usa ropa y calzado cómodos.</li>
+<li><strong>Registra</strong> lo que haces; ver tu progreso motiva.</li>
+<li>Un mal día no arruina el plan: retómalo al día siguiente.</li></ul>
+<p><strong>Recuerda:</strong> empezar pronto, ser constante y no buscar la perfección. Caminar, hacer algo de fuerza y entrenar la respiración ya es una intervención útil. Ante cualquier duda o síntoma, consulta con tu equipo.</p>`,
+        body_en: `<p>Tips to make the plan work:</p>
+<ul><li><strong>Attach it to a habit</strong> (for example, after breakfast) so you don't forget.</li>
+<li><strong>Stay hydrated</strong> and wear comfortable clothes and shoes.</li>
+<li><strong>Track</strong> what you do; seeing your progress is motivating.</li>
+<li>A bad day doesn't ruin the plan: pick it back up the next day.</li></ul>
+<p><strong>Remember:</strong> start early, be consistent and don't chase perfection. Walking, doing some strength work and training your breathing is already a useful intervention. If in doubt or with any symptom, check with your team.</p>`,
+        body_ca: `<p>Consells perquè el pla funcioni:</p>
+<ul><li><strong>Uneix-lo a un hàbit</strong> (per exemple, després d'esmorzar) per no oblidar-lo.</li>
+<li><strong>Hidrata't</strong> i fes servir roba i calçat còmodes.</li>
+<li><strong>Registra</strong> el que fas; veure el teu progrés motiva.</li>
+<li>Un mal dia no arruïna el pla: reprèn-lo l'endemà.</li></ul>
+<p><strong>Recorda:</strong> començar aviat, ser constant i no buscar la perfecció. Caminar, fer una mica de força i entrenar la respiració ja és una intervenció útil. Davant de qualsevol dubte o símptoma, consulta amb el teu equip.</p>`
+      }
+    ]
   };
   var ALARM_SIGNS = [
     "Dolor en el pecho, palpitaciones o falta de aire en reposo.",
@@ -3317,6 +3571,7 @@ EL MÉS ÚTIL QUE POTS FER: portar a la consulta de preanestèsia una llista com
       fasting_q_reflux: "Reflujo gastroesofágico significativo",
       fasting_q_gastric: "Cirugía gástrica previa (bariátrica, úlcera, tumores…)",
       fasting_disclaimer: "Contenido educativo. No sustituye las indicaciones de tu hospital ni de tu equipo de anestesia; sigue siempre sus instrucciones.",
+      exercise_disclaimer: "Contenido educativo. No sustituye la valoración de tu equipo médico; consúltalo antes de empezar o cambiar tu actividad.",
       report_fasting: "Ayuno: situación indicada",
       fasting_flag_diabetes: "Diabetes",
       fasting_flag_glp1: "Medicación GLP‑1",
@@ -3620,6 +3875,7 @@ Gracias.`,
       fasting_q_reflux: "Significant acid reflux",
       fasting_q_gastric: "Previous stomach surgery (bariatric, ulcer, tumour…)",
       fasting_disclaimer: "Educational content. It does not replace your hospital or anaesthesia team instructions; always follow them.",
+      exercise_disclaimer: "Educational content. It does not replace your medical team's assessment; check with them before starting or changing your activity.",
       report_fasting: "Fasting: reported situation",
       fasting_flag_diabetes: "Diabetes",
       fasting_flag_glp1: "GLP‑1 medication",
@@ -3923,6 +4179,7 @@ Thank you.`,
       fasting_q_reflux: "Reflux gastroesofàgic significatiu",
       fasting_q_gastric: "Cirurgia gàstrica prèvia (bariàtrica, úlcera, tumors…)",
       fasting_disclaimer: "Contingut educatiu. No substitueix les indicacions del teu hospital ni del teu equip d’anestèsia; segueix sempre les seves instruccions.",
+      exercise_disclaimer: "Contingut educatiu. No substitueix la valoració del teu equip mèdic; consulta’ls abans de començar o canviar la teva activitat.",
       report_fasting: "Dejuni: situació indicada",
       fasting_flag_diabetes: "Diabetis",
       fasting_flag_glp1: "Medicació GLP‑1",
@@ -4478,7 +4735,7 @@ Gràcies.`,
       return `<section class="card resource">
       <div class="resource-title">\uD83D\uDCC4 ${esc(title)}</div>
       ${desc ? `<p class="muted small">${esc(desc)}</p>` : ""}
-      <button class="btn ghost block" data-action="nav" data-view="ayuno-guide">${t("res_open")}</button>
+      <button class="btn ghost block" data-action="nav" data-view="${esc(r.guideId || "ayuno")}-guide">${t("res_open")}</button>
     </section>`;
     }
     if (ytId) {
@@ -4541,6 +4798,22 @@ Gràcies.`,
       <div class="fasting-body">${tr(g.final, "body")}</div>
     </details>
     <p class="muted small fasting-disclaimer">${t("fasting_disclaimer")}</p>`;
+  }
+  function renderExerciseGuide(state2) {
+    const g = EXERCISE_GUIDE;
+    const blocks = g.blocks.map((b) => {
+      const open = !!b.open;
+      return `<details class="fasting-block"${open ? " open" : ""}>
+      <summary>${esc(tr(b, "title"))}</summary>
+      <div class="fasting-body">${tr(b, "body")}</div>
+    </details>`;
+    }).join("");
+    return `
+    <button class="btn ghost back-btn" data-action="nav" data-view="recursos">${t("back")}</button>
+    <div class="section-label">${esc(tr(g.intro, "title"))}</div>
+    <section class="card fasting-body">${tr(g.intro, "body")}</section>
+    ${blocks}
+    <p class="muted small fasting-disclaimer">${t("exercise_disclaimer")}</p>`;
   }
   function renderLearn(state2) {
     const posts = getPosts(state2);
@@ -5527,6 +5800,9 @@ Gràcies.`,
         break;
       case "ayuno-guide":
         body = renderFastingGuide(state2);
+        break;
+      case "ejercicio-guide":
+        body = renderExerciseGuide(state2);
         break;
       case "progreso":
         body = renderProgress(state2, exports_charts);

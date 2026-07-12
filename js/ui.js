@@ -5,7 +5,7 @@ import {
   PREOP_CHECKLIST, PREOP_CHECKLIST_EN, PREOP_CHECKLIST_CA,
   DISCLAIMER, DISCLAIMER_EN, DISCLAIMER_CA, ERAS_NOTE, ERAS_NOTE_EN, ERAS_NOTE_CA,
   ALARM_SIGNS, ALARM_SIGNS_EN, ALARM_SIGNS_CA, CAREGIVER_TIPS, FRAIL_QUESTIONS, frailResult, getPhase,
-  EDMONTON_QUESTIONS, edmontonResult, PRIVACY_POINTS, FASTING_GUIDE,
+  EDMONTON_QUESTIONS, edmontonResult, PRIVACY_POINTS, FASTING_GUIDE, EXERCISE_GUIDE,
 } from './content.js';
 import { todayKey, daysBetween, listProfiles, getActiveProfileId, assessmentHistory } from './state.js';
 import { GAD7, PHQ9, DASI, MUST, FREQ_OPTIONS, MUST_WEIGHTLOSS, SCALE_LIST, scaleMeta, resultForScale } from './scales.js';
@@ -372,7 +372,7 @@ function renderResourceCard(r) {
     return `<section class="card resource">
       <div class="resource-title">📄 ${esc(title)}</div>
       ${desc ? `<p class="muted small">${esc(desc)}</p>` : ''}
-      <button class="btn ghost block" data-action="nav" data-view="ayuno-guide">${t('res_open')}</button>
+      <button class="btn ghost block" data-action="nav" data-view="${esc(r.guideId || 'ayuno')}-guide">${t('res_open')}</button>
     </section>`;
   }
   if (ytId) {
@@ -434,6 +434,25 @@ export function renderFastingGuide(state) {
       <div class="fasting-body">${tr(g.final, 'body')}</div>
     </details>
     <p class="muted small fasting-disclaimer">${t('fasting_disclaimer')}</p>`;
+}
+
+/* ---------- Vista: GUÍA DE EJERCICIO (recurso interno) ---------- */
+
+export function renderExerciseGuide(state) {
+  const g = EXERCISE_GUIDE;
+  const blocks = g.blocks.map((b) => {
+    const open = !!b.open;
+    return `<details class="fasting-block"${open ? ' open' : ''}>
+      <summary>${esc(tr(b, 'title'))}</summary>
+      <div class="fasting-body">${tr(b, 'body')}</div>
+    </details>`;
+  }).join('');
+  return `
+    <button class="btn ghost back-btn" data-action="nav" data-view="recursos">${t('back')}</button>
+    <div class="section-label">${esc(tr(g.intro, 'title'))}</div>
+    <section class="card fasting-body">${tr(g.intro, 'body')}</section>
+    ${blocks}
+    <p class="muted small fasting-disclaimer">${t('exercise_disclaimer')}</p>`;
 }
 
 /* ---------- Vista: APRENDE ---------- */

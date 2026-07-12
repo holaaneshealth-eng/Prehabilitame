@@ -86,6 +86,7 @@ function render() {
   switch (route) {
     case 'recursos': body = ui.renderResources(state); break;
     case 'ayuno-guide': body = ui.renderFastingGuide(state); break;
+    case 'ejercicio-guide': body = ui.renderExerciseGuide(state); break;
     case 'progreso': body = ui.renderProgress(state, charts); break;
     case 'aprende': body = ui.renderLearn(state); break;
     case 'post': body = ui.renderPost(state, currentPostId); break;
