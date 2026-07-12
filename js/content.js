@@ -847,8 +847,8 @@ export const FASTING_GUIDE = {
 <h4>Si controlas tu glucosa en casa</h4>
 <ul><li>Si tu glucosa está <strong>baja</strong>, el equipo puede recomendarte tomar una pequeña cantidad de zumo claro y repetir la medición a los pocos minutos.</li>
 <li>Si tu glucosa está <strong>muy alta</strong>, es posible que debas corregirla con la dosis de insulina rápida que te haya indicado tu médico.</li></ul>
-<h4>Bebida de carbohidratos (opcional)</h4>
-<p>Si tu equipo lo autoriza, puedes tomar una <strong>bebida rica en carbohidratos</strong> (tipo Nutricia PreOp® o una mezcla de maltodextrina en agua) hasta 2 horas antes, para reducir el hambre y la ansiedad y evitar la pérdida de músculo (catabolismo). Como contiene carbohidratos, tenlo en cuenta en el control de tu glucemia y sigue las pautas de tu equipo.</p>
+<h4>Bebida de carbohidratos: valoración individual</h4>
+<p>En personas con diabetes, la bebida rica en carbohidratos <strong>no se recomienda de forma automática</strong>, porque puede elevar la glucemia. Solo se valora en <strong>casos seleccionados</strong> (por ejemplo, diabetes bien controlada) y <strong>siempre con indicación de tu equipo quirúrgico y de anestesia</strong>. La decisión depende del tipo de cirugía, de tu control metabólico y del protocolo de tu centro. No la tomes por tu cuenta: pregunta a tu equipo si en tu caso está indicada.</p>
 <p><strong>Importante:</strong> ante cualquier duda, consulta siempre con tu equipo médico antes de cambiar dosis por tu cuenta.</p>`,
       body_en: `<p>If you have diabetes, fasting is adapted to <strong>avoid hypoglycaemia</strong> (low blood sugar), <strong>avoid decompensation</strong> of blood sugar, and keep carbohydrate intake controlled, according to your team's instructions.</p>
 <p><strong>Fasting times:</strong> for solids they are similar to someone without diabetes (light meal, and heavy meal earlier still), and clear liquids are usually allowed up to about 2 hours before, always as your medical team advises.</p>
@@ -859,8 +859,8 @@ export const FASTING_GUIDE = {
 <h4>If you check your glucose at home</h4>
 <ul><li>If your glucose is <strong>low</strong>, the team may advise you to have a small amount of clear juice and repeat the reading a few minutes later.</li>
 <li>If your glucose is <strong>very high</strong>, you may need to correct it with the dose of rapid-acting insulin your doctor has indicated.</li></ul>
-<h4>Carbohydrate drink (optional)</h4>
-<p>If your team authorises it, you may have a <strong>carbohydrate-rich drink</strong> (such as Nutricia PreOp® or a maltodextrin-in-water mix) up to 2 hours before, to reduce hunger and anxiety and prevent muscle loss (catabolism). As it contains carbohydrates, factor it into your blood-sugar control and follow your team's guidance.</p>
+<h4>Carbohydrate drink: individual assessment</h4>
+<p>In people with diabetes, the carbohydrate-rich drink is <strong>not recommended automatically</strong>, because it can raise blood sugar. It is only considered in <strong>selected cases</strong> (for example, well-controlled diabetes) and <strong>always on the advice of your surgical and anaesthesia team</strong>. The decision depends on the type of surgery, your metabolic control and your centre's protocol. Do not take it on your own: ask your team whether it is indicated in your case.</p>
 <p><strong>Important:</strong> if in doubt, always check with your medical team before changing any dose on your own.</p>`,
       body_ca: `<p>Si tens diabetis, el dejuni s'adapta per <strong>evitar hipoglucèmies</strong> (baixades de sucre), <strong>evitar descompensacions</strong> del sucre a la sang i mantenir un aport de carbohidrats controlat, segons les indicacions del teu equip.</p>
 <p><strong>Temps de dejuni:</strong> per als sòlids són similars als d'una persona sense diabetis (menjar lleuger i, amb més antelació, menjar copiós), i els líquids clars solen permetre's fins a unes 2 hores abans, sempre segons el que t'indiqui el teu equip mèdic.</p>
@@ -871,8 +871,8 @@ export const FASTING_GUIDE = {
 <h4>Si controles la teva glucosa a casa</h4>
 <ul><li>Si la teva glucosa està <strong>baixa</strong>, l'equip pot recomanar-te prendre una petita quantitat de suc clar i repetir la mesura al cap de pocs minuts.</li>
 <li>Si la teva glucosa està <strong>molt alta</strong>, és possible que l'hagis de corregir amb la dosi d'insulina ràpida que t'hagi indicat el teu metge.</li></ul>
-<h4>Beguda de carbohidrats (opcional)</h4>
-<p>Si el teu equip ho autoritza, pots prendre una <strong>beguda rica en carbohidrats</strong> (tipus Nutricia PreOp® o una barreja de maltodextrina en aigua) fins a 2 hores abans, per reduir la gana i l'ansietat i evitar la pèrdua de múscul (catabolisme). Com que conté carbohidrats, tingues-ho en compte en el control de la teva glucèmia i segueix les pautes del teu equip.</p>
+<h4>Beguda de carbohidrats: valoració individual</h4>
+<p>En persones amb diabetis, la beguda rica en carbohidrats <strong>no es recomana de manera automàtica</strong>, perquè pot elevar la glucèmia. Només es valora en <strong>casos seleccionats</strong> (per exemple, diabetis ben controlada) i <strong>sempre amb indicació del teu equip quirúrgic i d'anestèsia</strong>. La decisió depèn del tipus de cirurgia, del teu control metabòlic i del protocol del teu centre. No la prenguis pel teu compte: pregunta al teu equip si en el teu cas està indicada.</p>
 <p><strong>Important:</strong> davant de qualsevol dubte, consulta sempre amb el teu equip mèdic abans de canviar dosis pel teu compte.</p>`,
     },
     {
