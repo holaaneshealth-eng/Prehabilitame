@@ -59,7 +59,7 @@ const UI = {
     its_the_day: '¡es el día!',
     post_surgery: 'días post-cirugía',
     // Navegación
-    nav_hoy: 'Hoy', nav_recursos: 'Recursos', nav_progreso: 'Progreso', nav_aprende: 'Aprende', nav_mas: 'Más',
+    nav_hoy: 'Hoy', nav_recursos: 'Prepárate', nav_progreso: 'Progreso', nav_aprende: 'Aprende', nav_mas: 'Más',
     // Hoy
     today_title: 'Tu día de hoy',
     goal_reached: '¡Objetivo diario logrado! 🎉',
@@ -84,7 +84,7 @@ const UI = {
     // Medallas
     medals_title: 'Medallas',
     // Recursos
-    res_library: '🎬 Biblioteca de recursos',
+    res_library: '📋 Tu plan de salud antes de la cirugía',
     res_empty_1: 'Aún no hay vídeos ni enlaces.',
     res_empty_2: 'Entra en <strong>Más → Modo médico → Recursos</strong> para añadir vídeos de YouTube (mindfulness, nutrición, ejercicio…) o cualquier enlace.',
     res_add: '➕ Añadir recursos',
@@ -302,7 +302,7 @@ const UI = {
     today: 'Today',
     its_the_day: "it's the day!",
     post_surgery: 'days after surgery',
-    nav_hoy: 'Today', nav_recursos: 'Resources', nav_progreso: 'Progress', nav_aprende: 'Learn', nav_mas: 'More',
+    nav_hoy: 'Today', nav_recursos: 'Get ready', nav_progreso: 'Progress', nav_aprende: 'Learn', nav_mas: 'More',
     today_title: 'Your day today',
     goal_reached: 'Daily goal achieved! 🎉',
     add_more_xp: 'Earn {n} more XP to complete the day',
@@ -322,7 +322,7 @@ const UI = {
     less: 'Less', more: 'More', recent_mood: 'Recent mood',
     report_btn: '📄 Generate progress report (PDF)',
     medals_title: 'Badges',
-    res_library: '🎬 Resource library',
+    res_library: '📋 Your health plan before surgery',
     res_empty_1: 'No videos or links yet.',
     res_empty_2: 'Go to <strong>More → Clinician mode → Resources</strong> to add YouTube videos (mindfulness, nutrition, exercise…) or any link.',
     res_add: '➕ Add resources',
@@ -528,7 +528,7 @@ const UI = {
     today: 'Avui',
     its_the_day: 'és el dia!',
     post_surgery: 'dies postcirurgia',
-    nav_hoy: 'Avui', nav_recursos: 'Recursos', nav_progreso: 'Progrés', nav_aprende: 'Aprèn', nav_mas: 'Més',
+    nav_hoy: 'Avui', nav_recursos: 'Prepara’t', nav_progreso: 'Progrés', nav_aprende: 'Aprèn', nav_mas: 'Més',
     today_title: 'El teu dia d’avui',
     goal_reached: 'Objectiu diari assolit! 🎉',
     add_more_xp: 'Suma {n} XP més per completar el dia',
@@ -548,7 +548,7 @@ const UI = {
     less: 'Menys', more: 'Més', recent_mood: 'Estat d’ànim recent',
     report_btn: '📄 Generar informe de progrés (PDF)',
     medals_title: 'Medalles',
-    res_library: '🎬 Biblioteca de recursos',
+    res_library: '📋 El teu pla de salut abans de la cirurgia',
     res_empty_1: 'Encara no hi ha vídeos ni enllaços.',
     res_empty_2: 'Ves a <strong>Més → Mode mèdic → Recursos</strong> per afegir vídeos de YouTube (mindfulness, nutrició, exercici…) o qualsevol enllaç.',
     res_add: '➕ Afegir recursos',
