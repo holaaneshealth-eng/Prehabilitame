@@ -158,6 +158,10 @@ function onClick(e) {
       navigate(el.dataset.view, el.dataset.tab);
       break;
     case 'start-cribado': startCribado(); break;
+    case 'cribado-consent': {
+      if (!state.cribado) { startCribado(); break; }
+      state.cribado.step = 'dt'; saveState(); render(); window.scrollTo(0, 0); break;
+    }
     case 'share-cribado': shareCribado(); break;
 
     case 'toggle-task': {
@@ -939,7 +943,7 @@ function submitMust(form) {
 function startCribado() {
   const state = getState();
   const code = (state.cribado && state.cribado.code) || ('PREHAB-' + Math.floor(1000 + Math.random() * 9000));
-  state.cribado = { step: 'dt', a: {}, result: null, code };
+  state.cribado = { step: 'consent', a: {}, result: null, code };
   saveState();
   navigate('cribado');
 }

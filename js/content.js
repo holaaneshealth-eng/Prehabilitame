@@ -2274,6 +2274,28 @@ export const MENTAL_PAUSE = {
 <p>Quan vulguis, reprenem on ho vam deixar. Aturar-se i tornar també és entrenar.</p>`,
 };
 
+// Pantalla breve de consentimiento previa al cuestionario de cribado.
+export const MENTAL_CONSENT = {
+  body: `<p>Antes de empezar, unas líneas para que decidas con tranquilidad:</p>
+<ul><li>Este cuestionario es una <strong>herramienta de apoyo</strong>, no un diagnóstico ni una terapia.</li>
+<li>Tus respuestas se guardan <strong>solo en este dispositivo</strong>; no las vemos ni hay seguimiento en tiempo real.</li>
+<li>Según tus respuestas, la app puede <strong>recomendarte contactar</strong> con tu equipo o mostrarte teléfonos de ayuda.</li>
+<li>Puedes parar cuando quieras con «Necesito una pausa».</li></ul>
+<p>Son unas pocas preguntas breves. ¿Empezamos?</p>`,
+  body_en: `<p>Before we start, a few lines so you can decide calmly:</p>
+<ul><li>This questionnaire is a <strong>support tool</strong>, not a diagnosis or therapy.</li>
+<li>Your answers are stored <strong>only on this device</strong>; we don't see them and there is no real-time monitoring.</li>
+<li>Based on your answers, the app may <strong>recommend contacting</strong> your team or show you helplines.</li>
+<li>You can stop anytime with "I need a pause".</li></ul>
+<p>It's just a few short questions. Shall we start?</p>`,
+  body_ca: `<p>Abans de començar, unes línies perquè decideixis amb tranquil·litat:</p>
+<ul><li>Aquest qüestionari és una <strong>eina de suport</strong>, no un diagnòstic ni una teràpia.</li>
+<li>Les teves respostes es desen <strong>només en aquest dispositiu</strong>; no les veiem ni hi ha seguiment en temps real.</li>
+<li>Segons les teves respostes, l'app pot <strong>recomanar-te contactar</strong> amb el teu equip o mostrar-te telèfons d'ajuda.</li>
+<li>Pots aturar-te quan vulguis amb «Necessito una pausa».</li></ul>
+<p>Són només unes poques preguntes breus. Comencem?</p>`,
+};
+
 // Pantallas de resultado del cribado (triaje). Textos ES exactos del diseño §8;
 // EN/CA traducción funcional. Los botones se renderizan según el nivel.
 export const TRIAGE_SCREENS = {

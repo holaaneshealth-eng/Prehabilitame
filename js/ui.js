@@ -6,7 +6,7 @@ import {
   DISCLAIMER, DISCLAIMER_EN, DISCLAIMER_CA, ERAS_NOTE, ERAS_NOTE_EN, ERAS_NOTE_CA,
   ALARM_SIGNS, ALARM_SIGNS_EN, ALARM_SIGNS_CA, CAREGIVER_TIPS, FRAIL_QUESTIONS, frailResult, getPhase,
   EDMONTON_QUESTIONS, edmontonResult, PRIVACY_POINTS, FASTING_GUIDE, EXERCISE_GUIDE, RESPIRATORY_GUIDE,
-  MENTAL_GUIDE, MENTAL_PAUSE, TRIAGE_SCREENS,
+  MENTAL_GUIDE, MENTAL_PAUSE, TRIAGE_SCREENS, MENTAL_CONSENT,
 } from './content.js';
 import { todayKey, daysBetween, listProfiles, getActiveProfileId, assessmentHistory } from './state.js';
 import { GAD7, PHQ9, DASI, MUST, FREQ_OPTIONS, MUST_WEIGHTLOSS, SCALE_LIST, scaleMeta, resultForScale, DISTRESS, APAIS, APAIS_OPTIONS } from './scales.js';
@@ -523,6 +523,14 @@ export function renderCribado(state) {
   if (step === 'result') return renderCribadoResult(state);
   const back = `<button class="btn ghost back-btn" data-action="nav" data-view="bienestar-guide">${t('back')}</button>`;
   const pause = `<button class="btn block" data-action="nav" data-view="pausa">🕊️ ${t('mental_pause')}</button>`;
+  if (step === 'consent') {
+    return `${back}
+    <div class="section-label">🧭 ${esc(tr(MENTAL_GUIDE.intro, 'title'))}</div>
+    <section class="card fasting-body">${tr(MENTAL_CONSENT, 'body')}</section>
+    <button class="btn primary block" data-action="cribado-consent">${t('crib_consent_accept')}</button>
+    <button class="btn ghost block" data-action="nav" data-view="bienestar-guide">${t('back')}</button>
+    <p class="muted small fasting-disclaimer">${t('mental_disclaimer')}</p>`;
+  }
   let title = ''; let inner = '';
   if (step === 'dt') {
     title = tr(DISTRESS, 'title');

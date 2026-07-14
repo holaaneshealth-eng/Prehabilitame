@@ -3636,6 +3636,26 @@ EL MÉS ÚTIL QUE POTS FER: portar a la consulta de preanestèsia una llista com
 <li>Si hi ha un <strong>càncer</strong> pel mig, l'<strong>AECC</strong> ofereix suport psicològic gratuït: <strong>900 100 036</strong>. <a href="tel:900100036">Trucar</a></li></ul>
 <p>Quan vulguis, reprenem on ho vam deixar. Aturar-se i tornar també és entrenar.</p>`
   };
+  var MENTAL_CONSENT = {
+    body: `<p>Antes de empezar, unas líneas para que decidas con tranquilidad:</p>
+<ul><li>Este cuestionario es una <strong>herramienta de apoyo</strong>, no un diagnóstico ni una terapia.</li>
+<li>Tus respuestas se guardan <strong>solo en este dispositivo</strong>; no las vemos ni hay seguimiento en tiempo real.</li>
+<li>Según tus respuestas, la app puede <strong>recomendarte contactar</strong> con tu equipo o mostrarte teléfonos de ayuda.</li>
+<li>Puedes parar cuando quieras con «Necesito una pausa».</li></ul>
+<p>Son unas pocas preguntas breves. ¿Empezamos?</p>`,
+    body_en: `<p>Before we start, a few lines so you can decide calmly:</p>
+<ul><li>This questionnaire is a <strong>support tool</strong>, not a diagnosis or therapy.</li>
+<li>Your answers are stored <strong>only on this device</strong>; we don't see them and there is no real-time monitoring.</li>
+<li>Based on your answers, the app may <strong>recommend contacting</strong> your team or show you helplines.</li>
+<li>You can stop anytime with "I need a pause".</li></ul>
+<p>It's just a few short questions. Shall we start?</p>`,
+    body_ca: `<p>Abans de començar, unes línies perquè decideixis amb tranquil·litat:</p>
+<ul><li>Aquest qüestionari és una <strong>eina de suport</strong>, no un diagnòstic ni una teràpia.</li>
+<li>Les teves respostes es desen <strong>només en aquest dispositiu</strong>; no les veiem ni hi ha seguiment en temps real.</li>
+<li>Segons les teves respostes, l'app pot <strong>recomanar-te contactar</strong> amb el teu equip o mostrar-te telèfons d'ajuda.</li>
+<li>Pots aturar-te quan vulguis amb «Necessito una pausa».</li></ul>
+<p>Són només unes poques preguntes breus. Comencem?</p>`
+  };
   var TRIAGE_SCREENS = {
     verde: {
       label: "Sin señales de alerta hoy",
@@ -4765,6 +4785,7 @@ EL MÉS ÚTIL QUE POTS FER: portar a la consulta de preanestèsia una llista com
       crib_r_level: "Nivel",
       crib_share: "Compartir resumen",
       crib_print: "Imprimir / Guardar PDF",
+      crib_consent_accept: "Acepto y empiezo",
       report_fasting: "Ayuno: situación indicada",
       fasting_flag_diabetes: "Diabetes",
       fasting_flag_glp1: "Medicación GLP‑1",
@@ -5089,6 +5110,7 @@ Gracias.`,
       crib_r_level: "Level",
       crib_share: "Share summary",
       crib_print: "Print / Save PDF",
+      crib_consent_accept: "I accept and start",
       report_fasting: "Fasting: reported situation",
       fasting_flag_diabetes: "Diabetes",
       fasting_flag_glp1: "GLP‑1 medication",
@@ -5413,6 +5435,7 @@ Thank you.`,
       crib_r_level: "Nivell",
       crib_share: "Compartir resum",
       crib_print: "Imprimir / Desar PDF",
+      crib_consent_accept: "Accepto i començo",
       report_fasting: "Dejuni: situació indicada",
       fasting_flag_diabetes: "Diabetis",
       fasting_flag_glp1: "Medicació GLP‑1",
@@ -6104,6 +6127,14 @@ Gràcies.`,
       return renderCribadoResult(state2);
     const back = `<button class="btn ghost back-btn" data-action="nav" data-view="bienestar-guide">${t("back")}</button>`;
     const pause = `<button class="btn block" data-action="nav" data-view="pausa">\uD83D\uDD4A️ ${t("mental_pause")}</button>`;
+    if (step === "consent") {
+      return `${back}
+    <div class="section-label">\uD83E\uDDED ${esc(tr(MENTAL_GUIDE.intro, "title"))}</div>
+    <section class="card fasting-body">${tr(MENTAL_CONSENT, "body")}</section>
+    <button class="btn primary block" data-action="cribado-consent">${t("crib_consent_accept")}</button>
+    <button class="btn ghost block" data-action="nav" data-view="bienestar-guide">${t("back")}</button>
+    <p class="muted small fasting-disclaimer">${t("mental_disclaimer")}</p>`;
+    }
     let title = "";
     let inner = "";
     if (step === "dt") {
@@ -7299,6 +7330,17 @@ Gràcies.`,
       case "start-cribado":
         startCribado();
         break;
+      case "cribado-consent": {
+        if (!state2.cribado) {
+          startCribado();
+          break;
+        }
+        state2.cribado.step = "dt";
+        saveState();
+        render();
+        window.scrollTo(0, 0);
+        break;
+      }
       case "share-cribado":
         shareCribado();
         break;
@@ -8140,7 +8182,7 @@ Gràcies.`,
   function startCribado() {
     const state2 = getState();
     const code = state2.cribado && state2.cribado.code || "PREHAB-" + Math.floor(1000 + Math.random() * 9000);
-    state2.cribado = { step: "dt", a: {}, result: null, code };
+    state2.cribado = { step: "consent", a: {}, result: null, code };
     saveState();
     navigate("cribado");
   }
