@@ -6,7 +6,7 @@ import {
   DISCLAIMER, DISCLAIMER_EN, DISCLAIMER_CA, ERAS_NOTE, ERAS_NOTE_EN, ERAS_NOTE_CA,
   ALARM_SIGNS, ALARM_SIGNS_EN, ALARM_SIGNS_CA, CAREGIVER_TIPS, FRAIL_QUESTIONS, frailResult, getPhase,
   EDMONTON_QUESTIONS, edmontonResult, PRIVACY_POINTS, FASTING_GUIDE, EXERCISE_GUIDE, RESPIRATORY_GUIDE,
-  MENTAL_GUIDE, MENTAL_PAUSE, TRIAGE_SCREENS, MENTAL_CONSENT,
+  MENTAL_GUIDE, MENTAL_PAUSE, TRIAGE_SCREENS, MENTAL_CONSENT, MENTAL_PIECES,
 } from './content.js';
 import { todayKey, daysBetween, listProfiles, getActiveProfileId, assessmentHistory } from './state.js';
 import { GAD7, PHQ9, DASI, MUST, FREQ_OPTIONS, MUST_WEIGHTLOSS, SCALE_LIST, scaleMeta, resultForScale, DISTRESS, APAIS, APAIS_OPTIONS } from './scales.js';
@@ -477,9 +477,71 @@ export function renderRespiratoryGuide(state) {
 
 /* ---------- Vista: BIENESTAR MENTAL (recurso interno) ---------- */
 
+/** Pieza recomendada "de hoy" con lógica de repesca (Fase 3). */
+export function recommendedMentalPiece(state) {
+  const seen = (state.mental && state.mental.seen) || {};
+  const dts = daysToSurgery(state);
+  const byId = (id) => MENTAL_PIECES.find((p) => p.id === id);
+  // Postoperatorio (+1..+7 días): V12
+  if (dts != null && dts <= -1 && dts >= -7) { const p = byId('v12'); if (p && !seen[p.id]) return p; }
+  // Día D (−2/−1 días): V11
+  if (dts != null && (dts === 1 || dts === 2)) { const p = byId('v11'); if (p && !seen[p.id]) return p; }
+  // Secuencia diaria anclada a startDate, con repesca
+  const programDay = state.profile.startDate ? daysBetween(todayKey(), state.profile.startDate) : 0;
+  const seq = MENTAL_PIECES.filter((p) => p.day != null);
+  const pending = seq.filter((p) => p.day <= programDay && !seen[p.id]).sort((a, b) => a.day - b.day);
+  if (pending.length) return pending[0];
+  const upcoming = seq.filter((p) => p.day > programDay && !seen[p.id]).sort((a, b) => a.day - b.day);
+  return upcoming.length ? upcoming[0] : null;
+}
+
+function renderMentalToday(state, rec) {
+  const seen = (state.mental && state.mental.seen) || {};
+  const dts = daysToSurgery(state);
+  const seenCount = MENTAL_PIECES.filter((p) => seen[p.id]).length;
+  const total = MENTAL_PIECES.length;
+  const recHtml = rec
+    ? `<p><strong>${t('mental_today')}:</strong> ${esc(tr(rec, 'title'))}</p><p class="muted small">${esc(tr(rec, 'desc'))}</p>`
+    : `<p>${t('mental_alday')}</p>`;
+  const notice = (dts != null && dts >= 0 && dts <= 7) ? `<p class="muted small">⏳ ${t('mental_priority_notice')}</p>` : '';
+  return `<section class="card" style="border-left:4px solid var(--accent)">
+      <div class="section-label" style="margin:0 0 6px">🗓️ ${t('mental_today_title')}</div>
+      ${recHtml}
+      <p class="muted small">${seenCount} / ${total} ${t('mental_progress_suffix')}</p>
+      ${notice}
+    </section>`;
+}
+
+function renderMentalPieces(state, rec) {
+  const seen = (state.mental && state.mental.seen) || {};
+  const recId = rec ? rec.id : null;
+  const items = MENTAL_PIECES.map((p) => {
+    const isSeen = !!seen[p.id];
+    const isToday = p.id === recId;
+    const badges = [];
+    if (p.priority) badges.push(`<span class="tag-you">${t('mental_priority')}</span>`);
+    if (p.calendar === 'pre') badges.push(`<span class="tag-you">${t('mental_preop')}</span>`);
+    if (p.calendar === 'post') badges.push(`<span class="tag-you">${t('mental_postop')}</span>`);
+    const media = p.vimeo
+      ? `<div class="video"><iframe src="https://player.vimeo.com/video/${p.vimeo}" title="${esc(tr(p, 'title'))}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`
+      : `<p class="muted small">(${t('mental_soon')})</p>`;
+    return `<details class="fasting-block"${isToday ? ' open' : ''}>
+      <summary>${isSeen ? '✅ ' : ''}${esc(tr(p, 'title'))} ${badges.join(' ')}</summary>
+      <div class="fasting-body">
+        <p>${esc(tr(p, 'desc'))}</p>
+        ${media}
+        <button class="btn ghost block" data-action="mental-seen" data-id="${esc(p.id)}">${isSeen ? t('mental_unsee') : t('mental_mark_seen')}</button>
+      </div>
+    </details>`;
+  }).join('');
+  return `<div class="section-label">🎬 ${t('mental_library')}</div>${items}`;
+}
+
 export function renderMentalGuide(state) {
   const g = MENTAL_GUIDE;
-  const blocks = g.blocks.map((b) => {
+  const rec = recommendedMentalPiece(state);
+  // El bloque 'programa' se sustituye por la biblioteca estructurada (MENTAL_PIECES).
+  const blocks = g.blocks.filter((b) => b.id !== 'programa').map((b) => {
     const open = !!b.open;
     return `<details class="fasting-block"${open ? ' open' : ''}>
       <summary>${esc(tr(b, 'title'))}</summary>
@@ -489,9 +551,11 @@ export function renderMentalGuide(state) {
   return `
     <button class="btn ghost back-btn" data-action="nav" data-view="recursos">${t('back')}</button>
     <div class="section-label">${esc(tr(g.intro, 'title'))}</div>
+    ${renderMentalToday(state, rec)}
     <button class="btn block" data-action="nav" data-view="pausa">🕊️ ${t('mental_pause')}</button>
     <button class="btn ghost block" data-action="start-cribado">📝 ${t('crib_start')}</button>
     <section class="card fasting-body">${tr(g.intro, 'body')}</section>
+    ${renderMentalPieces(state, rec)}
     ${blocks}
     <p class="muted small fasting-disclaimer">${t('mental_disclaimer')}</p>`;
 }

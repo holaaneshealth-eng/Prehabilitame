@@ -2237,6 +2237,39 @@ export const MENTAL_GUIDE = {
   ],
 };
 
+// Secuencia estructurada de vídeos del programa (Fase 3). `day` = día de programa
+// (anclado a startDate); `calendar` = activación relativa a la cirugía (pre/post).
+// `priority` = pieza esencial a priorizar si la cirugía está cerca. `vimeo` se
+// rellena con el ID cuando el contenido esté validado.
+export const MENTAL_PIECES = [
+  { id: 'v1', day: 0, priority: true, vimeo: '', title: 'V1. Bienvenida', title_en: 'V1. Welcome', title_ca: 'V1. Benvinguda',
+    desc: 'Presenta el programa, normaliza dudas y nervios, e introduce el botón de pausa.', desc_en: 'Introduces the programme, normalises doubts and nerves, and introduces the pause button.', desc_ca: 'Presenta el programa, normalitza dubtes i nervis, i introdueix el botó de pausa.' },
+  { id: 'v2', day: 1, priority: true, vimeo: '', title: 'V2. Tu cirugía, paso a paso', title_en: 'V2. Your surgery, step by step', title_ca: 'V2. La teva cirurgia, pas a pas',
+    desc: 'El recorrido perioperatorio en orden, de la preparación al alta, para reducir la incertidumbre.', desc_en: 'The perioperative journey in order, from preparation to discharge, to reduce uncertainty.', desc_ca: 'El recorregut perioperatori en ordre, de la preparació a l’alta, per reduir la incertesa.' },
+  { id: 'v3', day: 2, priority: true, vimeo: '', title: 'V3. Qué notarás: la anestesia', title_en: 'V3. What you\'ll notice: anaesthesia', title_ca: 'V3. Què notaràs: l’anestèsia',
+    desc: 'Sensaciones esperables, el papel del anestesista y respuestas a miedos frecuentes.', desc_en: 'Expected sensations, the anaesthetist\'s role and answers to common fears.', desc_ca: 'Sensacions esperables, el paper de l’anestesista i respostes a pors freqüents.' },
+  { id: 'v4', day: 3, priority: true, vimeo: '', title: 'V4. Entrena tu calma (respiración)', title_en: 'V4. Train your calm (breathing)', title_ca: 'V4. Entrena la teva calma (respiració)',
+    desc: 'Respiración lenta diafragmática como herramienta principal de autorregulación.', desc_en: 'Slow diaphragmatic breathing as the main self-regulation tool.', desc_ca: 'Respiració lenta diafragmàtica com a eina principal d’autoregulació.' },
+  { id: 'v4b', day: 4, vimeo: '', title: 'V4-B. Entrenar la atención', title_en: 'V4-B. Training attention', title_ca: 'V4-B. Entrenar l’atenció',
+    desc: 'Mindfulness breve y guiado: volver con amabilidad al presente.', desc_en: 'Brief, guided mindfulness: gently returning to the present.', desc_ca: 'Mindfulness breu i guiat: tornar amb amabilitat al present.' },
+  { id: 'v5', day: 5, priority: true, vimeo: '', title: 'V5. Lo que esperas importa', title_en: 'V5. What you expect matters', title_ca: 'V5. El que esperes importa',
+    desc: 'Expectativas realistas y concretas sobre la recuperación; objetivos personales alcanzables.', desc_en: 'Realistic, concrete recovery expectations; achievable personal goals.', desc_ca: 'Expectatives realistes i concretes sobre la recuperació; objectius personals assolibles.' },
+  { id: 'v6', day: 6, vimeo: '', title: 'V6. El dolor, bien explicado (I)', title_en: 'V6. Pain, well explained (I)', title_ca: 'V6. El dolor, ben explicat (I)',
+    desc: 'El dolor como sistema de protección modulable, no como medida exacta de daño.', desc_en: 'Pain as a modulable protection system, not an exact measure of damage.', desc_ca: 'El dolor com a sistema de protecció modulable, no com a mesura exacta de dany.' },
+  { id: 'v7', day: 7, vimeo: '', title: 'V7. El dolor, bien explicado (II)', title_en: 'V7. Pain, well explained (II)', title_ca: 'V7. El dolor, ben explicat (II)',
+    desc: 'Estrategias prácticas ante el dolor agudo: respirar, avisar pronto, moverte pautadamente.', desc_en: 'Practical strategies for acute pain: breathe, speak up early, move as advised.', desc_ca: 'Estratègies pràctiques davant el dolor agut: respirar, avisar aviat, moure’t pautadament.' },
+  { id: 'v8', day: 8, vimeo: '', title: 'V8. La mente que avisa demasiado', title_en: 'V8. The mind that warns too much', title_ca: 'V8. La ment que avisa massa',
+    desc: 'Reconocer los pensamientos anticipatorios como avisos mentales, no como hechos.', desc_en: 'Recognising anticipatory thoughts as mental alerts, not facts.', desc_ca: 'Reconèixer els pensaments anticipatoris com a avisos mentals, no com a fets.' },
+  { id: 'v9', day: 9, vimeo: '', title: 'V9. Lo que importa: tus valores', title_en: 'V9. What matters: your values', title_ca: 'V9. El que importa: els teus valors',
+    desc: 'Conecta la preparación con tus valores y tradúcelos en pasos pequeños.', desc_en: 'Connect your preparation with your values and turn them into small steps.', desc_ca: 'Connecta la preparació amb els teus valors i tradueix-los en passos petits.' },
+  { id: 'v10', day: 10, vimeo: '', title: 'V10. Dormir mejor', title_en: 'V10. Sleeping better', title_ca: 'V10. Dormir millor',
+    desc: 'Medidas básicas de higiene del sueño; enlaza con el audio nocturno.', desc_en: 'Basic sleep hygiene; links to the night-time audio.', desc_ca: 'Mesures bàsiques d’higiene del son; enllaça amb l’àudio nocturn.' },
+  { id: 'v11', calendar: 'pre', vimeo: '', title: 'V11. Modo Día D', title_en: 'V11. D-day mode', title_ca: 'V11. Mode Dia D',
+    desc: 'Para las 24–48 h antes: instrucciones prácticas y herramientas de regulación.', desc_en: 'For the 24–48 h before: practical instructions and regulation tools.', desc_ca: 'Per a les 24–48 h abans: instruccions pràctiques i eines de regulació.' },
+  { id: 'v12', calendar: 'post', vimeo: '', title: 'V12. Los primeros días', title_en: 'V12. The first days', title_ca: 'V12. Els primers dies',
+    desc: 'Tras la cirugía: ajusta expectativas, recuerda herramientas y repasa señales de alarma.', desc_en: 'After surgery: adjust expectations, recall tools and review warning signs.', desc_ca: 'Després de la cirurgia: ajusta expectatives, recorda eines i repassa senyals d’alarma.' },
+];
+
 // Pantalla "Necesito una pausa" (§8.4 del diseño). Salida segura siempre accesible.
 export const MENTAL_PAUSE = {
   title: 'Necesito una pausa',

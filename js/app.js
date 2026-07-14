@@ -163,6 +163,14 @@ function onClick(e) {
       state.cribado.step = 'dt'; saveState(); render(); window.scrollTo(0, 0); break;
     }
     case 'share-cribado': shareCribado(); break;
+    case 'mental-seen': {
+      if (!state.mental) state.mental = { seen: {} };
+      if (!state.mental.seen) state.mental.seen = {};
+      const id = el.dataset.id;
+      state.mental.seen[id] = !state.mental.seen[id];
+      saveState(); render(); window.scrollTo(0, 0);
+      break;
+    }
 
     case 'toggle-task': {
       const id = el.dataset.task;
