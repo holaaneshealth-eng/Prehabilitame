@@ -172,9 +172,21 @@ function onClick(e) {
       if (!box) break;
       const src = el.dataset.src || '';
       if (!src) break;
-      const sep = src.indexOf('?') === -1 ? '?' : '&';
+      // Mantener como máximo UN reproductor vivo: devolver los demás a modo fachada.
+      // Evita que se acumulen players (memoria) al recorrer el acordeón de ejercicios.
+      document.querySelectorAll('.video.is-playing').forEach((other) => {
+        if (other !== box && other._facade) { other.innerHTML = other._facade; other.classList.remove('is-playing'); }
+      });
+      box._facade = box.innerHTML; // guardar la fachada por si hay que restaurarla
       const title = (el.getAttribute('aria-label') || '').replace(/"/g, '&quot;');
-      box.innerHTML = `<iframe src="${src}${sep}autoplay=1" title="${title}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+      const sep = src.indexOf('?') === -1 ? '?' : '&';
+      // SIN autoplay: la reproducción la inicia el usuario dentro del player.
+      // Cargar el reproductor y decodificar el vídeo a la vez (autoplay=1) genera un
+      // pico de memoria en la carga en frío que puede cerrar la pestaña en móviles con
+      // poca RAM (por eso "la 2ª vez" —ya cacheada— no fallaba). Params ligeros + sin autoplay.
+      const params = 'dnt=1&title=0&byline=0&portrait=0&playsinline=1';
+      box.classList.add('is-playing');
+      box.innerHTML = `<iframe src="${src}${sep}${params}" title="${title}" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>`;
       break;
     }
     case 'dismiss-report-reminder': {
