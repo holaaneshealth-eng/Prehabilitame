@@ -330,6 +330,14 @@ export const BADGES = [
     check: (s) => { const v = s.visited || {}; return ['ayuno-guide', 'ejercicio-guide', 'respiratorio-guide', 'bienestar-guide', 'nutricion-guide'].some((k) => v[k]); } },
   { id: 'punto-partida', emoji: '🩺', name: 'Punto de partida', name_en: 'Starting point', name_ca: 'Punt de partida', desc: 'Haz un test inicial (física, nutrición o fragilidad).', desc_en: 'Do an initial test (fitness, nutrition or frailty).', desc_ca: 'Fes un test inicial (física, nutrició o fragilitat).',
     check: (s) => { const a = s.assessments || {}; return ['dasi', 'must', 'frail', 'edmonton'].some((k) => a[k] && a[k].length > 0); } },
+  // Medallas "antes y después": premian repetir la evaluación al final del programa
+  // (test inicial + final) en cada área con esa lógica. Bienestar mental NO se bonifica.
+  { id: 'ciclo-fisico', emoji: '🏃', name: 'Ejercicio: antes y después', name_en: 'Exercise: before & after', name_ca: 'Exercici: abans i després', desc: 'Repite el test DASI al final del programa.', desc_en: 'Repeat the DASI test at the end of the program.', desc_ca: 'Repeteix el test DASI al final del programa.',
+    check: (s) => !!(s.assessments && s.assessments.dasi && s.assessments.dasi.length >= 2) },
+  { id: 'ciclo-nutricion', emoji: '🥗', name: 'Nutrición: antes y después', name_en: 'Nutrition: before & after', name_ca: 'Nutrició: abans i després', desc: 'Repite el cribado MUST al final del programa.', desc_en: 'Repeat the MUST screening at the end of the program.', desc_ca: 'Repeteix el cribratge MUST al final del programa.',
+    check: (s) => !!(s.assessments && s.assessments.must && s.assessments.must.length >= 2) },
+  { id: 'ciclo-fragilidad', emoji: '🩺', name: 'Fragilidad: antes y después', name_en: 'Frailty: before & after', name_ca: 'Fragilitat: abans i després', desc: 'Repite la evaluación de fragilidad al final del programa.', desc_en: 'Repeat the frailty assessment at the end of the program.', desc_ca: 'Repeteix l’avaluació de fragilitat al final del programa.',
+    check: (s) => !!(s.assessments && s.assessments.frail && s.assessments.frail.length >= 2) },
   { id: 'primer-paso', emoji: '👟', name: 'Primer paso', name_en: 'First step', name_ca: 'Primer pas', desc: 'Completa tu primer día de programa.', desc_en: 'Complete your first day of the program.', desc_ca: 'Completa el teu primer dia de programa.',
     check: (s) => s.stats.daysCompleted >= 1 },
   { id: 'racha-3', emoji: '🔥', name: 'En marcha', name_en: 'Getting going', name_ca: 'En marxa', desc: 'Mantén una racha de 3 días.', desc_en: 'Keep a 3-day streak.', desc_ca: 'Mantén una ratxa de 3 dies.',

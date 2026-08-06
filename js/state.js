@@ -39,6 +39,7 @@ function defaultState() {
     challengeAwards: {},
     visited: {},
     report: { lastShared: null },
+    tips: { dismissedOn: null },
     medList: { meds: [], allergies: '', notes: '' },
     frail: { score: null, date: null, answers: {} },
     edmonton: { score: null, date: null, answers: {} },

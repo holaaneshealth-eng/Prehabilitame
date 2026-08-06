@@ -171,6 +171,62 @@ function weeklyReportBanner(state) {
     </section>`;
 }
 
+/** Tarjeta guía: título largo de la pestaña + 1 frase de orientación. */
+function tabGuide(titleKey, descKey) {
+  return `<section class="card tab-guide"><h2>${t(titleKey)}</h2><p class="muted small">${t(descKey)}</p></section>`;
+}
+
+/** Botón de volver coherente (miga) a la pestaña o submenú padre. */
+function backBar(view) {
+  return `<button class="btn ghost back-btn" data-action="nav" data-view="${view}">${t('back')}</button>`;
+}
+
+/** Ítem de submenú con explicación desplegable (para orientar al paciente). */
+function subItem(view, icon, label, exp) {
+  return `<div class="sub-item">
+    <button class="more-item" data-action="nav" data-view="${view}">
+      <span class="more-ico">${icon}</span>
+      <span class="more-txt"><strong>${esc(label)}</strong></span>
+      <span class="more-arrow">›</span>
+    </button>
+    <details class="sub-exp"><summary>${t('read_more')}</summary><p class="muted small">${esc(exp)}</p></details>
+  </div>`;
+}
+
+/** Áreas del plan (guías) para el panel de bienvenida de "Descubre". */
+const PLAN_GUIDES = [
+  { view: 'ejercicio-guide', emoji: '🏃', name: 'g_ejercicio_name', exp: 'g_ejercicio_exp' },
+  { view: 'respiratorio-guide', emoji: '🫁', name: 'g_respiratorio_name', exp: 'g_respiratorio_exp' },
+  { view: 'nutricion-guide', emoji: '🥗', name: 'g_nutricion_name', exp: 'g_nutricion_exp' },
+  { view: 'ayuno-guide', emoji: '⏱️', name: 'g_ayuno_name', exp: 'g_ayuno_exp' },
+  { view: 'bienestar-guide', emoji: '🧠', name: 'g_bienestar_name', exp: 'g_bienestar_exp' },
+];
+
+/** Sugerencia periódica in-app (sin push): recuerda submenús poco evidentes.
+ * El juego de memoria se sugiere ~cada 4 días; el resto de avisos rota. Se puede
+ * descartar por hoy. Indica en el propio texto en qué menú está cada cosa. */
+function dailyTip(state) {
+  const start = state.profile && state.profile.startDate;
+  if (!start) return '';
+  if (state.tips && state.tips.dismissedOn === todayKey()) return '';
+  const day = daysBetween(todayKey(), start);
+  let tip = null;
+  if (day % 4 === 0) tip = { key: 'tip_game', view: 'juego' };
+  else if (day % 4 === 2) {
+    const others = [{ key: 'tip_fasting', view: 'ayuno-guide' }, { key: 'tip_mental', view: 'bienestar-guide' }, { key: 'tip_report', view: 'report' }];
+    tip = others[Math.floor(day / 4) % others.length];
+  }
+  if (!tip) return '';
+  return `<section class="card tip-card" style="border-left:4px solid #f59e0b">
+      <h3>💡 ${t('tip_label')}</h3>
+      <p class="muted small">${t(tip.key)}</p>
+      <div class="btn-row">
+        <button class="btn primary" data-action="nav" data-view="${tip.view}">${t('tip_go')}</button>
+        <button class="btn ghost" data-action="dismiss-tip">${t('tip_dismiss')}</button>
+      </div>
+    </section>`;
+}
+
 /* ---------- Vista: HOY ---------- */
 
 export function renderToday(state) {
@@ -223,16 +279,27 @@ export function renderToday(state) {
       </section>`;
   }).join('');
 
+  const subMenu = `
+    <div class="section-label">${t('reg_more')}</div>
+    <section class="card more-menu">
+      ${subItem('evaluaciones', '🩺', t('m_assess'), t('reg_frailty_exp'))}
+      ${subItem('medicacion', '💊', t('m_meds'), t('reg_meds_exp'))}
+      ${subItem('juego', '🧩', t('m_game'), t('reg_game_exp'))}
+    </section>`;
+
   return `
+    ${tabGuide('title_registra', 'guide_registra')}
     ${phaseBanner(state)}
     ${reevalBanner(state)}
     ${preopBanner(state)}
     ${weeklyReportBanner(state)}
+    ${dailyTip(state)}
     ${dailyCard}
     ${challengeCard}
     <div class="section-label">${t('tasks_today')}</div>
     ${groups}
     ${moodCard(dayLog)}
+    ${subMenu}
     <p class="disclaimer-mini" data-action="show-disclaimer">${t('disclaimer_link')}</p>
   `;
 }
@@ -316,7 +383,14 @@ export function renderPlan(state) {
         </ul>
       </section>`;
   }).join('');
-  return `<div class="section-label">${t('plan_title')}</div>${phaseBanner(state)}${cards}`;
+  const mentalNote = `<section class="card plan-pillar" style="--pc:#8b5cf6">
+      <div class="plan-pillar-head">
+        <span class="pillar-emoji">🧠</span>
+        <div><h3>${t('g_bienestar_name')}</h3><p class="muted small">${t('plan_mental_noscore')}</p></div>
+      </div>
+      <button class="btn ghost block" data-action="nav" data-view="bienestar-guide">${t('plan_open')}</button>
+    </section>`;
+  return `${backBar('recursos')}<div class="section-label">${t('plan_title')}</div>${phaseBanner(state)}${cards}${mentalNote}`;
 }
 
 /* ---------- Vista: PROGRESO ---------- */
@@ -379,9 +453,22 @@ export function renderProgress(state, charts) {
     ? `<section class="card"><h3>${t('recent_mood')}</h3><div class="mood-history">${moodLogs.map(([k, l]) => `<div class="mh"><span>${moodEmoji[l.mood]}</span><small>${k.slice(5)}</small></div>`).join('')}</div></section>`
     : '';
 
-  const reportBtn = `<button class="btn ghost block" data-action="nav" data-view="report">${t('report_btn')}</button>`;
+  const subMenu = `
+    <div class="section-label">${t('reg_more')}</div>
+    <section class="card more-menu">
+      <button class="more-item" data-action="nav" data-view="logros">
+        <span class="more-ico">🎖️</span>
+        <span class="more-txt"><strong>${t('m_badges')}</strong><small class="muted">${t('m_badges_sub', { n: state.badges.length })}</small></span>
+        <span class="more-arrow">›</span>
+      </button>
+      <button class="more-item" data-action="nav" data-view="report">
+        <span class="more-ico">📄</span>
+        <span class="more-txt"><strong>${t('m_report')}</strong><small class="muted">${t('m_report_sub')}</small></span>
+        <span class="more-arrow">›</span>
+      </button>
+    </section>`;
 
-  return `${chips}${lineCard}${barCard}${heat}${moodRow}${reportBtn}`;
+  return `${tabGuide('title_logros', 'guide_logros')}${chips}${lineCard}${barCard}${heat}${moodRow}${subMenu}`;
 }
 
 /* ---------- Vista: LOGROS ---------- */
@@ -396,32 +483,49 @@ export function renderBadges(state, BADGES) {
       <div class="badge-desc">${esc(tr(b, 'desc'))}</div>
     </div>`;
   }).join('');
-  return `<div class="section-label">${t('medals_title')} · ${state.badges.length}/${BADGES.length}</div><div class="badge-grid">${grid}</div>`;
+  return `${backBar('progreso')}<div class="section-label">${t('medals_title')} · ${state.badges.length}/${BADGES.length}</div><div class="badge-grid">${grid}</div>`;
 }
 
 /* ---------- Vista: RECURSOS ---------- */
 
 export function renderResources(state) {
   const resources = getResources(state);
-  if (resources.length === 0) {
-    return `
-      <div class="section-label">${t('res_library')}</div>
-      <section class="card empty-state">
-        <div class="empty-emoji">🎬</div>
-        <p>${t('res_empty_1')}</p>
-        <p class="muted small">${t('res_empty_2')}</p>
-        <button class="btn primary" data-action="nav" data-view="editor" data-tab="recursos">${t('res_add')}</button>
-      </section>`;
+
+  // Panel de bienvenida "Tu plan completo": accesos directos a cada área/pilar,
+  // cada uno con una explicación desplegable. Es el resumen antes de profundizar.
+  const guideCards = PLAN_GUIDES.map((g) => `
+    <div class="sub-item">
+      <button class="more-item" data-action="nav" data-view="${g.view}">
+        <span class="more-ico">${g.emoji}</span>
+        <span class="more-txt"><strong>${esc(t(g.name))}</strong></span>
+        <span class="more-arrow">›</span>
+      </button>
+      <details class="sub-exp"><summary>${t('read_more')}</summary><p class="muted small">${esc(t(g.exp))}</p></details>
+    </div>`).join('');
+  const welcome = `
+    <section class="card" style="border-left:4px solid var(--accent)">
+      <h3>📋 ${t('m_plan')}</h3>
+      <p class="muted small">${t('plan_welcome_intro')}</p>
+      <button class="btn ghost block" data-action="nav" data-view="plan">${t('plan_detail')}</button>
+    </section>
+    <div class="section-label">${t('plan_areas')}</div>
+    <section class="card more-menu">${guideCards}</section>`;
+
+  // Otros recursos sueltos (vídeos/enlaces del editor), sin duplicar las guías.
+  const extras = resources.filter((r) => !(r.type === 'guide' || r.guideId));
+  let extrasHtml = '';
+  if (extras.length) {
+    const byPillar = getPillars(state).map((p) => {
+      const rs = extras.filter((r) => r.pillar === p.id);
+      if (rs.length === 0) return '';
+      return `<div class="section-label" style="color:${p.color}">${p.emoji} ${esc(tr(p, 'name'))}</div>${rs.map(renderResourceCard).join('')}`;
+    }).join('');
+    const known = new Set(getPillars(state).map((p) => p.id));
+    const others = extras.filter((r) => !known.has(r.pillar));
+    const otherHtml = others.length ? `<div class="section-label">${t('res_other')}</div>${others.map(renderResourceCard).join('')}` : '';
+    extrasHtml = `<div class="section-label">${t('res_library')}</div>${byPillar}${otherHtml}`;
   }
-  const byPillar = getPillars(state).map((p) => {
-    const rs = resources.filter((r) => r.pillar === p.id);
-    if (rs.length === 0) return '';
-    return `<div class="section-label" style="color:${p.color}">${p.emoji} ${esc(tr(p, 'name'))}</div>${rs.map(renderResourceCard).join('')}`;
-  }).join('');
-  const known = new Set(getPillars(state).map((p) => p.id));
-  const others = resources.filter((r) => !known.has(r.pillar));
-  const otherHtml = others.length ? `<div class="section-label">${t('res_other')}</div>${others.map(renderResourceCard).join('')}` : '';
-  return `<div class="section-label">${t('res_library')}</div>${byPillar}${otherHtml}`;
+  return `${tabGuide('title_descubre', 'guide_descubre')}${welcome}${extrasHtml}`;
 }
 
 function renderResourceCard(r) {
@@ -852,10 +956,18 @@ export function renderLearn(state) {
   const checklist = preop.map((c) => `<li>☐ ${esc(c)}</li>`).join('');
 
   return `
+    ${tabGuide('title_aprende', 'guide_aprende')}
     <section class="card" style="border-left:4px solid var(--accent)">
       <h3>${t('preop_title')}</h3>
       <ul class="preop">${checklist}</ul>
       <p class="muted small">${t('preop_note')}</p>
+    </section>
+    <section class="card more-menu">
+      <button class="more-item" data-action="nav" data-view="cuidador">
+        <span class="more-ico">🤝</span>
+        <span class="more-txt"><strong>${t('m_care')}</strong><small class="muted">${t('m_care_sub')}</small></span>
+        <span class="more-arrow">›</span>
+      </button>
     </section>
     <div class="section-label">${t('learn_posts')}</div>
     <div class="post-list">${postCards}</div>
@@ -884,13 +996,6 @@ export function renderPost(state, id) {
 
 export function renderMore(state) {
   const items = [
-    { view: 'evaluaciones', icon: '🩺', label: t('m_assess'), sub: t('m_assess_sub') },
-    { view: 'medicacion', icon: '💊', label: t('m_meds'), sub: t('m_meds_sub') },
-    { view: 'cuidador', icon: '🤝', label: t('m_care'), sub: t('m_care_sub') },
-    { view: 'juego', icon: '🧩', label: t('m_game'), sub: t('m_game_sub') },
-    { view: 'report', icon: '📄', label: t('m_report'), sub: t('m_report_sub') },
-    { view: 'plan', icon: '📋', label: t('m_plan'), sub: t('m_plan_sub') },
-    { view: 'logros', icon: '🏅', label: t('m_badges'), sub: t('m_badges_sub', { n: state.badges.length }) },
     { view: 'perfiles', icon: '👥', label: t('m_profiles'), sub: t('m_profiles_sub') },
     { view: 'preferencias', icon: '🌍', label: t('m_prefs'), sub: t('m_prefs_sub') },
     { view: 'privacidad', icon: '🔒', label: t('m_privacy'), sub: t('m_privacy_sub') },
@@ -904,7 +1009,7 @@ export function renderMore(state) {
     </button>`).join('');
 
   return `
-    <div class="section-label">${t('more_options')}</div>
+    ${tabGuide('title_config', 'guide_config')}
     <section class="card more-menu">${menu}</section>
     <section class="card">
       <h3>${t('personal_data')}</h3>
@@ -937,19 +1042,27 @@ export function profileFormHtml(state) {
 
 export function renderNav(route) {
   const items = [
-    { id: 'hoy', icon: '🏠', label: t('nav_hoy') },
-    { id: 'recursos', icon: '🎬', label: t('nav_recursos') },
-    { id: 'progreso', icon: '📈', label: t('nav_progreso') },
+    { id: 'recursos', icon: '🧭', label: t('nav_recursos') },
     { id: 'aprende', icon: '📚', label: t('nav_aprende') },
-    { id: 'mas', icon: '⋯', label: t('nav_mas') },
+    { id: 'hoy', icon: '✍️', label: t('nav_hoy') },
+    { id: 'progreso', icon: '🏆', label: t('nav_progreso') },
+    { id: 'mas', icon: '⚙️', label: t('nav_mas') },
   ];
+  // Cada subruta se resalta bajo su pestaña padre.
   const activeSet = {
-    hoy: 'hoy', recursos: 'recursos', progreso: 'progreso', aprende: 'aprende', post: 'aprende',
-    mas: 'mas', plan: 'mas', logros: 'mas', editor: 'mas',
-    fragilidad: 'mas', medicacion: 'mas', cuidador: 'mas', juego: 'mas', report: 'mas', perfiles: 'mas',
-    preferencias: 'mas', edmonton: 'mas',
-    evaluaciones: 'mas', gad7: 'mas', phq9: 'mas', dasi: 'mas', must: 'mas',
-    privacidad: 'mas',
+    // Descubre (recursos): plan completo + guías de cada pilar + módulo mental/cribado
+    recursos: 'recursos', plan: 'recursos', 'ayuno-guide': 'recursos', 'ejercicio-guide': 'recursos',
+    'respiratorio-guide': 'recursos', 'nutricion-guide': 'recursos', 'bienestar-guide': 'recursos',
+    pausa: 'recursos', cribado: 'recursos', 'cribado-informe': 'recursos', dasi: 'recursos', must: 'recursos',
+    gad7: 'recursos', phq9: 'recursos',
+    // Aprende: artículos + cuidador
+    aprende: 'aprende', post: 'aprende', cuidador: 'aprende',
+    // Registra (hoy): registro diario + fragilidad + medicación + juego
+    hoy: 'hoy', evaluaciones: 'hoy', fragilidad: 'hoy', edmonton: 'hoy', medicacion: 'hoy', juego: 'hoy',
+    // Logros (progreso): medallas + informe
+    progreso: 'progreso', logros: 'progreso', report: 'progreso',
+    // Configuración (mas)
+    mas: 'mas', perfiles: 'mas', preferencias: 'mas', privacidad: 'mas', editor: 'mas',
   };
   return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? 'active' : ''}" data-action="nav" data-view="${i.id}">
@@ -997,6 +1110,7 @@ export function renderCaregiver() {
   const alarmsArr = pickArr(ALARM_SIGNS, ALARM_SIGNS_EN, ALARM_SIGNS_CA);
   const alarms = alarmsArr.map((a) => `<li>${esc(a)}</li>`).join('');
   return `
+    ${backBar('aprende')}
     <div class="section-label">${t('care_title')}</div>
     <section class="card speak-scope" data-speak-scope>
       <p class="speakable">${t('care_intro')}</p>
@@ -1038,6 +1152,7 @@ export function renderFrailty(state) {
       </div>`;
   }).join('');
   return `
+    ${backBar('evaluaciones')}
     <div class="section-label">${t('frail_title')}</div>
     ${resultCard}
     <form id="form-frail" class="card">
@@ -1063,6 +1178,7 @@ export function renderMeds(state) {
     : `<tr><td colspan="3">${t('meds_doc_none')}</td></tr>`;
 
   return `
+    <div class="no-print">${backBar('hoy')}</div>
     <div class="section-label">${t('meds_title')}</div>
     <div class="no-print">
       <section class="card"><p class="muted small">${t('meds_intro')}</p></section>
@@ -1193,6 +1309,7 @@ export function renderReport(state) {
     : '';
 
   return `
+    <div class="no-print">${backBar('progreso')}</div>
     <div class="section-label">${t('report_title')}</div>
     <div class="no-print">
       <section class="card">
@@ -1254,6 +1371,7 @@ export function renderProfiles(state) {
     </div>`).join('');
 
   return `
+    ${backBar('mas')}
     <div class="section-label">${t('profiles_title')}</div>
     <section class="card"><p class="muted small">${t('profiles_intro')}</p></section>
     <section class="card"><div class="prof-list">${rows}</div></section>
@@ -1273,6 +1391,7 @@ export function renderMemoryGame(state, game) {
   const best = state.games && state.games.memory ? state.games.memory.bestMoves : null;
   if (!game) {
     return `
+      ${backBar('hoy')}
       <div class="section-label">${t('game_title')}</div>
       <section class="card">
         <p>${t('game_intro')}</p>
@@ -1313,6 +1432,7 @@ export function renderPreferences(state) {
   const s = state.settings;
   const langOptions = LANGS.map((l) => `<option value="${l.id}" ${s.lang === l.id ? 'selected' : ''}>${l.flag} ${l.label}</option>`).join('');
   return `
+    ${backBar('mas')}
     <div class="section-label">${t('pref_title')}</div>
     <section class="card"><p class="muted small">${t('pref_intro')}</p></section>
     <section class="card">
@@ -1356,6 +1476,7 @@ export function renderEdmonton(state) {
     </div>`;
   }).join('');
   return `
+    ${backBar('evaluaciones')}
     <div class="section-label">${t('efs_title')}</div>
     ${resultCard}
     <section class="card"><p class="muted small">${t('efs_intro')}</p></section>
@@ -1410,6 +1531,7 @@ export function renderAssessments(state) {
   }).join('');
 
   return `
+    ${backBar('hoy')}
     <div class="section-label">${t('assess_title')}</div>
     <section class="card"><p class="muted small">${t('assess_intro')}</p></section>
     ${reeval}
@@ -1530,6 +1652,7 @@ export function renderPrivacy(state) {
       <div><p class="small">${esc(getLang() === 'en' ? p.en : (getLang() === 'ca' ? p.ca : p.es))}</p></div>
     </div>`).join('');
   return `
+    ${backBar('mas')}
     <div class="section-label">${t('privacy_title')}</div>
     <section class="card"><p class="muted small">${t('privacy_intro')}</p></section>
     <section class="card"><div class="ctips">${items}</div></section>
