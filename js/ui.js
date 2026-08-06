@@ -598,7 +598,7 @@ export function renderFastingGuide(state) {
       ${chk('gastricSurgery', t('fasting_q_gastric'))}
     </section>
     ${blocks}
-    <details class="fasting-block">
+    <details class="fasting-block${anyFlag ? ' is-active' : ''}"${anyFlag ? ' open' : ''}>
       <summary>${esc(tr(g.final, 'title'))}</summary>
       <div class="fasting-body">${tr(g.final, 'body')}</div>
     </details>
