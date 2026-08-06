@@ -6708,7 +6708,7 @@ Gràcies.`,
       </label>`;
     const blocks = g.blocks.map((b) => {
       const open = isOpen(b.match);
-      return `<details class="fasting-block${open ? " is-active" : ""}">
+      return `<details class="fasting-block${open ? " is-active" : ""}"${open ? " open" : ""}>
       <summary>${open ? `<span class="tag-you">${t("fasting_for_you")}</span> ` : ""}${esc(tr(b, "title"))}</summary>
       <div class="fasting-body">${tr(b, "body")}</div>
     </details>`;

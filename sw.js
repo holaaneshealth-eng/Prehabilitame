@@ -1,7 +1,7 @@
 // sw.js — Service Worker con estrategia "primero la red" (network-first).
 // Así el paciente ve SIEMPRE la última versión cuando hay conexión,
 // y la app sigue funcionando sin conexión (usa la copia en caché).
-const CACHE = 'prehabilita-v14';
+const CACHE = 'prehabilita-v15';
 const ASSETS = [
   './',
   './index.html',
