@@ -575,9 +575,11 @@ export function renderFastingGuide(state) {
   // Bloques plegados por defecto; se mantiene la etiqueta "para ti" que resalta
   // el bloque correspondiente a la situación del paciente (intro y cuadro de
   // elección múltiple quedan siempre desplegados como tarjetas fijas).
+  // El bloque que coincide con la situación marcada se auto-despliega y se resalta;
+  // el resto queda plegado. La intro y el cuadro de elección múltiple son tarjetas fijas.
   const blocks = g.blocks.map((b) => {
     const open = isOpen(b.match);
-    return `<details class="fasting-block${open ? ' is-active' : ''}">
+    return `<details class="fasting-block${open ? ' is-active' : ''}"${open ? ' open' : ''}>
       <summary>${open ? `<span class="tag-you">${t('fasting_for_you')}</span> ` : ''}${esc(tr(b, 'title'))}</summary>
       <div class="fasting-body">${tr(b, 'body')}</div>
     </details>`;
@@ -596,7 +598,7 @@ export function renderFastingGuide(state) {
       ${chk('gastricSurgery', t('fasting_q_gastric'))}
     </section>
     ${blocks}
-    <details class="fasting-block">
+    <details class="fasting-block${anyFlag ? ' is-active' : ''}"${anyFlag ? ' open' : ''}>
       <summary>${esc(tr(g.final, 'title'))}</summary>
       <div class="fasting-body">${tr(g.final, 'body')}</div>
     </details>
