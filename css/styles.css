@@ -281,6 +281,18 @@ body.reduce-motion * { animation: none !important; transition: none !important; 
 .video-facade .vf-hint { font-size: 11px; opacity: .8; }
 .video-facade:hover .vf-play, .video-facade:focus-visible .vf-play { background: rgba(255,255,255,.3); transform: scale(1.06); }
 .video-facade:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+/* --- Reorganización de menús: tarjeta guía, submenús desplegables y sugerencias --- */
+.tab-guide h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.tab-guide { border-left: 4px solid var(--accent); }
+.sub-item { border-bottom: 1px solid rgba(0,0,0,.06); }
+.sub-item:last-child { border-bottom: 0; }
+.sub-exp { padding: 0 12px 10px 46px; margin-top: -4px; }
+.sub-exp summary { cursor: pointer; color: var(--accent); font-size: .82rem; list-style: none; }
+.sub-exp summary::-webkit-details-marker { display: none; }
+.sub-exp p { margin: 6px 0 0; }
+.tip-card h3 { margin: 0 0 4px; font-size: 1rem; }
+.btn-row { display: flex; gap: 8px; margin-top: 8px; }
+.btn-row .btn { flex: 1; }
 .empty-state { text-align: center; }
 .empty-emoji { font-size: 3rem; }
 .empty-state .btn { margin-top: 12px; }

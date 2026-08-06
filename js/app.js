@@ -2,7 +2,7 @@
 // Controlador principal: init, enrutado, eventos, editor, recordatorios y feedback.
 
 import {
-  loadState, saveState, getState, resetState, getDayLog, todayKey,
+  loadState, saveState, getState, resetState, getDayLog, todayKey, daysBetween,
   exportState, importState,
   listProfiles, getActiveProfileId, switchProfile, createProfile, renameProfile, deleteProfile,
   recordAssessment,
@@ -43,6 +43,9 @@ function init() {
   recompute(state);
   saveState();
   applyDisplaySettings();
+  // Arranque inteligente: los primeros 5 días abre en "Descubre" (para explorar el
+  // plan); a partir de ahí, en "Registra tu progreso" (uso diario).
+  route = defaultRoute(state);
   render();
 
   const app = document.getElementById('app');
@@ -66,6 +69,14 @@ function applyDisplaySettings() {
   document.body.classList.toggle('high-contrast', !!s.highContrast);
   // El texto grande se aplica a <html> para que escale todas las medidas rem.
   document.documentElement.classList.toggle('large-text', !!s.largeText);
+}
+
+/** Ruta inicial al abrir la app: "Descubre" los primeros 5 días de programa,
+ * luego "Registra tu progreso" (uso diario). */
+function defaultRoute(state) {
+  const start = state.profile && state.profile.startDate;
+  if (!start) return 'recursos';
+  return daysBetween(todayKey(), start) < 5 ? 'recursos' : 'hoy';
 }
 
 /* ---------- Render principal ---------- */
@@ -192,6 +203,12 @@ function onClick(e) {
     case 'dismiss-report-reminder': {
       if (!state.report) state.report = {};
       state.report.lastShared = todayKey();
+      saveState(); render(); window.scrollTo(0, 0);
+      break;
+    }
+    case 'dismiss-tip': {
+      if (!state.tips) state.tips = {};
+      state.tips.dismissedOn = todayKey();
       saveState(); render(); window.scrollTo(0, 0);
       break;
     }
@@ -437,7 +454,7 @@ function submitOnboarding(form) {
   state.profile.startDate = todayKey();
   state.onboarded = true;
   saveState();
-  route = 'hoy';
+  route = defaultRoute(state);
   render();
   toast(t('welcome_toast'));
 }

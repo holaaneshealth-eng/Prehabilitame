@@ -295,6 +295,18 @@ body.reduce-motion * { animation: none !important; transition: none !important; 
 .video-facade .vf-hint { font-size: 11px; opacity: .8; }
 .video-facade:hover .vf-play, .video-facade:focus-visible .vf-play { background: rgba(255,255,255,.3); transform: scale(1.06); }
 .video-facade:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+/* --- Reorganización de menús: tarjeta guía, submenús desplegables y sugerencias --- */
+.tab-guide h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.tab-guide { border-left: 4px solid var(--accent); }
+.sub-item { border-bottom: 1px solid rgba(0,0,0,.06); }
+.sub-item:last-child { border-bottom: 0; }
+.sub-exp { padding: 0 12px 10px 46px; margin-top: -4px; }
+.sub-exp summary { cursor: pointer; color: var(--accent); font-size: .82rem; list-style: none; }
+.sub-exp summary::-webkit-details-marker { display: none; }
+.sub-exp p { margin: 6px 0 0; }
+.tip-card h3 { margin: 0 0 4px; font-size: 1rem; }
+.btn-row { display: flex; gap: 8px; margin-top: 8px; }
+.btn-row .btn { flex: 1; }
 .empty-state { text-align: center; }
 .empty-emoji { font-size: 3rem; }
 .empty-state .btn { margin-top: 12px; }
@@ -642,6 +654,7 @@ body.high-contrast .cmp-down { color: #b91c1c; }
       challengeAwards: {},
       visited: {},
       report: { lastShared: null },
+      tips: { dismissedOn: null },
       medList: { meds: [], allergies: "", notes: "" },
       frail: { score: null, date: null, answers: {} },
       edmonton: { score: null, date: null, answers: {} },
@@ -1610,6 +1623,39 @@ Senyals per parar i consultar: dolor al pit, mareig, falta d’aire desproporcio
         const a = s.assessments || {};
         return ["dasi", "must", "frail", "edmonton"].some((k) => a[k] && a[k].length > 0);
       }
+    },
+    {
+      id: "ciclo-fisico",
+      emoji: "\uD83C\uDFC3",
+      name: "Ejercicio: antes y después",
+      name_en: "Exercise: before & after",
+      name_ca: "Exercici: abans i després",
+      desc: "Repite el test DASI al final del programa.",
+      desc_en: "Repeat the DASI test at the end of the program.",
+      desc_ca: "Repeteix el test DASI al final del programa.",
+      check: (s) => !!(s.assessments && s.assessments.dasi && s.assessments.dasi.length >= 2)
+    },
+    {
+      id: "ciclo-nutricion",
+      emoji: "\uD83E\uDD57",
+      name: "Nutrición: antes y después",
+      name_en: "Nutrition: before & after",
+      name_ca: "Nutrició: abans i després",
+      desc: "Repite el cribado MUST al final del programa.",
+      desc_en: "Repeat the MUST screening at the end of the program.",
+      desc_ca: "Repeteix el cribratge MUST al final del programa.",
+      check: (s) => !!(s.assessments && s.assessments.must && s.assessments.must.length >= 2)
+    },
+    {
+      id: "ciclo-fragilidad",
+      emoji: "\uD83E\uDE7A",
+      name: "Fragilidad: antes y después",
+      name_en: "Frailty: before & after",
+      name_ca: "Fragilitat: abans i després",
+      desc: "Repite la evaluación de fragilidad al final del programa.",
+      desc_en: "Repeat the frailty assessment at the end of the program.",
+      desc_ca: "Repeteix l’avaluació de fragilitat al final del programa.",
+      check: (s) => !!(s.assessments && s.assessments.frail && s.assessments.frail.length >= 2)
     },
     {
       id: "primer-paso",
@@ -4970,11 +5016,47 @@ EL MÉS ÚTIL QUE POTS FER: portar a la consulta de preanestèsia una llista com
       today: "Hoy",
       its_the_day: "¡es el día!",
       post_surgery: "días post-cirugía",
-      nav_hoy: "Hoy",
-      nav_recursos: "Prepárate",
-      nav_progreso: "Progreso",
+      nav_hoy: "Registra",
+      nav_recursos: "Descubre",
+      nav_progreso: "Logros",
       nav_aprende: "Aprende",
-      nav_mas: "Más",
+      nav_mas: "Ajustes",
+      title_descubre: "Descubre tu plan ideal",
+      title_aprende: "Sigue aprendiendo",
+      title_registra: "Registra tu progreso",
+      title_logros: "Comprueba tus logros",
+      title_config: "Configuración",
+      guide_descubre: "Explora las áreas de tu preparación y arma tu plan a medida.",
+      guide_aprende: "Artículos, lecciones y apoyo para entender tu preparación.",
+      guide_registra: "Anota lo que haces cada día y tus evaluaciones de partida.",
+      guide_logros: "Mira tu evolución, tus medallas y tu informe para el equipo.",
+      guide_config: "Perfiles, idioma, privacidad y modo profesional.",
+      plan_welcome_intro: "Un vistazo a todas las áreas de tu preparación. Toca una para empezar.",
+      plan_areas: "Áreas de tu preparación",
+      plan_open: "Abrir",
+      plan_detail: "Ver mi plan detallado",
+      plan_mental_noscore: "Bienestar mental · no puntúa (es una herramienta de apoyo, no un reto)",
+      reg_more: "Más en esta sección",
+      reg_frailty_exp: "Conviene hacer una evaluación al empezar (basal) y otra al final del programa para ver tu evolución. Ambas suman medallas.",
+      reg_meds_exp: "Registra tu medicación y alergias; incluye avisos importantes sobre anticoagulantes. Completarla suma una medalla.",
+      reg_game_exp: "Un juego breve para ejercitar la mente mientras esperas la cirugía. Ganar partidas suma medallas.",
+      g_ejercicio_name: "Ejercicio físico",
+      g_ejercicio_exp: "Fuerza, aeróbico y movilidad. Incluye el test DASI (inicial y final).",
+      g_respiratorio_name: "Entrenamiento respiratorio",
+      g_respiratorio_exp: "Ejercicios para fortalecer tus músculos respiratorios antes de la anestesia.",
+      g_nutricion_name: "Nutrición",
+      g_nutricion_exp: "Llega bien nutrido e hidratado. Incluye el cribado MUST (inicial y final).",
+      g_ayuno_name: "Ayuno preoperatorio",
+      g_ayuno_exp: "Cuántas horas de ayuno según tu caso, sin pasar sed ni hambre de más.",
+      g_bienestar_name: "Bienestar mental",
+      g_bienestar_exp: "Infórmate, empodérate y entrena tu mente para la cirugía. No puntúa.",
+      tip_label: "Sugerencia",
+      tip_go: "Ir",
+      tip_dismiss: "Entendido",
+      tip_game: "¿Ejercitas la mente? Prueba el Juego de memoria, en «Registra tu progreso».",
+      tip_fasting: "Repasa cómo será el ayuno antes de la cirugía, en «Descubre tu plan ideal» → Ayuno.",
+      tip_mental: "Dedica unos minutos a tu bienestar mental, en «Descubre tu plan ideal» → Bienestar mental.",
+      tip_report: "Puedes compartir tu informe con tu equipo, en «Comprueba tus logros» → Informe de progreso.",
       today_title: "Tu día de hoy",
       goal_reached: "¡Objetivo diario logrado! \uD83C\uDF89",
       add_more_xp: "Suma {n} XP más para completar el día",
@@ -5342,11 +5424,47 @@ Gracias.`,
       today: "Today",
       its_the_day: "it's the day!",
       post_surgery: "days after surgery",
-      nav_hoy: "Today",
-      nav_recursos: "Get ready",
-      nav_progreso: "Progress",
+      nav_hoy: "Track",
+      nav_recursos: "Discover",
+      nav_progreso: "Awards",
       nav_aprende: "Learn",
-      nav_mas: "More",
+      nav_mas: "Settings",
+      title_descubre: "Discover your ideal plan",
+      title_aprende: "Keep learning",
+      title_registra: "Track your progress",
+      title_logros: "Check your achievements",
+      title_config: "Settings",
+      guide_descubre: "Explore the areas of your preparation and build your tailored plan.",
+      guide_aprende: "Articles, lessons and support to understand your preparation.",
+      guide_registra: "Log what you do each day and your baseline assessments.",
+      guide_logros: "See your progress, your badges and your report for the team.",
+      guide_config: "Profiles, language, privacy and clinician mode.",
+      plan_welcome_intro: "A glance at all the areas of your preparation. Tap one to start.",
+      plan_areas: "Areas of your preparation",
+      plan_open: "Open",
+      plan_detail: "See my detailed plan",
+      plan_mental_noscore: "Mental wellbeing · not scored (a support tool, not a challenge)",
+      reg_more: "More in this section",
+      reg_frailty_exp: "Do an assessment at the start (baseline) and another at the end of the program to see your progress. Both earn badges.",
+      reg_meds_exp: "Record your medication and allergies; includes important warnings about anticoagulants. Completing it earns a badge.",
+      reg_game_exp: "A short game to exercise your mind while you wait for surgery. Winning rounds earns badges.",
+      g_ejercicio_name: "Physical exercise",
+      g_ejercicio_exp: "Strength, aerobic and mobility. Includes the DASI test (initial and final).",
+      g_respiratorio_name: "Breathing training",
+      g_respiratorio_exp: "Exercises to strengthen your breathing muscles before anesthesia.",
+      g_nutricion_name: "Nutrition",
+      g_nutricion_exp: "Arrive well nourished and hydrated. Includes MUST screening (initial and final).",
+      g_ayuno_name: "Preoperative fasting",
+      g_ayuno_exp: "How many hours of fasting for your case, without extra thirst or hunger.",
+      g_bienestar_name: "Mental wellbeing",
+      g_bienestar_exp: "Get informed, empowered and train your mind for surgery. Not scored.",
+      tip_label: "Tip",
+      tip_go: "Go",
+      tip_dismiss: "Got it",
+      tip_game: "Fancy exercising your mind? Try the Memory game, in “Track your progress”.",
+      tip_fasting: "Review how fasting before surgery works, in “Discover your ideal plan” → Fasting.",
+      tip_mental: "Spend a few minutes on your mental wellbeing, in “Discover your ideal plan” → Mental wellbeing.",
+      tip_report: "You can share your report with your team, in “Check your achievements” → Progress report.",
       today_title: "Your day today",
       goal_reached: "Daily goal achieved! \uD83C\uDF89",
       add_more_xp: "Earn {n} more XP to complete the day",
@@ -5714,11 +5832,47 @@ Thank you.`,
       today: "Avui",
       its_the_day: "és el dia!",
       post_surgery: "dies postcirurgia",
-      nav_hoy: "Avui",
-      nav_recursos: "Prepara’t",
-      nav_progreso: "Progrés",
+      nav_hoy: "Registra",
+      nav_recursos: "Descobreix",
+      nav_progreso: "Premis",
       nav_aprende: "Aprèn",
-      nav_mas: "Més",
+      nav_mas: "Ajustos",
+      title_descubre: "Descobreix el teu pla ideal",
+      title_aprende: "Segueix aprenent",
+      title_registra: "Registra el teu progrés",
+      title_logros: "Comprova els teus assoliments",
+      title_config: "Configuració",
+      guide_descubre: "Explora les àrees de la teva preparació i munta el teu pla a mida.",
+      guide_aprende: "Articles, lliçons i suport per entendre la teva preparació.",
+      guide_registra: "Anota el que fas cada dia i les teves avaluacions de partida.",
+      guide_logros: "Mira la teva evolució, les teves medalles i el teu informe per a l’equip.",
+      guide_config: "Perfils, idioma, privacitat i mode professional.",
+      plan_welcome_intro: "Una ullada a totes les àrees de la teva preparació. Toca’n una per començar.",
+      plan_areas: "Àrees de la teva preparació",
+      plan_open: "Obrir",
+      plan_detail: "Veure el meu pla detallat",
+      plan_mental_noscore: "Benestar mental · no puntua (és una eina de suport, no un repte)",
+      reg_more: "Més en aquesta secció",
+      reg_frailty_exp: "Convé fer una avaluació en començar (basal) i una altra al final del programa per veure la teva evolució. Totes dues sumen medalles.",
+      reg_meds_exp: "Registra la teva medicació i al·lèrgies; inclou avisos importants sobre anticoagulants. Completar-la suma una medalla.",
+      reg_game_exp: "Un joc breu per exercitar la ment mentre esperes la cirurgia. Guanyar partides suma medalles.",
+      g_ejercicio_name: "Exercici físic",
+      g_ejercicio_exp: "Força, aeròbic i mobilitat. Inclou el test DASI (inicial i final).",
+      g_respiratorio_name: "Entrenament respiratori",
+      g_respiratorio_exp: "Exercicis per enfortir els músculs respiratoris abans de l’anestèsia.",
+      g_nutricion_name: "Nutrició",
+      g_nutricion_exp: "Arriba ben nodrit i hidratat. Inclou el cribratge MUST (inicial i final).",
+      g_ayuno_name: "Dejuni preoperatori",
+      g_ayuno_exp: "Quantes hores de dejuni segons el teu cas, sense passar set ni gana de més.",
+      g_bienestar_name: "Benestar mental",
+      g_bienestar_exp: "Informa’t, empodera’t i entrena la teva ment per a la cirurgia. No puntua.",
+      tip_label: "Suggeriment",
+      tip_go: "Vés-hi",
+      tip_dismiss: "Entesos",
+      tip_game: "Vols exercitar la ment? Prova el Joc de memòria, a «Registra el teu progrés».",
+      tip_fasting: "Repassa com serà el dejuni abans de la cirurgia, a «Descobreix el teu pla ideal» → Dejuni.",
+      tip_mental: "Dedica uns minuts al teu benestar mental, a «Descobreix el teu pla ideal» → Benestar mental.",
+      tip_report: "Pots compartir el teu informe amb el teu equip, a «Comprova els teus assoliments» → Informe de progrés.",
       today_title: "El teu dia d’avui",
       goal_reached: "Objectiu diari assolit! \uD83C\uDF89",
       add_more_xp: "Suma {n} XP més per completar el dia",
@@ -6206,6 +6360,54 @@ Gràcies.`,
       <button class="btn ghost block" data-action="dismiss-report-reminder">${t("weekly_report_snooze")}</button>
     </section>`;
   }
+  function tabGuide(titleKey, descKey) {
+    return `<section class="card tab-guide"><h2>${t(titleKey)}</h2><p class="muted small">${t(descKey)}</p></section>`;
+  }
+  function backBar(view) {
+    return `<button class="btn ghost back-btn" data-action="nav" data-view="${view}">${t("back")}</button>`;
+  }
+  function subItem(view, icon, label, exp) {
+    return `<div class="sub-item">
+    <button class="more-item" data-action="nav" data-view="${view}">
+      <span class="more-ico">${icon}</span>
+      <span class="more-txt"><strong>${esc(label)}</strong></span>
+      <span class="more-arrow">›</span>
+    </button>
+    <details class="sub-exp"><summary>${t("read_more")}</summary><p class="muted small">${esc(exp)}</p></details>
+  </div>`;
+  }
+  var PLAN_GUIDES = [
+    { view: "ejercicio-guide", emoji: "\uD83C\uDFC3", name: "g_ejercicio_name", exp: "g_ejercicio_exp" },
+    { view: "respiratorio-guide", emoji: "\uD83E\uDEC1", name: "g_respiratorio_name", exp: "g_respiratorio_exp" },
+    { view: "nutricion-guide", emoji: "\uD83E\uDD57", name: "g_nutricion_name", exp: "g_nutricion_exp" },
+    { view: "ayuno-guide", emoji: "⏱️", name: "g_ayuno_name", exp: "g_ayuno_exp" },
+    { view: "bienestar-guide", emoji: "\uD83E\uDDE0", name: "g_bienestar_name", exp: "g_bienestar_exp" }
+  ];
+  function dailyTip(state2) {
+    const start = state2.profile && state2.profile.startDate;
+    if (!start)
+      return "";
+    if (state2.tips && state2.tips.dismissedOn === todayKey())
+      return "";
+    const day = daysBetween(todayKey(), start);
+    let tip = null;
+    if (day % 4 === 0)
+      tip = { key: "tip_game", view: "juego" };
+    else if (day % 4 === 2) {
+      const others = [{ key: "tip_fasting", view: "ayuno-guide" }, { key: "tip_mental", view: "bienestar-guide" }, { key: "tip_report", view: "report" }];
+      tip = others[Math.floor(day / 4) % others.length];
+    }
+    if (!tip)
+      return "";
+    return `<section class="card tip-card" style="border-left:4px solid #f59e0b">
+      <h3>\uD83D\uDCA1 ${t("tip_label")}</h3>
+      <p class="muted small">${t(tip.key)}</p>
+      <div class="btn-row">
+        <button class="btn primary" data-action="nav" data-view="${tip.view}">${t("tip_go")}</button>
+        <button class="btn ghost" data-action="dismiss-tip">${t("tip_dismiss")}</button>
+      </div>
+    </section>`;
+  }
   function renderToday(state2) {
     const tasks = getTasks(state2);
     const goal = getDailyGoal(state2);
@@ -6253,16 +6455,26 @@ Gràcies.`,
         <div class="task-list">${items}</div>
       </section>`;
     }).join("");
+    const subMenu = `
+    <div class="section-label">${t("reg_more")}</div>
+    <section class="card more-menu">
+      ${subItem("evaluaciones", "\uD83E\uDE7A", t("m_assess"), t("reg_frailty_exp"))}
+      ${subItem("medicacion", "\uD83D\uDC8A", t("m_meds"), t("reg_meds_exp"))}
+      ${subItem("juego", "\uD83E\uDDE9", t("m_game"), t("reg_game_exp"))}
+    </section>`;
     return `
+    ${tabGuide("title_registra", "guide_registra")}
     ${phaseBanner(state2)}
     ${reevalBanner(state2)}
     ${preopBanner(state2)}
     ${weeklyReportBanner(state2)}
+    ${dailyTip(state2)}
     ${dailyCard}
     ${challengeCard}
     <div class="section-label">${t("tasks_today")}</div>
     ${groups}
     ${moodCard(dayLog)}
+    ${subMenu}
     <p class="disclaimer-mini" data-action="show-disclaimer">${t("disclaimer_link")}</p>
   `;
   }
@@ -6336,7 +6548,14 @@ Gràcies.`,
         </ul>
       </section>`;
     }).join("");
-    return `<div class="section-label">${t("plan_title")}</div>${phaseBanner(state2)}${cards}`;
+    const mentalNote = `<section class="card plan-pillar" style="--pc:#8b5cf6">
+      <div class="plan-pillar-head">
+        <span class="pillar-emoji">\uD83E\uDDE0</span>
+        <div><h3>${t("g_bienestar_name")}</h3><p class="muted small">${t("plan_mental_noscore")}</p></div>
+      </div>
+      <button class="btn ghost block" data-action="nav" data-view="bienestar-guide">${t("plan_open")}</button>
+    </section>`;
+    return `${backBar("recursos")}<div class="section-label">${t("plan_title")}</div>${phaseBanner(state2)}${cards}${mentalNote}`;
   }
   function renderProgress(state2, charts) {
     const li = levelInfo(state2.stats.xp);
@@ -6393,8 +6612,21 @@ Gràcies.`,
     const moodLogs = Object.entries(state2.logs).filter(([, l]) => l.mood).sort((a, b) => a[0].localeCompare(b[0])).slice(-7);
     const moodEmoji = ["", "\uD83D\uDE23", "\uD83D\uDE15", "\uD83D\uDE10", "\uD83D\uDE42", "\uD83D\uDE04"];
     const moodRow = moodLogs.length ? `<section class="card"><h3>${t("recent_mood")}</h3><div class="mood-history">${moodLogs.map(([k, l]) => `<div class="mh"><span>${moodEmoji[l.mood]}</span><small>${k.slice(5)}</small></div>`).join("")}</div></section>` : "";
-    const reportBtn = `<button class="btn ghost block" data-action="nav" data-view="report">${t("report_btn")}</button>`;
-    return `${chips}${lineCard}${barCard}${heat}${moodRow}${reportBtn}`;
+    const subMenu = `
+    <div class="section-label">${t("reg_more")}</div>
+    <section class="card more-menu">
+      <button class="more-item" data-action="nav" data-view="logros">
+        <span class="more-ico">\uD83C\uDF96️</span>
+        <span class="more-txt"><strong>${t("m_badges")}</strong><small class="muted">${t("m_badges_sub", { n: state2.badges.length })}</small></span>
+        <span class="more-arrow">›</span>
+      </button>
+      <button class="more-item" data-action="nav" data-view="report">
+        <span class="more-ico">\uD83D\uDCC4</span>
+        <span class="more-txt"><strong>${t("m_report")}</strong><small class="muted">${t("m_report_sub")}</small></span>
+        <span class="more-arrow">›</span>
+      </button>
+    </section>`;
+    return `${tabGuide("title_logros", "guide_logros")}${chips}${lineCard}${barCard}${heat}${moodRow}${subMenu}`;
   }
   function renderBadges(state2, BADGES2) {
     const unlocked = new Set(state2.badges);
@@ -6406,30 +6638,42 @@ Gràcies.`,
       <div class="badge-desc">${esc(tr(b, "desc"))}</div>
     </div>`;
     }).join("");
-    return `<div class="section-label">${t("medals_title")} · ${state2.badges.length}/${BADGES2.length}</div><div class="badge-grid">${grid}</div>`;
+    return `${backBar("progreso")}<div class="section-label">${t("medals_title")} · ${state2.badges.length}/${BADGES2.length}</div><div class="badge-grid">${grid}</div>`;
   }
   function renderResources(state2) {
     const resources = getResources(state2);
-    if (resources.length === 0) {
-      return `
-      <div class="section-label">${t("res_library")}</div>
-      <section class="card empty-state">
-        <div class="empty-emoji">\uD83C\uDFAC</div>
-        <p>${t("res_empty_1")}</p>
-        <p class="muted small">${t("res_empty_2")}</p>
-        <button class="btn primary" data-action="nav" data-view="editor" data-tab="recursos">${t("res_add")}</button>
-      </section>`;
+    const guideCards = PLAN_GUIDES.map((g) => `
+    <div class="sub-item">
+      <button class="more-item" data-action="nav" data-view="${g.view}">
+        <span class="more-ico">${g.emoji}</span>
+        <span class="more-txt"><strong>${esc(t(g.name))}</strong></span>
+        <span class="more-arrow">›</span>
+      </button>
+      <details class="sub-exp"><summary>${t("read_more")}</summary><p class="muted small">${esc(t(g.exp))}</p></details>
+    </div>`).join("");
+    const welcome = `
+    <section class="card" style="border-left:4px solid var(--accent)">
+      <h3>\uD83D\uDCCB ${t("m_plan")}</h3>
+      <p class="muted small">${t("plan_welcome_intro")}</p>
+      <button class="btn ghost block" data-action="nav" data-view="plan">${t("plan_detail")}</button>
+    </section>
+    <div class="section-label">${t("plan_areas")}</div>
+    <section class="card more-menu">${guideCards}</section>`;
+    const extras = resources.filter((r) => !(r.type === "guide" || r.guideId));
+    let extrasHtml = "";
+    if (extras.length) {
+      const byPillar = getPillars(state2).map((p) => {
+        const rs = extras.filter((r) => r.pillar === p.id);
+        if (rs.length === 0)
+          return "";
+        return `<div class="section-label" style="color:${p.color}">${p.emoji} ${esc(tr(p, "name"))}</div>${rs.map(renderResourceCard).join("")}`;
+      }).join("");
+      const known = new Set(getPillars(state2).map((p) => p.id));
+      const others = extras.filter((r) => !known.has(r.pillar));
+      const otherHtml = others.length ? `<div class="section-label">${t("res_other")}</div>${others.map(renderResourceCard).join("")}` : "";
+      extrasHtml = `<div class="section-label">${t("res_library")}</div>${byPillar}${otherHtml}`;
     }
-    const byPillar = getPillars(state2).map((p) => {
-      const rs = resources.filter((r) => r.pillar === p.id);
-      if (rs.length === 0)
-        return "";
-      return `<div class="section-label" style="color:${p.color}">${p.emoji} ${esc(tr(p, "name"))}</div>${rs.map(renderResourceCard).join("")}`;
-    }).join("");
-    const known = new Set(getPillars(state2).map((p) => p.id));
-    const others = resources.filter((r) => !known.has(r.pillar));
-    const otherHtml = others.length ? `<div class="section-label">${t("res_other")}</div>${others.map(renderResourceCard).join("")}` : "";
-    return `<div class="section-label">${t("res_library")}</div>${byPillar}${otherHtml}`;
+    return `${tabGuide("title_descubre", "guide_descubre")}${welcome}${extrasHtml}`;
   }
   function renderResourceCard(r) {
     const ytId = parseYouTubeId(r.url);
@@ -6831,10 +7075,18 @@ Gràcies.`,
     const preop = pickArr(PREOP_CHECKLIST, PREOP_CHECKLIST_EN, PREOP_CHECKLIST_CA);
     const checklist = preop.map((c) => `<li>☐ ${esc(c)}</li>`).join("");
     return `
+    ${tabGuide("title_aprende", "guide_aprende")}
     <section class="card" style="border-left:4px solid var(--accent)">
       <h3>${t("preop_title")}</h3>
       <ul class="preop">${checklist}</ul>
       <p class="muted small">${t("preop_note")}</p>
+    </section>
+    <section class="card more-menu">
+      <button class="more-item" data-action="nav" data-view="cuidador">
+        <span class="more-ico">\uD83E\uDD1D</span>
+        <span class="more-txt"><strong>${t("m_care")}</strong><small class="muted">${t("m_care_sub")}</small></span>
+        <span class="more-arrow">›</span>
+      </button>
     </section>
     <div class="section-label">${t("learn_posts")}</div>
     <div class="post-list">${postCards}</div>
@@ -6860,13 +7112,6 @@ Gràcies.`,
   }
   function renderMore(state2) {
     const items = [
-      { view: "evaluaciones", icon: "\uD83E\uDE7A", label: t("m_assess"), sub: t("m_assess_sub") },
-      { view: "medicacion", icon: "\uD83D\uDC8A", label: t("m_meds"), sub: t("m_meds_sub") },
-      { view: "cuidador", icon: "\uD83E\uDD1D", label: t("m_care"), sub: t("m_care_sub") },
-      { view: "juego", icon: "\uD83E\uDDE9", label: t("m_game"), sub: t("m_game_sub") },
-      { view: "report", icon: "\uD83D\uDCC4", label: t("m_report"), sub: t("m_report_sub") },
-      { view: "plan", icon: "\uD83D\uDCCB", label: t("m_plan"), sub: t("m_plan_sub") },
-      { view: "logros", icon: "\uD83C\uDFC5", label: t("m_badges"), sub: t("m_badges_sub", { n: state2.badges.length }) },
       { view: "perfiles", icon: "\uD83D\uDC65", label: t("m_profiles"), sub: t("m_profiles_sub") },
       { view: "preferencias", icon: "\uD83C\uDF0D", label: t("m_prefs"), sub: t("m_prefs_sub") },
       { view: "privacidad", icon: "\uD83D\uDD12", label: t("m_privacy"), sub: t("m_privacy_sub") },
@@ -6879,7 +7124,7 @@ Gràcies.`,
       <span class="more-arrow">›</span>
     </button>`).join("");
     return `
-    <div class="section-label">${t("more_options")}</div>
+    ${tabGuide("title_config", "guide_config")}
     <section class="card more-menu">${menu}</section>
     <section class="card">
       <h3>${t("personal_data")}</h3>
@@ -6908,36 +7153,44 @@ Gràcies.`,
   }
   function renderNav(route) {
     const items = [
-      { id: "hoy", icon: "\uD83C\uDFE0", label: t("nav_hoy") },
-      { id: "recursos", icon: "\uD83C\uDFAC", label: t("nav_recursos") },
-      { id: "progreso", icon: "\uD83D\uDCC8", label: t("nav_progreso") },
+      { id: "recursos", icon: "\uD83E\uDDED", label: t("nav_recursos") },
       { id: "aprende", icon: "\uD83D\uDCDA", label: t("nav_aprende") },
-      { id: "mas", icon: "⋯", label: t("nav_mas") }
+      { id: "hoy", icon: "✍️", label: t("nav_hoy") },
+      { id: "progreso", icon: "\uD83C\uDFC6", label: t("nav_progreso") },
+      { id: "mas", icon: "⚙️", label: t("nav_mas") }
     ];
     const activeSet = {
-      hoy: "hoy",
       recursos: "recursos",
-      progreso: "progreso",
+      plan: "recursos",
+      "ayuno-guide": "recursos",
+      "ejercicio-guide": "recursos",
+      "respiratorio-guide": "recursos",
+      "nutricion-guide": "recursos",
+      "bienestar-guide": "recursos",
+      pausa: "recursos",
+      cribado: "recursos",
+      "cribado-informe": "recursos",
+      dasi: "recursos",
+      must: "recursos",
+      gad7: "recursos",
+      phq9: "recursos",
       aprende: "aprende",
       post: "aprende",
+      cuidador: "aprende",
+      hoy: "hoy",
+      evaluaciones: "hoy",
+      fragilidad: "hoy",
+      edmonton: "hoy",
+      medicacion: "hoy",
+      juego: "hoy",
+      progreso: "progreso",
+      logros: "progreso",
+      report: "progreso",
       mas: "mas",
-      plan: "mas",
-      logros: "mas",
-      editor: "mas",
-      fragilidad: "mas",
-      medicacion: "mas",
-      cuidador: "mas",
-      juego: "mas",
-      report: "mas",
       perfiles: "mas",
       preferencias: "mas",
-      edmonton: "mas",
-      evaluaciones: "mas",
-      gad7: "mas",
-      phq9: "mas",
-      dasi: "mas",
-      must: "mas",
-      privacidad: "mas"
+      privacidad: "mas",
+      editor: "mas"
     };
     return `<nav class="bottom-nav">${items.map((i) => `
     <button class="nav-item ${activeSet[route] === i.id ? "active" : ""}" data-action="nav" data-view="${i.id}">
@@ -6979,6 +7232,7 @@ Gràcies.`,
     const alarmsArr = pickArr(ALARM_SIGNS, ALARM_SIGNS_EN, ALARM_SIGNS_CA);
     const alarms = alarmsArr.map((a) => `<li>${esc(a)}</li>`).join("");
     return `
+    ${backBar("aprende")}
     <div class="section-label">${t("care_title")}</div>
     <section class="card speak-scope" data-speak-scope>
       <p class="speakable">${t("care_intro")}</p>
@@ -7017,6 +7271,7 @@ Gràcies.`,
       </div>`;
     }).join("");
     return `
+    ${backBar("evaluaciones")}
     <div class="section-label">${t("frail_title")}</div>
     ${resultCard}
     <form id="form-frail" class="card">
@@ -7036,6 +7291,7 @@ Gràcies.`,
     </div>`).join("") : `<p class="muted small">${t("meds_none")}</p>`;
     const docRows = m.meds.length ? m.meds.map((x) => `<tr><td>${esc(x.name)}</td><td>${esc(x.dose || "")}</td><td>${esc(x.freq || "")}</td></tr>`).join("") : `<tr><td colspan="3">${t("meds_doc_none")}</td></tr>`;
     return `
+    <div class="no-print">${backBar("hoy")}</div>
     <div class="section-label">${t("meds_title")}</div>
     <div class="no-print">
       <section class="card"><p class="muted small">${t("meds_intro")}</p></section>
@@ -7142,6 +7398,7 @@ Gràcies.`,
     const cell = (v, max) => v != null ? v + "/" + max : "—";
     const mentalHtml = mh.length ? `<h3>${t("report_mental")}</h3>` + `<table class="med-table"><thead><tr><th>${t("crib_r_date")}</th><th>${t("crib_r_level")}</th><th>${t("crib_r_dt")}</th><th>PHQ-9</th><th>GAD-7</th><th>APAIS</th></tr></thead><tbody>` + mh.map((h) => `<tr><td>${esc(h.date || "")}</td><td><strong>${lvlName(h.level)}</strong></td><td>${cell(h.dt, 10)}</td><td>${cell(h.phq9, 27)}</td><td>${cell(h.gad7, 21)}</td><td>${cell(h.apaisAnx, 20)}</td></tr>`).join("") + `</tbody></table><p class="muted small">${t("report_mental_note")}</p>` : "";
     return `
+    <div class="no-print">${backBar("progreso")}</div>
     <div class="section-label">${t("report_title")}</div>
     <div class="no-print">
       <section class="card">
@@ -7199,6 +7456,7 @@ Gràcies.`,
       </div>
     </div>`).join("");
     return `
+    ${backBar("mas")}
     <div class="section-label">${t("profiles_title")}</div>
     <section class="card"><p class="muted small">${t("profiles_intro")}</p></section>
     <section class="card"><div class="prof-list">${rows}</div></section>
@@ -7215,6 +7473,7 @@ Gràcies.`,
     const best = state2.games && state2.games.memory ? state2.games.memory.bestMoves : null;
     if (!game) {
       return `
+      ${backBar("hoy")}
       <div class="section-label">${t("game_title")}</div>
       <section class="card">
         <p>${t("game_intro")}</p>
@@ -7251,6 +7510,7 @@ Gràcies.`,
     const s = state2.settings;
     const langOptions = LANGS.map((l) => `<option value="${l.id}" ${s.lang === l.id ? "selected" : ""}>${l.flag} ${l.label}</option>`).join("");
     return `
+    ${backBar("mas")}
     <div class="section-label">${t("pref_title")}</div>
     <section class="card"><p class="muted small">${t("pref_intro")}</p></section>
     <section class="card">
@@ -7290,6 +7550,7 @@ Gràcies.`,
     </div>`;
     }).join("");
     return `
+    ${backBar("evaluaciones")}
     <div class="section-label">${t("efs_title")}</div>
     ${resultCard}
     <section class="card"><p class="muted small">${t("efs_intro")}</p></section>
@@ -7335,6 +7596,7 @@ Gràcies.`,
     </div>`;
     }).join("");
     return `
+    ${backBar("hoy")}
     <div class="section-label">${t("assess_title")}</div>
     <section class="card"><p class="muted small">${t("assess_intro")}</p></section>
     ${reeval}
@@ -7442,6 +7704,7 @@ Gràcies.`,
       <div><p class="small">${esc(getLang() === "en" ? p.en : getLang() === "ca" ? p.ca : p.es)}</p></div>
     </div>`).join("");
     return `
+    ${backBar("mas")}
     <div class="section-label">${t("privacy_title")}</div>
     <section class="card"><p class="muted small">${t("privacy_intro")}</p></section>
     <section class="card"><div class="ctips">${items}</div></section>
@@ -7777,6 +8040,7 @@ Gràcies.`,
     recompute(state2);
     saveState();
     applyDisplaySettings();
+    route = defaultRoute(state2);
     render();
     const app = document.getElementById("app");
     app.addEventListener("click", onClick);
@@ -7794,6 +8058,12 @@ Gràcies.`,
     document.body.classList.toggle("reduce-motion", !!s.reducedMotion);
     document.body.classList.toggle("high-contrast", !!s.highContrast);
     document.documentElement.classList.toggle("large-text", !!s.largeText);
+  }
+  function defaultRoute(state2) {
+    const start = state2.profile && state2.profile.startDate;
+    if (!start)
+      return "recursos";
+    return daysBetween(todayKey(), start) < 5 ? "recursos" : "hoy";
   }
   function render() {
     const state2 = getState();
@@ -7985,6 +8255,15 @@ Gràcies.`,
         if (!state2.report)
           state2.report = {};
         state2.report.lastShared = todayKey();
+        saveState();
+        render();
+        window.scrollTo(0, 0);
+        break;
+      }
+      case "dismiss-tip": {
+        if (!state2.tips)
+          state2.tips = {};
+        state2.tips.dismissedOn = todayKey();
         saveState();
         render();
         window.scrollTo(0, 0);
@@ -8309,7 +8588,7 @@ Gràcies.`,
     state2.profile.startDate = todayKey();
     state2.onboarded = true;
     saveState();
-    route = "hoy";
+    route = defaultRoute(state2);
     render();
     toast(t("welcome_toast"));
   }
