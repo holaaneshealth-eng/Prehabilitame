@@ -45,24 +45,14 @@ export const PILLARS = [
     why_ca: 'Seguir bé les pautes de dejuni redueix el risc de complicacions anestèsiques i evita retards o suspensions de la cirurgia.',
   },
   {
-    id: 'mental', emoji: '🧘', color: '#f59e0b',
-    name: 'Bienestar mental', name_en: 'Mental wellbeing', name_ca: 'Benestar mental',
-    tagline: 'Reduce la ansiedad y duerme mejor.',
-    tagline_en: 'Reduce anxiety and sleep better.',
-    tagline_ca: 'Redueix l’ansietat i dorm millor.',
-    why: 'Menor ansiedad preoperatoria se asocia con menos dolor percibido, menor necesidad de analgésicos y mejor recuperación.',
-    why_en: 'Lower pre-op anxiety is linked to less perceived pain, less need for painkillers and better recovery.',
-    why_ca: 'Menys ansietat preoperatòria s’associa amb menys dolor percebut, menys necessitat d’analgèsics i millor recuperació.',
-  },
-  {
     id: 'cognitivo', emoji: '🧠', color: '#6366f1',
     name: 'Salud cognitiva', name_en: 'Cognitive health', name_ca: 'Salut cognitiva',
-    tagline: 'Mantén tu mente activa y protégida.',
-    tagline_en: 'Keep your mind active and protected.',
-    tagline_ca: 'Mantén la teva ment activa i protegida.',
-    why: 'Mantener la mente activa y descansar bien ayuda a prevenir la confusión aguda (delírium) tras la cirugía, una complicación frecuente en personas mayores o frágiles.',
-    why_en: 'Keeping the mind active and resting well helps prevent acute confusion (delirium) after surgery, a common complication in older or frail people.',
-    why_ca: 'Mantenir la ment activa i descansar bé ajuda a prevenir la confusió aguda (deliri) després de la cirurgia, una complicació freqüent en persones grans o fràgils.',
+    tagline: 'Mente activa, descanso, relajación y ánimo.',
+    tagline_en: 'Active mind, rest, relaxation and mood.',
+    tagline_ca: 'Ment activa, descans, relaxació i ànim.',
+    why: 'Mantener la mente activa, dormir bien, relajarte y cuidar tu ánimo ayuda a reducir la ansiedad y a prevenir la confusión aguda (delírium) tras la cirugía, una complicación frecuente en personas mayores o frágiles.',
+    why_en: 'Keeping the mind active, sleeping well, relaxing and looking after your mood helps reduce anxiety and prevent acute confusion (delirium) after surgery, a common complication in older or frail people.',
+    why_ca: 'Mantenir la ment activa, dormir bé, relaxar-te i cuidar el teu ànim ajuda a reduir l’ansietat i a prevenir la confusió aguda (deliri) després de la cirurgia, una complicació freqüent en persones grans o fràgils.',
   },
   {
     id: 'habitos', emoji: '🚭', color: '#ef4444',
@@ -165,7 +155,7 @@ export const TASKS = [
     desc_ca: 'Acoloreix el teu plat amb fruites i verdures per a vitamines i fibra.' },
 
   // --- Bienestar mental ---
-  { id: 'relajacion', pillar: 'mental', type: 'check', xp: 20, icon: '🧘',
+  { id: 'relajacion', pillar: 'cognitivo', type: 'check', xp: 20, icon: '🧘',
     title: 'Relajación guiada', title_en: 'Guided relaxation', title_ca: 'Relaxació guiada',
     summary: 'Dedica unos 10 minutos a una práctica que te calme: meditación, mindfulness o relajación muscular.',
     summary_en: 'Spend about 10 minutes on a calming practice: meditation, mindfulness or muscle relaxation.',
@@ -173,7 +163,7 @@ export const TASKS = [
     desc: 'Llegar más tranquilo a la cirugía se asocia con menos dolor y una recuperación más fácil. Dedica unos 10 minutos a una práctica que te calme: meditación guiada, atención plena (mindfulness) o relajar los músculos poco a poco, de los pies a la cabeza. No busques "dejar la mente en blanco"; solo vuelve, una y otra vez, a tu respiración.',
     desc_en: 'Arriving calmer for surgery is linked to less pain and an easier recovery. Spend about 10 minutes on a practice that soothes you: guided meditation, mindfulness or relaxing your muscles little by little, from feet to head. Do not try to empty your mind; just keep coming back, again and again, to your breathing.',
     desc_ca: 'Arribar més tranquil a la cirurgia s’associa amb menys dolor i una recuperació més fàcil. Dedica uns 10 minuts a una pràctica que et calmi: meditació guiada, atenció plena (mindfulness) o relaxar els músculs a poc a poc, dels peus al cap. No busquis "deixar la ment en blanc"; només torna, un cop i un altre, a la teva respiració.' },
-  { id: 'sueno', pillar: 'mental', type: 'check', xp: 15, icon: '😴',
+  { id: 'sueno', pillar: 'cognitivo', type: 'check', xp: 15, icon: '😴',
     title: 'Higiene del sueño', title_en: 'Sleep hygiene', title_ca: 'Higiene del son',
     summary: 'Apunta a 7-8 horas de sueño con un horario regular y sin pantallas antes de acostarte.',
     summary_en: 'Aim for 7-8 hours of sleep with a regular schedule and no screens before bed.',
@@ -181,7 +171,7 @@ export const TASKS = [
     desc: 'Dormir bien fortalece tus defensas y tu ánimo, y te prepara para el esfuerzo de la operación. Apunta a 7-8 horas: mantén un horario regular, evita la cafeína y las pantallas por la tarde-noche y crea una rutina tranquila antes de acostarte. Si el nerviosismo no te deja dormir en los días previos, coméntalo en tu consulta.',
     desc_en: 'Sleeping well strengthens your defenses and your mood, and prepares you for the effort of the operation. Aim for 7-8 hours: keep a regular schedule, avoid caffeine and screens in the evening and build a calm routine before bed. If nerves keep you awake in the days before, mention it at your appointment.',
     desc_ca: 'Dormir bé enforteix les teves defenses i el teu ànim, i et prepara per a l’esforç de l’operació. Apunta a 7-8 hores: mantén un horari regular, evita la cafeïna i les pantalles a la tarda-vespre i crea una rutina tranquil·la abans d’anar a dormir. Si el nerviosisme no et deixa dormir els dies previs, comenta-ho a la teva consulta.' },
-  { id: 'animo', pillar: 'mental', type: 'check', xp: 10, icon: '📓',
+  { id: 'animo', pillar: 'cognitivo', type: 'check', xp: 10, icon: '📓',
     title: 'Registro de ánimo', title_en: 'Mood check-in', title_ca: 'Registre d’ànim',
     desc: 'Anota cómo te sientes hoy y una cosa por la que estés agradecido.',
     desc_en: 'Note how you feel today and one thing you are grateful for.',
@@ -521,7 +511,7 @@ IMPORTANT: això depèn totalment del teu tipus de cirurgia i de les normes del 
     title: 'Prepara tu mente: mindfulness antes del quirófano',
     title_en: 'Prepare your mind: mindfulness before the operating room',
     title_ca: 'Prepara la teva ment: mindfulness abans del quiròfan',
-    category: 'mental', cover: '', author: 'Equipo de prehabilitación', date: '2026-01-03',
+    category: 'cognitivo', cover: '', author: 'Equipo de prehabilitación', date: '2026-01-03',
     body:
 `Sentir nervios antes de una cirugía es completamente normal. La buena noticia es que puedes entrenar tu mente para afrontarlo mejor.
 
@@ -747,7 +737,7 @@ export const RESOURCES_VERSION = 3;
 export const DEPRECATED_RESOURCE_IDS = ['res-mindfulness'];
 
 export const DEFAULT_RESOURCES = [
-  { id: 'res-bienestar', pillar: 'mental', type: 'guide', guideId: 'bienestar',
+  { id: 'res-bienestar', pillar: 'cognitivo', type: 'guide', guideId: 'bienestar',
     title: 'Bienestar mental: infórmate, empodérate y entrena tu mente',
     title_en: 'Mental wellbeing: learn, empower yourself and train your mind',
     title_ca: 'Benestar mental: informa’t, empodera’t i entrena la teva ment',

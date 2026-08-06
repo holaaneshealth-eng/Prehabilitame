@@ -929,32 +929,18 @@ body.high-contrast .cmp-down { color: #b91c1c; }
       why_ca: "Seguir bé les pautes de dejuni redueix el risc de complicacions anestèsiques i evita retards o suspensions de la cirurgia."
     },
     {
-      id: "mental",
-      emoji: "\uD83E\uDDD8",
-      color: "#f59e0b",
-      name: "Bienestar mental",
-      name_en: "Mental wellbeing",
-      name_ca: "Benestar mental",
-      tagline: "Reduce la ansiedad y duerme mejor.",
-      tagline_en: "Reduce anxiety and sleep better.",
-      tagline_ca: "Redueix l’ansietat i dorm millor.",
-      why: "Menor ansiedad preoperatoria se asocia con menos dolor percibido, menor necesidad de analgésicos y mejor recuperación.",
-      why_en: "Lower pre-op anxiety is linked to less perceived pain, less need for painkillers and better recovery.",
-      why_ca: "Menys ansietat preoperatòria s’associa amb menys dolor percebut, menys necessitat d’analgèsics i millor recuperació."
-    },
-    {
       id: "cognitivo",
       emoji: "\uD83E\uDDE0",
       color: "#6366f1",
       name: "Salud cognitiva",
       name_en: "Cognitive health",
       name_ca: "Salut cognitiva",
-      tagline: "Mantén tu mente activa y protégida.",
-      tagline_en: "Keep your mind active and protected.",
-      tagline_ca: "Mantén la teva ment activa i protegida.",
-      why: "Mantener la mente activa y descansar bien ayuda a prevenir la confusión aguda (delírium) tras la cirugía, una complicación frecuente en personas mayores o frágiles.",
-      why_en: "Keeping the mind active and resting well helps prevent acute confusion (delirium) after surgery, a common complication in older or frail people.",
-      why_ca: "Mantenir la ment activa i descansar bé ajuda a prevenir la confusió aguda (deliri) després de la cirurgia, una complicació freqüent en persones grans o fràgils."
+      tagline: "Mente activa, descanso, relajación y ánimo.",
+      tagline_en: "Active mind, rest, relaxation and mood.",
+      tagline_ca: "Ment activa, descans, relaxació i ànim.",
+      why: "Mantener la mente activa, dormir bien, relajarte y cuidar tu ánimo ayuda a reducir la ansiedad y a prevenir la confusión aguda (delírium) tras la cirugía, una complicación frecuente en personas mayores o frágiles.",
+      why_en: "Keeping the mind active, sleeping well, relaxing and looking after your mood helps reduce anxiety and prevent acute confusion (delirium) after surgery, a common complication in older or frail people.",
+      why_ca: "Mantenir la ment activa, dormir bé, relaxar-te i cuidar el teu ànim ajuda a reduir l’ansietat i a prevenir la confusió aguda (deliri) després de la cirurgia, una complicació freqüent en persones grans o fràgils."
     },
     {
       id: "habitos",
@@ -1151,7 +1137,7 @@ body.high-contrast .cmp-down { color: #b91c1c; }
     },
     {
       id: "relajacion",
-      pillar: "mental",
+      pillar: "cognitivo",
       type: "check",
       xp: 20,
       icon: "\uD83E\uDDD8",
@@ -1167,7 +1153,7 @@ body.high-contrast .cmp-down { color: #b91c1c; }
     },
     {
       id: "sueno",
-      pillar: "mental",
+      pillar: "cognitivo",
       type: "check",
       xp: 15,
       icon: "\uD83D\uDE34",
@@ -1183,7 +1169,7 @@ body.high-contrast .cmp-down { color: #b91c1c; }
     },
     {
       id: "animo",
-      pillar: "mental",
+      pillar: "cognitivo",
       type: "check",
       xp: 10,
       icon: "\uD83D\uDCD3",
@@ -1985,7 +1971,7 @@ IMPORTANT: això depèn totalment del teu tipus de cirurgia i de les normes del 
       title: "Prepara tu mente: mindfulness antes del quirófano",
       title_en: "Prepare your mind: mindfulness before the operating room",
       title_ca: "Prepara la teva ment: mindfulness abans del quiròfan",
-      category: "mental",
+      category: "cognitivo",
       cover: "",
       author: "Equipo de prehabilitación",
       date: "2026-01-03",
@@ -2205,7 +2191,7 @@ EL MÉS ÚTIL QUE POTS FER: portar a la consulta de preanestèsia una llista com
   var DEFAULT_RESOURCES = [
     {
       id: "res-bienestar",
-      pillar: "mental",
+      pillar: "cognitivo",
       type: "guide",
       guideId: "bienestar",
       title: "Bienestar mental: infórmate, empodérate y entrena tu mente",
@@ -6381,7 +6367,7 @@ Gràcies.`,
     { view: "respiratorio-guide", emoji: "\uD83E\uDEC1", name: "g_respiratorio_name", exp: "g_respiratorio_exp" },
     { view: "nutricion-guide", emoji: "\uD83E\uDD57", name: "g_nutricion_name", exp: "g_nutricion_exp" },
     { view: "ayuno-guide", emoji: "⏱️", name: "g_ayuno_name", exp: "g_ayuno_exp" },
-    { view: "bienestar-guide", emoji: "\uD83E\uDDE0", name: "g_bienestar_name", exp: "g_bienestar_exp" }
+    { view: "bienestar-guide", emoji: "\uD83E\uDDD8", name: "g_bienestar_name", exp: "g_bienestar_exp" }
   ];
   function dailyTip(state2) {
     const start = state2.profile && state2.profile.startDate;
@@ -6550,7 +6536,7 @@ Gràcies.`,
     }).join("");
     const mentalNote = `<section class="card plan-pillar" style="--pc:#8b5cf6">
       <div class="plan-pillar-head">
-        <span class="pillar-emoji">\uD83E\uDDE0</span>
+        <span class="pillar-emoji">\uD83E\uDDD8</span>
         <div><h3>${t("g_bienestar_name")}</h3><p class="muted small">${t("plan_mental_noscore")}</p></div>
       </div>
       <button class="btn ghost block" data-action="nav" data-view="bienestar-guide">${t("plan_open")}</button>
@@ -6722,7 +6708,7 @@ Gràcies.`,
       </label>`;
     const blocks = g.blocks.map((b) => {
       const open = isOpen(b.match);
-      return `<details class="fasting-block${open ? " is-active" : ""}"${open ? " open" : ""}>
+      return `<details class="fasting-block${open ? " is-active" : ""}">
       <summary>${open ? `<span class="tag-you">${t("fasting_for_you")}</span> ` : ""}${esc(tr(b, "title"))}</summary>
       <div class="fasting-body">${tr(b, "body")}</div>
     </details>`;
@@ -6741,7 +6727,7 @@ Gràcies.`,
       ${chk("gastricSurgery", t("fasting_q_gastric"))}
     </section>
     ${blocks}
-    <details class="fasting-block is-active" open>
+    <details class="fasting-block">
       <summary>${esc(tr(g.final, "title"))}</summary>
       <div class="fasting-body">${tr(g.final, "body")}</div>
     </details>
@@ -6749,13 +6735,10 @@ Gràcies.`,
   }
   function renderExerciseGuide(state2) {
     const g = EXERCISE_GUIDE;
-    const blocks = g.blocks.map((b) => {
-      const open = !!b.open;
-      return `<details class="fasting-block"${open ? " open" : ""}>
+    const blocks = g.blocks.map((b) => `<details class="fasting-block">
       <summary>${esc(tr(b, "title"))}</summary>
       <div class="fasting-body">${tr(b, "body")}</div>
-    </details>`;
-    }).join("");
+    </details>`).join("");
     return `
     <button class="btn ghost back-btn" data-action="nav" data-view="recursos">${t("back")}</button>
     <div class="section-label">${esc(tr(g.intro, "title"))}</div>
@@ -6781,10 +6764,21 @@ Gràcies.`,
   }
   function renderRespiratoryGuide(state2) {
     const g = RESPIRATORY_GUIDE;
-    const blocks = g.blocks.map((b) => {
-      const open = !!b.open;
-      return `<details class="fasting-block"${open ? " open" : ""}>
-      <summary>${esc(tr(b, "title"))}</summary>
+    const order = ["pauta", "diafragmatica", "tos", "inspirometro", "costal", "brazos", "espiracion"];
+    const ordered = order.map((id) => g.blocks.find((b) => b.id === id)).filter(Boolean);
+    g.blocks.forEach((b) => {
+      if (!order.includes(b.id))
+        ordered.push(b);
+    });
+    let n = 0;
+    const blocks = ordered.map((b) => {
+      let title = tr(b, "title").replace(/^\s*\d+\.\s*/, "");
+      if (b.id !== "pauta") {
+        n += 1;
+        title = `${n}. ${title}`;
+      }
+      return `<details class="fasting-block">
+      <summary>${esc(title)}</summary>
       <div class="fasting-body">${tr(b, "body")}</div>
     </details>`;
     }).join("");
