@@ -199,7 +199,7 @@ const PLAN_GUIDES = [
   { view: 'respiratorio-guide', emoji: '🫁', name: 'g_respiratorio_name', exp: 'g_respiratorio_exp' },
   { view: 'nutricion-guide', emoji: '🥗', name: 'g_nutricion_name', exp: 'g_nutricion_exp' },
   { view: 'ayuno-guide', emoji: '⏱️', name: 'g_ayuno_name', exp: 'g_ayuno_exp' },
-  { view: 'bienestar-guide', emoji: '🧠', name: 'g_bienestar_name', exp: 'g_bienestar_exp' },
+  { view: 'bienestar-guide', emoji: '🧘', name: 'g_bienestar_name', exp: 'g_bienestar_exp' },
 ];
 
 /** Sugerencia periódica in-app (sin push): recuerda submenús poco evidentes.
@@ -385,7 +385,7 @@ export function renderPlan(state) {
   }).join('');
   const mentalNote = `<section class="card plan-pillar" style="--pc:#8b5cf6">
       <div class="plan-pillar-head">
-        <span class="pillar-emoji">🧠</span>
+        <span class="pillar-emoji">🧘</span>
         <div><h3>${t('g_bienestar_name')}</h3><p class="muted small">${t('plan_mental_noscore')}</p></div>
       </div>
       <button class="btn ghost block" data-action="nav" data-view="bienestar-guide">${t('plan_open')}</button>
@@ -572,9 +572,12 @@ export function renderFastingGuide(state) {
         <input type="checkbox" data-action="toggle-fasting" data-flag="${flag}" ${f[flag] ? 'checked' : ''} />
         <span>${esc(label)}</span>
       </label>`;
+  // Bloques plegados por defecto; se mantiene la etiqueta "para ti" que resalta
+  // el bloque correspondiente a la situación del paciente (intro y cuadro de
+  // elección múltiple quedan siempre desplegados como tarjetas fijas).
   const blocks = g.blocks.map((b) => {
     const open = isOpen(b.match);
-    return `<details class="fasting-block${open ? ' is-active' : ''}"${open ? ' open' : ''}>
+    return `<details class="fasting-block${open ? ' is-active' : ''}">
       <summary>${open ? `<span class="tag-you">${t('fasting_for_you')}</span> ` : ''}${esc(tr(b, 'title'))}</summary>
       <div class="fasting-body">${tr(b, 'body')}</div>
     </details>`;
@@ -593,7 +596,7 @@ export function renderFastingGuide(state) {
       ${chk('gastricSurgery', t('fasting_q_gastric'))}
     </section>
     ${blocks}
-    <details class="fasting-block is-active" open>
+    <details class="fasting-block">
       <summary>${esc(tr(g.final, 'title'))}</summary>
       <div class="fasting-body">${tr(g.final, 'body')}</div>
     </details>
@@ -604,13 +607,11 @@ export function renderFastingGuide(state) {
 
 export function renderExerciseGuide(state) {
   const g = EXERCISE_GUIDE;
-  const blocks = g.blocks.map((b) => {
-    const open = !!b.open;
-    return `<details class="fasting-block"${open ? ' open' : ''}>
+  // Todos los bloques plegados por defecto; la introducción va en una tarjeta fija arriba.
+  const blocks = g.blocks.map((b) => `<details class="fasting-block">
       <summary>${esc(tr(b, 'title'))}</summary>
       <div class="fasting-body">${tr(b, 'body')}</div>
-    </details>`;
-  }).join('');
+    </details>`).join('');
   return `
     <button class="btn ghost back-btn" data-action="nav" data-view="recursos">${t('back')}</button>
     <div class="section-label">${esc(tr(g.intro, 'title'))}</div>
@@ -642,10 +643,17 @@ export function renderNutritionGuide(state) {
 
 export function renderRespiratoryGuide(state) {
   const g = RESPIRATORY_GUIDE;
-  const blocks = g.blocks.map((b) => {
-    const open = !!b.open;
-    return `<details class="fasting-block"${open ? ' open' : ''}>
-      <summary>${esc(tr(b, 'title'))}</summary>
+  // Orden pedido: "Tu pauta diaria y seguridad" justo tras la introducción, luego
+  // lo ESENCIAL y al final lo COMPLEMENTARIO. Todo plegado (la intro es tarjeta fija).
+  const order = ['pauta', 'diafragmatica', 'tos', 'inspirometro', 'costal', 'brazos', 'espiracion'];
+  const ordered = order.map((id) => g.blocks.find((b) => b.id === id)).filter(Boolean);
+  g.blocks.forEach((b) => { if (!order.includes(b.id)) ordered.push(b); });
+  let n = 0;
+  const blocks = ordered.map((b) => {
+    let title = tr(b, 'title').replace(/^\s*\d+\.\s*/, ''); // renumera según el nuevo orden
+    if (b.id !== 'pauta') { n += 1; title = `${n}. ${title}`; }
+    return `<details class="fasting-block">
+      <summary>${esc(title)}</summary>
       <div class="fasting-body">${tr(b, 'body')}</div>
     </details>`;
   }).join('');
